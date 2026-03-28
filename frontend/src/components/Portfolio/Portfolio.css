@@ -1,0 +1,226 @@
+.portfolio-container {
+  background: linear-gradient(135deg, #1a2847 0%, #162239 100%);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 16px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(15, 23, 42, 0.3);
+  transition: all 0.3s ease;
+  animation: portfolio-enter 0.4s ease-out;
+}
+
+.portfolio-container:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 15px 30px rgba(15, 23, 42, 0.4);
+}
+
+@keyframes portfolio-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* HEADER */
+.portfolio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(59, 130, 246, 0.1);
+}
+
+.portfolio-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #e5e7eb;
+  margin: 0;
+}
+
+.info-subtitle {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* DROPDOWN */
+.dropdown-wrapper {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.dropdown-wrapper select {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.6);
+  color: #e5e7eb;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  transition: all 0.2s ease;
+}
+
+.dropdown-wrapper select:hover {
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.dropdown-wrapper button {
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.dropdown-wrapper button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+}
+
+/* CHIPS */
+.stock-chip-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.stock-chip {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.stock-chip:hover {
+  background: rgba(59, 130, 246, 0.3);
+  transform: scale(1.05);
+}
+
+.stock-chip span {
+  color: #ef4444;
+  cursor: pointer;
+}
+
+/* ANALYZE BUTTON */
+.analyze-btn {
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+}
+
+.analyze-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+}
+
+/* GRID */
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* CARD */
+.portfolio-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  border-radius: 10px;
+  padding: 16px;
+  transition: all 0.3s ease;
+}
+
+.portfolio-card:hover {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateY(-3px);
+}
+
+.card-label {
+  font-size: 11px;
+  color: #9ca3af;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.card-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #e5e7eb;
+  display: block;
+}
+
+/* PROGRESS BAR */
+.progress-bar {
+  margin-top: 8px;
+  height: 6px;
+  background: rgba(107, 114, 128, 0.2);
+  border-radius: 3px;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* SUGGESTION */
+.portfolio-suggestion {
+  margin-top: 16px;
+  padding: 14px;
+  background: rgba(16, 185, 129, 0.08);
+  border-left: 4px solid #10b981;
+  border-radius: 6px;
+}
+
+.suggestion-label {
+  font-size: 11px;
+  color: #9ca3af;
+  text-transform: uppercase;
+}
+
+.portfolio-suggestion p {
+  margin: 5px 0 0;
+  color: #e5e7eb;
+  font-size: 13px;
+}
+
+/* LOADING */
+.loading {
+  text-align: center;
+  color: #9ca3af;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .portfolio-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+}

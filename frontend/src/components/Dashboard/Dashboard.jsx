@@ -3,6 +3,7 @@ import StockChart from '../StockChart/StockChart'
 import ChartPatterns from '../ChartPatterns/ChartPatterns'
 import Watchlist from '../Watchlist/Watchlist'
 import './Dashboard.css'
+import Portfolio from "../Portfolio/Portfolio";
 
 function Dashboard({ data }) {
   const getOpportunityColor = (level) => {
@@ -226,6 +227,7 @@ function Dashboard({ data }) {
 
       {/* Watchlist Section */}
       <Watchlist />
+      <Portfolio />
     </div>
   )
 }
