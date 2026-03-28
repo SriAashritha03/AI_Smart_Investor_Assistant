@@ -79,6 +79,7 @@ class AnalyzeStockResponse(BaseModel):
     signal_details: list = Field(..., description="Detailed signal information")
     summary: str = Field(..., description="Human-readable opportunity summary")
     data_points: int = Field(..., description="Number of trading days analyzed")
+    chart_patterns: dict = Field(..., description="Chart patterns analysis with success rates")
 
 
 class ErrorResponse(BaseModel):

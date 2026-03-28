@@ -13,6 +13,7 @@ This is the business logic layer that combines all analysis modules.
 import logging
 from typing import Dict
 
+from chart_patterns import analyze_chart_patterns
 from signal_detector import detect_signals
 from stock_data_fetcher import get_stock_data
 from opportunity_radar import generate_opportunity
@@ -85,6 +86,11 @@ def analyze_stock(ticker: str) -> Dict:
         triggered_count = sum(1 for s in signals if s["triggered"])
         logger.info(f"Detected {triggered_count} triggered signal(s)")
 
+        # Step 2.5: Analyze chart patterns
+        logger.debug("Analyzing chart patterns...")
+        chart_patterns = analyze_chart_patterns(stock_data, ticker)
+        logger.info(f"Chart pattern analysis complete. Strength: {chart_patterns['overall_pattern_strength']}")
+
         # Step 3: Generate opportunity classification
         logger.debug("Generating opportunity classification...")
         opportunity = generate_opportunity(stock_data, signals, ticker)
@@ -105,6 +111,14 @@ def analyze_stock(ticker: str) -> Dict:
             "signal_details": opportunity["signal_details"],
             "summary": opportunity["summary"],
             "data_points": data_points,
+            "chart_patterns": {
+                "overall_strength": chart_patterns["overall_pattern_strength"],
+                "patterns_detected": chart_patterns["patterns_detected"],
+                "success_rates": chart_patterns["success_rates"],
+                "pattern_count": chart_patterns["pattern_count"],
+                "recommendation": chart_patterns["recommendation"],
+                "recommendation_reasoning": chart_patterns["recommendation_reasoning"],
+            }
         }
 
         logger.info(f"Analysis completed successfully for {ticker}")

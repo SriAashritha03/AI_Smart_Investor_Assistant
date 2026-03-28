@@ -20,7 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Configuration
-DEFAULT_PERIOD = "6mo"  # Fetch at least 6 months of data
+DEFAULT_PERIOD = "1y"  # Fetch 1 year of data for better pattern analysis
 REQUIRED_COLUMNS = ["Open", "Close", "High", "Low", "Volume"]
 MIN_DATA_POINTS = 100  # Ensure we have meaningful data
 
