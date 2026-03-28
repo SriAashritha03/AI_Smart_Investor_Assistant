@@ -1,0 +1,184 @@
+{
+  "stocks": [
+    {
+      "symbol": "AAPL",
+      "name": "Apple Inc.",
+      "sector": "Technology",
+      "market": "NASDAQ"
+    },
+    {
+      "symbol": "MSFT",
+      "name": "Microsoft Corporation",
+      "sector": "Technology",
+      "market": "NASDAQ"
+    },
+    {
+      "symbol": "GOOGL",
+      "name": "Alphabet Inc. (Google)",
+      "sector": "Technology",
+      "market": "NASDAQ"
+    },
+    {
+      "symbol": "AMZN",
+      "name": "Amazon.com Inc.",
+      "sector": "Consumer",
+      "market": "NASDAQ"
+    },
+    {
+      "symbol": "NVDA",
+      "name": "NVIDIA Corporation",
+      "sector": "Technology",
+      "market": "NASDAQ"
+    },
+    {
+      "symbol": "TSLA",
+      "name": "Tesla Inc.",
+      "sector": "Automotive",
+      "market": "NASDAQ"
+    },
+    {
+      "symbol": "META",
+      "name": "Meta Platforms (Facebook)",
+      "sector": "Technology",
+      "market": "NASDAQ"
+    },
+    {
+      "symbol": "JPM",
+      "name": "JPMorgan Chase",
+      "sector": "Finance",
+      "market": "NYSE"
+    },
+    {
+      "symbol": "V",
+      "name": "Visa Inc.",
+      "sector": "Finance",
+      "market": "NYSE"
+    },
+    {
+      "symbol": "JNJ",
+      "name": "Johnson & Johnson",
+      "sector": "Healthcare",
+      "market": "NYSE"
+    },
+    {
+      "symbol": "WMT",
+      "name": "Walmart Inc.",
+      "sector": "Retail",
+      "market": "NYSE"
+    },
+    {
+      "symbol": "PG",
+      "name": "Procter & Gamble",
+      "sector": "Consumer",
+      "market": "NYSE"
+    },
+    {
+      "symbol": "MA",
+      "name": "Mastercard Inc.",
+      "sector": "Finance",
+      "market": "NYSE"
+    },
+    {
+      "symbol": "KO",
+      "name": "Coca-Cola Company",
+      "sector": "Beverage",
+      "market": "NYSE"
+    },
+    {
+      "symbol": "DIS",
+      "name": "The Walt Disney Company",
+      "sector": "Entertainment",
+      "market": "NYSE"
+    },
+    {
+      "symbol": "NFLX",
+      "name": "Netflix Inc.",
+      "sector": "Entertainment",
+      "market": "NASDAQ"
+    },
+    {
+      "symbol": "INTC",
+      "name": "Intel Corporation",
+      "sector": "Technology",
+      "market": "NASDAQ"
+    },
+    {
+      "symbol": "AMD",
+      "name": "Advanced Micro Devices",
+      "sector": "Technology",
+      "market": "NASDAQ"
+    },
+    {
+      "symbol": "BA",
+      "name": "Boeing Company",
+      "sector": "Aerospace",
+      "market": "NYSE"
+    },
+    {
+      "symbol": "CSCO",
+      "name": "Cisco Systems",
+      "sector": "Technology",
+      "market": "NASDAQ"
+    },
+    {
+      "symbol": "RELIANCE.NS",
+      "name": "Reliance Industries",
+      "sector": "Energy",
+      "market": "NSE (India)"
+    },
+    {
+      "symbol": "TCS.NS",
+      "name": "Tata Consultancy Services",
+      "sector": "IT",
+      "market": "NSE (India)"
+    },
+    {
+      "symbol": "INFY.NS",
+      "name": "Infosys Limited",
+      "sector": "IT",
+      "market": "NSE (India)"
+    },
+    {
+      "symbol": "WIPRO.NS",
+      "name": "Wipro Limited",
+      "sector": "IT",
+      "market": "NSE (India)"
+    },
+    {
+      "symbol": "HDFCBANK.NS",
+      "name": "HDFC Bank Limited",
+      "sector": "Finance",
+      "market": "NSE (India)"
+    },
+    {
+      "symbol": "ICICIBANK.NS",
+      "name": "ICICI Bank Limited",
+      "sector": "Finance",
+      "market": "NSE (India)"
+    },
+    {
+      "symbol": "SBIN.NS",
+      "name": "State Bank of India",
+      "sector": "Finance",
+      "market": "NSE (India)"
+    },
+    {
+      "symbol": "ITC.NS",
+      "name": "ITC Limited",
+      "sector": "Consumer",
+      "market": "NSE (India)"
+    },
+    {
+      "symbol": "MARUTI.NS",
+      "name": "Maruti Suzuki India",
+      "sector": "Automotive",
+      "market": "NSE (India)"
+    },
+    {
+      "symbol": "TATASTEEL.NS",
+      "name": "Tata Steel Limited",
+      "sector": "Steel",
+      "market": "NSE (India)"
+    }
+  ]
+}
