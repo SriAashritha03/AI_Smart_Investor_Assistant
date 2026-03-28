@@ -9,6 +9,9 @@
   gap: var(--spacing-xl);
   animation: fadeIn 0.3s ease;
 }
+.portfolio-section {
+  margin-top: 20px;
+}
 
 @keyframes fadeIn {
   from {
