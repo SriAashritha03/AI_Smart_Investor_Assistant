@@ -18,9 +18,12 @@ Example curl:
 """
 
 import logging
+import json
+import os
 from typing import Dict, Optional
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from services.analyzer import analyze_stock, batch_analyze_stocks
@@ -33,6 +36,71 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # ============================================================================
+# Load Stocks Data
+# ============================================================================
+
+STOCKS = []
+stocks_file = os.path.join(os.path.dirname(__file__), "stocks.json")
+try:
+    with open(stocks_file, "r") as f:
+        data = json.load(f)
+        STOCKS = data.get("stocks", [])
+    logger.info(f"Loaded {len(STOCKS)} available stocks")
+except FileNotFoundError:
+    logger.warning(f"Stocks file not found at {stocks_file}. Stocks endpoint will be empty.")
+except json.JSONDecodeError:
+    logger.error(f"Error parsing stocks.json. Invalid JSON format.")
+
+# ============================================================================
+# Demo Mode Responses
+# ============================================================================
+
+DEMO_MODE_ENABLED = True
+
+DEMO_RESPONSES = {
+    "AAPL": {
+        "success": True,
+        "stock": "AAPL",
+        "date": "2026-03-27",
+        "opportunity_level": "Moderate",
+        "confidence": 68,
+        "action": "BUY",
+        "signals_triggered": ["Uptrend", "Breakout"],
+        "signal_details": [
+            {"name": "Uptrend", "triggered": True, "strength": "Moderate", "reasoning": "5 consecutive up days"},
+            {"name": "Breakout", "triggered": True, "strength": "Strong", "reasoning": "Price crossed 10-day high"},
+            {"name": "Volume Spike", "triggered": False, "strength": "-", "reasoning": "volume 1.2x average"},
+            {"name": "Price Surge", "triggered": False, "strength": "-", "reasoning": "2.3% increase - below 3%"},
+        ],
+        "summary": "Apple shows bulls momentum with breakout confirmation. Strong buying opportunity.",
+        "data_points": 124,
+    },
+    "RELIANCE.NS": {
+        "success": True,
+        "stock": "RELIANCE.NS",
+        "date": "2026-03-27",
+        "opportunity_level": "Strong",
+        "confidence": 75,
+        "action": "BUY",
+        "signals_triggered": ["Volume Spike", "Breakout"],
+        "signal_details": [
+            {"name": "Volume Spike", "triggered": True, "strength": "Strong", "reasoning": "1.8x average volume"},
+            {"name": "Breakout", "triggered": True, "strength": "Strong", "reasoning": "Breakout with volume"},
+            {"name": "Uptrend", "triggered": False, "strength": "-", "reasoning": "Insufficient days"},
+            {"name": "Price Surge", "triggered": False, "strength": "-", "reasoning": "1.3% change"},
+        ],
+        "summary": "High conviction breakout. Strong volume backing with institutional interest.",
+        "data_points": 124,
+    },
+}
+
+def get_demo_response(ticker: str) -> Dict:
+    """Get demo response for a stock, fallback to AAPL"""
+    return DEMO_RESPONSES.get(ticker, DEMO_RESPONSES.get("AAPL"))
+
+
+
+# ============================================================================
 # FastAPI Setup
 # ============================================================================
 
@@ -41,6 +109,23 @@ app = FastAPI(
     description="Analyze stocks for investment opportunities using technical signals",
     version="1.0.0",
 )
+
+# ============================================================================
+# CORS Configuration
+# ============================================================================
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",      # React dev server (common)
+        "http://localhost:5173",      # Vite dev server
+        "http://127.0.0.1:5173",      # Vite dev server (127.0.0.1)
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 
 # ============================================================================
@@ -96,6 +181,23 @@ class HealthResponse(BaseModel):
     service: str = Field("Stock Analysis API", description="Service name")
 
 
+class StockItem(BaseModel):
+    """Stock item model."""
+
+    symbol: str = Field(..., description="Stock ticker symbol")
+    name: str = Field(..., description="Company name")
+    sector: str = Field(..., description="Business sector")
+    market: str = Field(..., description="Stock exchange")
+
+
+class StocksResponse(BaseModel):
+    """Response with list of available stocks."""
+
+    count: int = Field(..., description="Number of stocks")
+    stocks: list[StockItem] = Field(..., description="List of stock items")
+
+
+
 # ============================================================================
 # Endpoints
 # ============================================================================
@@ -114,6 +216,41 @@ async def health_check() -> Dict:
     """
     logger.debug("Health check requested")
     return {"status": "healthy", "service": "Stock Analysis API"}
+
+
+@app.get("/stocks", response_model=StocksResponse, tags=["Data"])
+async def get_stocks() -> Dict:
+    """
+    Get list of available stocks for analysis.
+
+    Returns curated list of popular stocks across:
+    - US Technology (AAPL, MSFT, GOOGL, etc.)
+    - US Finance (JPM, V, MA, etc.)
+    - US Consumer & Retail (AMZN, WMT, etc.)
+    - Indian Markets (RELIANCE.NS, TCS.NS, INFY.NS, etc.)
+
+    Returns:
+        Dict: Count and list of available stocks with symbol, name, sector, market
+
+    Example:
+        GET http://localhost:8000/stocks
+
+        Response:
+        {
+            "count": 30,
+            "stocks": [
+                {
+                    "symbol": "AAPL",
+                    "name": "Apple Inc.",
+                    "sector": "Technology",
+                    "market": "NASDAQ"
+                },
+                ...
+            ]
+        }
+    """
+    logger.debug(f"Stocks endpoint called, returning {len(STOCKS)} stocks")
+    return {"count": len(STOCKS), "stocks": STOCKS}
 
 
 @app.post(
