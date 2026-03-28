@@ -1,0 +1,43 @@
+import React from 'react'
+import './Header.css'
+
+function Header({ demoMode = true, onDemoModeChange = () => {} }) {
+  return (
+    <header className="header">
+      <div className="header-content">
+        <div className="header-left">
+          <h1 className="header-title">
+            <span className="title-icon">📊</span>
+            AI Smart Investor Assistant
+          </h1>
+          <p className="header-subtitle">Technical Signal Analysis & Opportunity Detection</p>
+        </div>
+        <div className="header-right">
+          {/* Demo Mode Toggle */}
+          <div className="demo-mode-section">
+            <label htmlFor="demo-toggle" className="demo-toggle-label">
+              <input
+                id="demo-toggle"
+                type="checkbox"
+                checked={demoMode}
+                onChange={(e) => onDemoModeChange(e.target.checked)}
+                className="demo-toggle-input"
+              />
+              <span className="demo-toggle-switch"></span>
+              <span className="demo-toggle-text">Demo Mode</span>
+            </label>
+            {demoMode && <span className="demo-badge">🎭 Demo Active</span>}
+          </div>
+
+          {/* Status Indicator */}
+          <div className="status-indicator">
+            <span className="status-dot"></span>
+            <span className="status-text">Live Feed</span>
+          </div>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+export default Header
