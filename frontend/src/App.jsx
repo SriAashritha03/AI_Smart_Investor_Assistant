@@ -2,6 +2,7 @@ import React from 'react'
 import Header from './components/Header/Header'
 import StockSelector from './components/StockSelector/StockSelector'
 import Dashboard from './components/Dashboard/Dashboard'
+import AlertsModal from './components/AlertsModal/AlertsModal'
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
 import { analyzeStock, healthCheck } from './services/stockApi'
 import { getDemoResponse } from './constants/mockData'
@@ -14,6 +15,7 @@ function App() {
   const [error, setError] = React.useState(null)
   const [isBackendReady, setIsBackendReady] = React.useState(true)
   const [demoMode, setDemoMode] = React.useState(true) // Demo mode ON by default
+  const [isAlertsOpen, setIsAlertsOpen] = React.useState(false)
 
   // Check if backend is running on mount
   React.useEffect(() => {
@@ -67,6 +69,7 @@ function App() {
           summary: result.summary,
           data_points: result.data_points,
           chart_patterns: result.chart_patterns, // Add chart patterns data
+          alerts: result.alerts, // Add alerts data
           isDemo: demoMode,
         })
       } else {
@@ -83,7 +86,12 @@ function App() {
   return (
     <ErrorBoundary>
       <div className="app">
-        <Header demoMode={demoMode} onDemoModeChange={setDemoMode} />
+        <Header 
+          demoMode={demoMode} 
+          onDemoModeChange={setDemoMode}
+          alerts={analysisData?.alerts || []}
+          onAlertsToggle={() => setIsAlertsOpen(!isAlertsOpen)}
+        />
         <main className="app-main">
           <StockSelector 
             selectedStock={selectedStock} 
@@ -114,6 +122,13 @@ function App() {
           {/* Dashboard Results */}
           {analysisData && !isLoading && <Dashboard data={analysisData} />}
         </main>
+
+        {/* Alerts Modal */}
+        <AlertsModal 
+          isOpen={isAlertsOpen}
+          alerts={analysisData?.alerts || []}
+          onClose={() => setIsAlertsOpen(false)}
+        />
       </div>
     </ErrorBoundary>
   )

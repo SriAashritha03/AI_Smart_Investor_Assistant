@@ -1,7 +1,9 @@
 import React from 'react'
 import './Header.css'
 
-function Header({ demoMode = true, onDemoModeChange = () => {} }) {
+function Header({ demoMode = true, onDemoModeChange = () => {}, alerts = [], onAlertsToggle = () => {} }) {
+  const criticalCount = alerts.filter((a) => a.severity === 'CRITICAL').length
+  
   return (
     <header className="header">
       <div className="header-content">
@@ -13,6 +15,23 @@ function Header({ demoMode = true, onDemoModeChange = () => {} }) {
           <p className="header-subtitle">Technical Signal Analysis & Opportunity Detection</p>
         </div>
         <div className="header-right">
+          {/* Notification Bell */}
+          <button 
+            className="notification-bell"
+            onClick={onAlertsToggle}
+            title={`${alerts.length} alerts`}
+          >
+            <span className="bell-icon">🔔</span>
+            {alerts.length > 0 && (
+              <span className="notification-badge">
+                {alerts.length > 9 ? '9+' : alerts.length}
+              </span>
+            )}
+            {criticalCount > 0 && (
+              <span className="critical-dot" title={`${criticalCount} critical alerts`}>●</span>
+            )}
+          </button>
+
           {/* Demo Mode Toggle */}
           <div className="demo-mode-section">
             <label htmlFor="demo-toggle" className="demo-toggle-label">

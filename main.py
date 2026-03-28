@@ -113,7 +113,41 @@ DEMO_RESPONSES = {
                 "overall": 40.3
             },
             "recommendation": "BUY",
-            "recommendation_reasoning": "Strong breakout detected with volume confirmation and support holding. Dual pattern confirmation suggests good entry point."
+            "recommendation_reasoning": "Strong breakout detected with volume confirmation and support holding. Dual pattern confirmation suggests good entry point.",
+            "alerts": [
+                {
+                    "title": "📈 Uptrend Detected",
+                    "message": "Stock is showing upward momentum. Bullish signal.",
+                    "severity": "SUCCESS",
+                    "alert_type": "SIGNAL",
+                    "timestamp": "2026-03-27T10:30:00",
+                    "action": "BUY"
+                },
+                {
+                    "title": "🚀 Breakout Detected",
+                    "message": "Price has broken above resistance. Strong bullish signal.",
+                    "severity": "CRITICAL",
+                    "alert_type": "SIGNAL",
+                    "timestamp": "2026-03-27T09:15:00",
+                    "action": "BUY"
+                },
+                {
+                    "title": "🚀 Breakout Pattern",
+                    "message": "Strong breakout pattern detected (Strong). Price breaking above resistance with volume confirmation.",
+                    "severity": "CRITICAL",
+                    "alert_type": "PATTERN",
+                    "timestamp": "2026-03-27T09:00:00",
+                    "action": "BUY"
+                },
+                {
+                    "title": "⚡ Moderate BUY Signal",
+                    "message": "Moderate trading opportunity with 68% confidence. Worth monitoring.",
+                    "severity": "INFO",
+                    "alert_type": "OPPORTUNITY",
+                    "timestamp": "2026-03-27T08:00:00",
+                    "action": "BUY"
+                }
+            ]
         }
     },
     "RELIANCE.NS": {
@@ -171,7 +205,57 @@ DEMO_RESPONSES = {
                 "overall": 56.2
             },
             "recommendation": "BUY",
-            "recommendation_reasoning": "Multiple bullish signals: Breakout with strong volume + Golden Cross. Highest conviction setup. Strong buy opportunity."
+            "recommendation_reasoning": "Multiple bullish signals: Breakout with strong volume + Golden Cross. Highest conviction setup. Strong buy opportunity.",
+            "alerts": [
+                {
+                    "title": "📊 Volume Spike",
+                    "message": "Unusual trading volume detected. Increased market interest.",
+                    "severity": "WARNING",
+                    "alert_type": "SIGNAL",
+                    "timestamp": "2026-03-27T11:00:00",
+                    "action": "WATCH"
+                },
+                {
+                    "title": "🚀 Breakout Detected",
+                    "message": "Price has broken above resistance. Strong bullish signal.",
+                    "severity": "CRITICAL",
+                    "alert_type": "SIGNAL",
+                    "timestamp": "2026-03-27T10:45:00",
+                    "action": "BUY"
+                },
+                {
+                    "title": "🚀 Breakout Pattern",
+                    "message": "Strong breakout pattern detected (Strong). Price breaking above resistance with volume confirmation.",
+                    "severity": "CRITICAL",
+                    "alert_type": "PATTERN",
+                    "timestamp": "2026-03-27T10:30:00",
+                    "action": "BUY"
+                },
+                {
+                    "title": "✨ Golden Cross",
+                    "message": "Moving Average Golden Cross detected. Long-term bullish signal.",
+                    "severity": "SUCCESS",
+                    "alert_type": "PATTERN",
+                    "timestamp": "2026-03-27T09:00:00",
+                    "action": "BUY"
+                },
+                {
+                    "title": "🎯 Strong BUY Signal",
+                    "message": "Strong bullish setup with 75% confidence. High probability trade.",
+                    "severity": "CRITICAL",
+                    "alert_type": "OPPORTUNITY",
+                    "timestamp": "2026-03-27T08:00:00",
+                    "action": "BUY"
+                },
+                {
+                    "title": "🌪️ High Volatility Alert",
+                    "message": "Multiple strong patterns detected. Market volatility is high. Use tight stops.",
+                    "severity": "CRITICAL",
+                    "alert_type": "RISK",
+                    "timestamp": "2026-03-27T07:30:00",
+                    "action": "WATCH"
+                }
+            ]
         }
     },
 }
@@ -247,6 +331,7 @@ class AnalyzeStockResponse(BaseModel):
     summary: str = Field(..., description="Human-readable opportunity summary")
     data_points: int = Field(..., description="Number of trading days analyzed")
     chart_patterns: dict = Field(..., description="Chart patterns analysis with success rates")
+    alerts: list = Field(default=[], description="Smart alerts for the stock")
 
 
 class ErrorResponse(BaseModel):
