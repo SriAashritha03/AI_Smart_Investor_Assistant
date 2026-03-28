@@ -66,6 +66,7 @@ function App() {
           signal_details: result.signal_details,
           summary: result.summary,
           data_points: result.data_points,
+          chart_patterns: result.chart_patterns, // Add chart patterns data
           isDemo: demoMode,
         })
       } else {

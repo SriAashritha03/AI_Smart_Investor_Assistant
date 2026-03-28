@@ -74,6 +74,47 @@ DEMO_RESPONSES = {
         ],
         "summary": "Apple shows bulls momentum with breakout confirmation. Strong buying opportunity.",
         "data_points": 124,
+        "chart_patterns": {
+            "overall_strength": "Moderate",
+            "pattern_count": 2,
+            "patterns_detected": [
+                {
+                    "pattern_name": "Breakout",
+                    "detected": True,
+                    "strength": "Strong",
+                    "current_price": 185.50,
+                    "resistance_level": 182.30,
+                    "breakout_margin": 1.75,
+                    "volume_confirmation": True
+                },
+                {
+                    "pattern_name": "Support",
+                    "detected": True,
+                    "strength": "Moderate",
+                    "current_price": 185.50,
+                    "support_level": 178.50,
+                    "distance_from_support": 3.87,
+                    "recent_bounce": True
+                },
+                {
+                    "pattern_name": "MA Crossover",
+                    "detected": False,
+                    "strength": "None",
+                    "crossover_type": "Golden Cross",
+                    "sma50": 183.20,
+                    "sma200": 184.10,
+                    "ma_distance": -0.49
+                }
+            ],
+            "success_rates": {
+                "breakout": 62.5,
+                "support": 58.3,
+                "ma_crossover": 0.0,
+                "overall": 40.3
+            },
+            "recommendation": "BUY",
+            "recommendation_reasoning": "Strong breakout detected with volume confirmation and support holding. Dual pattern confirmation suggests good entry point."
+        }
     },
     "RELIANCE.NS": {
         "success": True,
@@ -91,6 +132,47 @@ DEMO_RESPONSES = {
         ],
         "summary": "High conviction breakout. Strong volume backing with institutional interest.",
         "data_points": 124,
+        "chart_patterns": {
+            "overall_strength": "Strong",
+            "pattern_count": 2,
+            "patterns_detected": [
+                {
+                    "pattern_name": "Breakout",
+                    "detected": True,
+                    "strength": "Strong",
+                    "current_price": 2854.50,
+                    "resistance_level": 2793.25,
+                    "breakout_margin": 2.19,
+                    "volume_confirmation": True
+                },
+                {
+                    "pattern_name": "Support",
+                    "detected": False,
+                    "strength": "None",
+                    "current_price": 2854.50,
+                    "support_level": 2680.30,
+                    "distance_from_support": 6.49,
+                    "recent_bounce": False
+                },
+                {
+                    "pattern_name": "MA Crossover",
+                    "detected": True,
+                    "strength": "Strong",
+                    "crossover_type": "Golden Cross",
+                    "sma50": 2820.35,
+                    "sma200": 2750.10,
+                    "ma_distance": 2.56
+                }
+            ],
+            "success_rates": {
+                "breakout": 64.2,
+                "support": 45.8,
+                "ma_crossover": 58.5,
+                "overall": 56.2
+            },
+            "recommendation": "BUY",
+            "recommendation_reasoning": "Multiple bullish signals: Breakout with strong volume + Golden Cross. Highest conviction setup. Strong buy opportunity."
+        }
     },
 }
 
