@@ -418,11 +418,6 @@ class PortfolioResponse(BaseModel):
     rebalance_suggestion: str
 
 
-@app.post(
-    "/portfolio-health",
-    response_model=PortfolioResponse,
-    tags=["Portfolio"],
-)
 class PortfolioRequest(BaseModel):
     tickers: list[str] = Field(..., description="List of stock tickers", example=["AAPL", "MSFT"])
 
@@ -438,13 +433,17 @@ async def portfolio_health_endpoint(request: PortfolioRequest):
         result = analyze_portfolio(request.tickers)
 
         if not result.get("success"):
+            logger.error(f"Portfolio analysis failed: {result.get('error')}")
             raise HTTPException(status_code=400, detail=result.get("error"))
 
         return result
 
+    except HTTPException:
+        raise  # Re-raise HTTPExceptions
     except Exception as e:
-        logger.error(f"Portfolio analysis error: {str(e)}")
+        error_msg = f"Portfolio analysis error: {type(e).__name__}: {str(e)}"
+        logger.error(error_msg)
         raise HTTPException(
             status_code=500,
-            detail="Portfolio analysis failed"
+            detail=error_msg
         )

@@ -12,7 +12,24 @@ def analyze_portfolio(tickers: List[str]) -> Dict:
 
     try:
         # ---- Fetch Data (6 months) ----
-        data = yf.download(tickers, period="6mo")["Adj Close"]
+        print(f"📊 Fetching data for tickers: {tickers}")
+        raw_data = yf.download(tickers, period="6mo", progress=False)
+        
+        # Check if data was returned
+        if raw_data.empty:
+            return {"success": False, "error": f"No data found for tickers: {', '.join(tickers)}. Check if tickers are valid."}
+        
+        # Try 'Adj Close' first, then fall back to 'Close'
+        if "Adj Close" in raw_data.columns:
+            data = raw_data["Adj Close"]
+        elif "Close" in raw_data.columns:
+            data = raw_data["Close"]
+            print("ℹ️ Using 'Close' price instead of 'Adj Close'")
+        else:
+            print(f"⚠️  Available columns: {raw_data.columns.tolist()}")
+            return {"success": False, "error": f"Price data not available. Got columns: {raw_data.columns.tolist()}"}
+        
+        print(f"✅ Data fetched successfully: {data.shape}")
 
         # If single stock → convert to DataFrame
         if isinstance(data, pd.Series):
@@ -20,6 +37,9 @@ def analyze_portfolio(tickers: List[str]) -> Dict:
 
         # ---- Calculate Daily Returns ----
         returns = data.pct_change().dropna()
+        
+        if len(returns) == 0:
+            return {"success": False, "error": "Not enough data to calculate returns"}
 
         # ---- Portfolio Volatility (Risk) ----
         portfolio_volatility = returns.std().mean()
@@ -57,4 +77,5 @@ def analyze_portfolio(tickers: List[str]) -> Dict:
         }
 
     except Exception as e:
-        return {"success": False, "error": str(e)}
+        print(f"🔴 Portfolio error: {type(e).__name__}: {str(e)}")
+        return {"success": False, "error": f"Portfolio analysis failed: {str(e)}"}
