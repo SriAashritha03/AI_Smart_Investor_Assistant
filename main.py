@@ -403,3 +403,48 @@ curl -X POST "http://localhost:8000/analyze-stock" \\
         reload=True,
         log_level="info",
     )
+    
+    
+    
+
+from services.portfolio import analyze_portfolio
+
+class PortfolioResponse(BaseModel):
+    success: bool
+    portfolio_size: int
+    risk_score: float
+    avg_correlation: float
+    diversification: str
+    rebalance_suggestion: str
+
+
+@app.post(
+    "/portfolio-health",
+    response_model=PortfolioResponse,
+    tags=["Portfolio"],
+)
+class PortfolioRequest(BaseModel):
+    tickers: list[str] = Field(..., description="List of stock tickers", example=["AAPL", "MSFT"])
+
+
+@app.post(
+    "/portfolio-health",
+    response_model=PortfolioResponse,
+    tags=["Portfolio"],
+)
+async def portfolio_health_endpoint(request: PortfolioRequest):
+
+    try:
+        result = analyze_portfolio(request.tickers)
+
+        if not result.get("success"):
+            raise HTTPException(status_code=400, detail=result.get("error"))
+
+        return result
+
+    except Exception as e:
+        logger.error(f"Portfolio analysis error: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail="Portfolio analysis failed"
+        )
