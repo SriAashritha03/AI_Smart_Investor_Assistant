@@ -110,6 +110,15 @@ app = FastAPI(
     version="1.0.0",
 )
 
+
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # ============================================================================
 # CORS Configuration
 # ============================================================================
@@ -448,3 +457,29 @@ async def portfolio_health_endpoint(request: PortfolioRequest):
             status_code=500,
             detail=error_msg
         )
+        
+from fastapi.responses import FileResponse
+from fastapi import Query, HTTPException
+from services.video_engine import generate_market_video
+
+
+@app.get("/generate-video")
+async def generate_video(ticker: str = Query(...)):
+    """
+    Generate AI video for selected stock
+    """
+
+    if not ticker:
+        raise HTTPException(status_code=400, detail="Ticker is required")
+
+    try:
+        video_path = generate_market_video(ticker)
+
+        return FileResponse(
+            path=video_path,
+            media_type="video/mp4",
+            filename="video.mp4"
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
