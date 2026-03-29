@@ -1,4 +1,6 @@
 import React from 'react'
+import { FaCheckCircle, FaTimesCircle, FaChartLine, FaChartBar, FaExchangeAlt } from 'react-icons/fa'
+import TradeInsightPanel from '../TradeInsightPanel/TradeInsightPanel'
 import './ChartPatterns.css'
 
 function ChartPatterns({ patterns }) {
@@ -22,17 +24,18 @@ function ChartPatterns({ patterns }) {
   }
 
   const getRecommendationIcon = (recommendation) => {
+    const iconStyle = { marginRight: '8px' }
     switch (recommendation) {
       case 'BUY':
-        return '🟢'
+        return <span style={{ ...iconStyle, color: '#10b981' }}>●</span>
       case 'SELL':
-        return '🔴'
+        return <span style={{ ...iconStyle, color: '#ef4444' }}>●</span>
       case 'WAIT':
-        return '🟡'
+        return <span style={{ ...iconStyle, color: '#f59e0b' }}>●</span>
       case 'HOLD':
-        return '🟠'
+        return <span style={{ ...iconStyle, color: '#3b82f6' }}>●</span>
       default:
-        return '⚪'
+        return <span style={{ ...iconStyle, color: '#6b7280' }}>●</span>
     }
   }
 
@@ -79,7 +82,7 @@ function ChartPatterns({ patterns }) {
 
       {/* Success Rates Section */}
       <div className="success-rates-section">
-        <div className="section-header">
+        <div className="section-header"><FaChartBar style={{ marginRight: '8px' }} />
           <h3 className="section-title">📊 Historical Success Rates (Backtested)</h3>
         </div>
         <div className="success-rates-grid">
@@ -117,7 +120,7 @@ function ChartPatterns({ patterns }) {
       {/* Detected Patterns Section */}
       <div className="patterns-section">
         <div className="section-header">
-          <h3 className="section-title">🎯 Detected Patterns</h3>
+          <h3 className="section-title"><FaChartLine style={{ marginRight: '8px' }} /> Detected Patterns</h3>
           <span className="pattern-count">
             {patterns.pattern_count || 0} Pattern{patterns.pattern_count !== 1 ? 's' : ''} Detected
           </span>
@@ -126,7 +129,7 @@ function ChartPatterns({ patterns }) {
           {/* Breakout Pattern */}
           <div className={`pattern-card ${breakout.detected ? 'detected' : 'not-detected'}`}>
             <div className="pattern-indicator" style={{ color: getPatternColor(breakout.detected) }}>
-              {breakout.detected ? '✓' : '✗'}
+              {breakout.detected ? <FaCheckCircle /> : <FaTimesCircle />}
             </div>
             <div className="pattern-content">
               <h4 className="pattern-name">Breakout</h4>
@@ -157,7 +160,7 @@ function ChartPatterns({ patterns }) {
           {/* Support Pattern */}
           <div className={`pattern-card ${support.detected ? 'detected' : 'not-detected'}`}>
             <div className="pattern-indicator" style={{ color: getPatternColor(support.detected) }}>
-              {support.detected ? '✓' : '✗'}
+              {support.detected ? <FaCheckCircle /> : <FaTimesCircle />}
             </div>
             <div className="pattern-content">
               <h4 className="pattern-name">Support Bounce</h4>
@@ -188,7 +191,7 @@ function ChartPatterns({ patterns }) {
           {/* MA Crossover Pattern */}
           <div className={`pattern-card ${maCrossover.detected ? 'detected' : 'not-detected'}`}>
             <div className="pattern-indicator" style={{ color: getPatternColor(maCrossover.detected) }}>
-              {maCrossover.detected ? '✓' : '✗'}
+              {maCrossover.detected ? <FaCheckCircle /> : <FaTimesCircle />}
             </div>
             <div className="pattern-content">
               <h4 className="pattern-name">MA Crossover</h4>
@@ -222,35 +225,8 @@ function ChartPatterns({ patterns }) {
         </div>
       </div>
 
-      {/* Pattern Interpretation Guide */}
-      <div className="interpretation-guide">
-        <div className="section-header">
-          <h3 className="section-title">📚 Pattern Guide</h3>
-        </div>
-        <div className="guide-items">
-          <div className="guide-item">
-            <span className="guide-icon">📈</span>
-            <div className="guide-content">
-              <h4>Breakout</h4>
-              <p>Price breaks above resistance with volume confirmation. Strong bullish signal.</p>
-            </div>
-          </div>
-          <div className="guide-item">
-            <span className="guide-icon">🔧</span>
-            <div className="guide-content">
-              <h4>Support Bounce</h4>
-              <p>Price bounces from support level. Indicates potential reversal or consolidation.</p>
-            </div>
-          </div>
-          <div className="guide-item">
-            <span className="guide-icon">🔀</span>
-            <div className="guide-content">
-              <h4>MA Crossover</h4>
-              <p>Golden Cross (bullish) or Death Cross (bearish) when SMA50 crosses SMA200.</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Trade Insight Panel */}
+      <TradeInsightPanel patterns={patterns} />
     </div>
   )
 }

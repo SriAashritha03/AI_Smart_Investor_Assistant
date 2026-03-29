@@ -19,6 +19,7 @@ from signal_detector import detect_signals
 from stock_data_fetcher import get_stock_data
 from opportunity_radar import generate_opportunity
 from .alerts import generate_stock_alerts
+from .decision_fusion import apply_decision_fusion
 
 # Configure logging
 logging.basicConfig(
@@ -185,6 +186,12 @@ def analyze_stock(ticker: str) -> Dict:
         }
 
         logger.info(f"Analysis completed successfully for {ticker}")
+        
+        # ===== APPLY FINAL DECISION FUSION =====
+        # Consolidates all sources into ONE unified decision
+        logger.info("Applying Final Decision Fusion Engine...")
+        response = apply_decision_fusion(response)
+        
         return response
 
     except ValueError as e:

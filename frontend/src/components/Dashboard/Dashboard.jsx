@@ -1,10 +1,10 @@
 import React from 'react'
+import { FaCircle, FaLightbulb, FaExclamationTriangle, FaEye, FaChartBar, FaMask, FaClipboardList, FaBullseye, FaCheckCircle, FaNewspaper, FaBolt } from 'react-icons/fa'
 import StockChart from '../StockChart/StockChart'
-import ChartPatterns from '../ChartPatterns/ChartPatterns'
 import Watchlist from '../Watchlist/Watchlist'
+import ChartPatterns from '../ChartPatterns/ChartPatterns'
+import OpportunityRadar from '../OpportunityRadar/OpportunityRadar'
 import './Dashboard.css'
-import Portfolio from "../Portfolio/Portfolio";
-import VideoEngine from "../VideoEngine/VideoEngine";
 
 function Dashboard({ data }) {
   const getOpportunityColor = (level) => {
@@ -53,14 +53,44 @@ function Dashboard({ data }) {
   const getSignalStrengthBadge = (strength) => {
     switch (strength) {
       case 'Strong':
-        return '🟢'
+        return <FaCircle style={{ color: '#22c55e' }} />
       case 'Moderate':
-        return '🟡'
+        return <FaCircle style={{ color: '#f59e0b' }} />
       case 'Weak':
-        return '🔵'
+        return <FaCircle style={{ color: '#3b82f6' }} />
       default:
-        return '⚪'
+        return <FaCircle style={{ color: '#d1d5db' }} />
     }
+  }
+
+  const getRadarData = (data) => {
+    if (!data) return null
+    return [
+      {
+        subject: 'Technical',
+        value: Math.min(100, (data.signals_triggered.length / data.signal_details.length) * 100)
+      },
+      {
+        subject: 'Sentiment',
+        value: data.news_sentiment 
+          ? Math.round((data.news_sentiment.sentiment_score + 1) / 2 * 100)
+          : 50
+      },
+      {
+        subject: 'Volume',
+        value: data.event_signals?.volume_surge?.detected ? 75 : 40
+      },
+      {
+        subject: 'Trend',
+        value: data.opportunity_level === 'Strong' ? 80
+             : data.opportunity_level === 'Moderate' ? 60
+             : 40
+      },
+      {
+        subject: 'Risk',
+        value: Math.max(0, 100 - (data.confidence || 50))
+      }
+    ]
   }
 
   const generateCombinedInsight = () => {
@@ -76,36 +106,36 @@ function Dashboard({ data }) {
 
     // Strong bullish setup
     if ((hasBreakout || hasUptrend) && (hasVolumeSpike || hasVolumeSurge) && hasPositiveSentiment) {
-      return '💡 Strong bullish setup: Positive sentiment + Technical breakout + Volume confirmation = High conviction opportunity'
+      return 'Strong bullish setup: Positive sentiment + Technical breakout + Volume confirmation = High conviction opportunity'
     }
 
     // Moderate bullish
     if ((hasBreakout || hasUptrend) && hasPositiveSentiment) {
-      return '💡 Moderate bullish setup: Positive sentiment backing technical strength = Solid opportunity'
+      return 'Moderate bullish setup: Positive sentiment backing technical strength = Solid opportunity'
     }
 
     // Price action with momentum
     if ((hasPriceSurge || hasPriceSpike) && (hasVolumeSpike || hasVolumeSurge)) {
-      return '💡 Strong momentum detected: Price surge + Volume increase = Short-term buying pressure'
+      return 'Strong momentum detected: Price surge + Volume increase = Short-term buying pressure'
     }
 
     // Bearish setup
     if (hasNegativeSentiment && data.opportunity_level === 'None') {
-      return '⚠️ Bearish sentiment: Negative news with no technical support = Avoid until sentiment improves'
+      return 'Bearish sentiment: Negative news with no technical support = Avoid until sentiment improves'
     }
 
     // Mixed signals
     if (data.signals_triggered.length > 0 && hasPositiveSentiment) {
-      return '💡 Mixed signals with positive sentiment: Monitor for confirmation before entry'
+      return 'Mixed signals with positive sentiment: Monitor for confirmation before entry'
     }
 
     // No clear setup
     if (data.signals_triggered.length === 0) {
-      return '👀 No clear signals detected: Waiting for technical setup or sentiment change'
+      return 'No clear signals detected: Waiting for technical setup or sentiment change'
     }
 
     // Default
-    return '📊 Monitor for emerging opportunity based on current signals and market sentiment'
+    return 'Monitor for emerging opportunity based on current signals and market sentiment'
   }
 
   return (
@@ -113,7 +143,7 @@ function Dashboard({ data }) {
       {/* Demo Mode Indicator */}
       {data.isDemo && (
         <div className="demo-indicator">
-          <span className="demo-indicator-icon">🎭</span>
+          <span className="demo-indicator-icon"><FaMask /></span>
           <span className="demo-indicator-text">Demo Mode - Using Sample Data</span>
         </div>
       )}
@@ -121,7 +151,7 @@ function Dashboard({ data }) {
       {/* Combined Insight Section - HIGH IMPACT */}
       <div className="dashboard-section combined-insight-section">
         <div className="combined-insight-content">
-          <div className="combined-insight-label">💡 AI Insight</div>
+          <div className="combined-insight-label"><FaLightbulb style={{ marginRight: '8px' }} />AI Insight</div>
           <div className="combined-insight-text">{generateCombinedInsight()}</div>
         </div>
       </div>
@@ -179,12 +209,19 @@ function Dashboard({ data }) {
         </div>
       </div>
 
+      {/* Opportunity Radar Visualization */}
+      {data && (
+        <div className="dashboard-section radar-section">
+          <OpportunityRadar data={getRadarData(data)} />
+        </div>
+      )}
+
       {/* Main Content Grid */}
       <div className="dashboard-grid">
         {/* Analysis Summary */}
         <div className="dashboard-section summary-section">
           <div className="section-header">
-            <h3 className="section-title">📋 Analysis Summary</h3>
+            <h3 className="section-title"><FaClipboardList style={{ marginRight: '8px' }} />Analysis Summary</h3>
           </div>
           <div className="section-content">
             <p className="summary-text">{data.summary}</p>
@@ -204,11 +241,7 @@ function Dashboard({ data }) {
         {/* Signals Detail */}
         <div className="dashboard-section signals-section">
           <div className="section-header">
-            <div className="section-title-group">
-              <h3 className="section-title">⚡ Signal Details</h3>
-              <span className="help-text" title="Technical indicators like momentum, volatility, and trend that trigger buy/hold/sell signals">ℹ️ Tech Signals</span>
-            </div>
-            <h3 className="section-title">🎯 Opportunity Radar - Signal Details</h3>
+            <h3 className="section-title"><FaBullseye style={{ marginRight: '8px' }} />Opportunity Radar - Signal Details</h3>
             <span className="signal-count">
               {data.signals_triggered.length}/{data.signal_details.length} Triggered
             </span>
@@ -222,7 +255,7 @@ function Dashboard({ data }) {
                 <div className="signal-header">
                   <div className="signal-name-group">
                     <span className={`signal-indicator ${signal.triggered ? 'active' : 'inactive'}`}>
-                      {signal.triggered ? '✓' : '○'}
+                      {signal.triggered ? <FaCheckCircle /> : '○'}
                     </span>
                     <span className="signal-name">{signal.name}</span>
                   </div>
@@ -243,13 +276,13 @@ function Dashboard({ data }) {
         {/* Triggered Signals Summary */}
         <div className="dashboard-section triggered-section">
           <div className="section-header">
-            <h3 className="section-title">✓ Triggered Signals</h3>
+            <h3 className="section-title"><FaCheckCircle style={{ marginRight: '8px' }} />Triggered Signals</h3>
           </div>
           <div className="triggered-list">
             {data.signals_triggered.length > 0 ? (
               data.signals_triggered.map((signal, idx) => (
                 <div key={idx} className="triggered-item">
-                  <span className="triggered-badge">✓</span>
+                  <span className="triggered-badge"><FaCheckCircle style={{ marginRight: '6px' }} /></span>
                   <span className="triggered-name">{signal}</span>
                 </div>
               ))
@@ -259,59 +292,10 @@ function Dashboard({ data }) {
           </div>
         </div>
 
-        {/* Why Different Responses - Explanation */}
-        <div className="dashboard-section comparison-section">
-          <div className="section-header">
-            <h3 className="section-title">🤔 Why Different Responses?</h3>
-          </div>
-          <div className="section-content">
-            <p className="comparison-intro">Signal Details and Chart Patterns use different analysis approaches, so they may provide different recommendations:</p>
-            <table className="comparison-table">
-              <thead>
-                <tr>
-                  <th>Factor</th>
-                  <th>{' '}⚡Signals</th>
-                  <th>📊 Patterns</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="factor-label">Analysis Type</td>
-                  <td>Short-term indicators</td>
-                  <td>Long-term trends</td>
-                </tr>
-                <tr>
-                  <td className="factor-label">Data Used</td>
-                  <td>Last 10-20 days</td>
-                  <td>1 year history</td>
-                </tr>
-                <tr>
-                  <td className="factor-label">Reasoning</td>
-                  <td>Current momentum</td>
-                  <td>Historical patterns</td>
-                </tr>
-                <tr>
-                  <td className="factor-label">Actions Available</td>
-                  <td>BUY, HOLD, PASS</td>
-                  <td>BUY, SELL, HOLD, WAIT ✅</td>
-                </tr>
-              </tbody>
-            </table>
-            <p className="comparison-note">💡 <strong>Tip:</strong> For best results, consider both perspectives when making trading decisions. Signals show immediate opportunities, while patterns reveal proven historical strategies.</p>
-          </div>
-        </div>
-
-        {/* Chart Patterns Analysis Section */}
-        {data.chart_patterns && (
-          <div className="dashboard-section chart-patterns-section">
-            <ChartPatterns patterns={data.chart_patterns} />
-          </div>
-        )}
-
         {/* News Sentiment Section */}
         <div className="dashboard-section news-sentiment-section">
           <div className="section-header">
-            <h3 className="section-title">📰 News Sentiment</h3>
+            <h3 className="section-title"><FaNewspaper style={{ marginRight: '8px' }} />News Sentiment</h3>
             {data.news_sentiment && (
               <span className={`sentiment-badge sentiment-${data.news_sentiment.sentiment_label.toLowerCase()}`}>
                 {data.news_sentiment.sentiment_label}
@@ -368,7 +352,7 @@ function Dashboard({ data }) {
         {/* Event Signals Section */}
         <div className="dashboard-section event-signals-section">
           <div className="section-header">
-            <h3 className="section-title">⚡ Event Signals</h3>
+            <h3 className="section-title"><FaBolt style={{ marginRight: '8px' }} />Event Signals</h3>
             {data.event_signals && data.event_signals.events_detected && (
               <span className="event-count">
                 {data.event_signals.events_detected.length} Event(s)
@@ -382,10 +366,10 @@ function Dashboard({ data }) {
                 <div className="event-header">
                   <div className="event-name-group">
                     <span className={`event-indicator ${data.event_signals.price_spike.detected ? 'active' : 'inactive'}`}>
-                      {data.event_signals.price_spike.detected ? '⚠' : '○'}
+                      {data.event_signals.price_spike.detected ? <FaBolt /> : '○'}
                     </span>
                     <div className="event-title-group">
-                      <span className="event-name">⚡ Price Spike Detected</span>
+                      <span className="event-name"><FaBolt style={{ marginRight: '6px' }} />Price Spike Detected</span>
                       <span className="event-desc">(Short-term momentum indicator)</span>
                     </div>
                   </div>
@@ -403,10 +387,10 @@ function Dashboard({ data }) {
                 <div className="event-header">
                   <div className="event-name-group">
                     <span className={`event-indicator ${data.event_signals.volume_surge.detected ? 'active' : 'inactive'}`}>
-                      {data.event_signals.volume_surge.detected ? '📊' : '○'}
+                      {data.event_signals.volume_surge.detected ? <FaChartBar /> : '○'}
                     </span>
                     <div className="event-title-group">
-                      <span className="event-name">📊 Volume Surge Detected</span>
+                      <span className="event-name"><FaChartBar style={{ marginRight: '6px' }} />Volume Surge Detected</span>
                       <span className="event-desc">(Institutional or retail buying pressure)</span>
                     </div>
                   </div>
@@ -443,12 +427,13 @@ function Dashboard({ data }) {
             <p className="no-data">No event data available</p>
           )}
         </div>
+
+        {/* Chart Patterns Section */}
+        {data.chart_patterns && <ChartPatterns patterns={data.chart_patterns} />}
       </div>
 
       {/* Watchlist Section */}
       <Watchlist />
-      <Portfolio />
-      <VideoEngine />
     </div>
   )
 }

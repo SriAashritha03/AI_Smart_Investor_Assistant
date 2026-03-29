@@ -1,4 +1,5 @@
 import React from 'react'
+import { FaExclamationTriangle } from 'react-icons/fa'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Header from './components/Header/Header'
 import StockSelector from './components/StockSelector/StockSelector'
@@ -6,8 +7,11 @@ import Dashboard from './components/Dashboard/Dashboard'
 import AlertsModal from './components/AlertsModal/AlertsModal'
 import DashboardPage from './components/DashboardPage/DashboardPage'
 import ChatPage from './components/ChatPage/ChatPage'
+import PortfolioPage from './components/PortfolioPage/PortfolioPage'
+import VideoEnginePage from './components/VideoEnginePage/VideoEnginePage'
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
-import { healthCheck } from './services/stockApi'
+import { healthCheck, analyzeStock } from './services/stockApi'
+import { getDemoResponse } from './constants/mockData'
 import './App.css'
 
 function App() {
@@ -15,6 +19,9 @@ function App() {
   const [demoMode, setDemoMode] = React.useState(true) // Demo mode ON by default
   const [isAlertsOpen, setIsAlertsOpen] = React.useState(false)
   const [error, setError] = React.useState(null)
+  const [selectedStock, setSelectedStock] = React.useState('AAPL')
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [analysisData, setAnalysisData] = React.useState(null)
 
   // Check if backend is running on mount
   React.useEffect(() => {
@@ -67,8 +74,10 @@ function App() {
           signal_details: result.signal_details,
           summary: result.summary,
           data_points: result.data_points,
-          chart_patterns: result.chart_patterns, // Add chart patterns data
-          alerts: result.alerts, // Add alerts data
+          chart_patterns: result.chart_patterns,
+          news_sentiment: result.news_sentiment,
+          event_signals: result.event_signals,
+          alerts: result.alerts,
           isDemo: demoMode,
         })
       } else {
@@ -84,54 +93,14 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <div className="app">
-        <Header 
-          demoMode={demoMode} 
-          onDemoModeChange={setDemoMode}
-          alerts={analysisData?.alerts || []}
-          onAlertsToggle={() => setIsAlertsOpen(!isAlertsOpen)}
-        />
-        <main className="app-main">
-          <StockSelector 
-            selectedStock={selectedStock} 
-            onSelectStock={handleStockSelect}
-            onAnalyze={handleAnalyze}
-            isLoading={isLoading}
-            isBackendReady={isBackendReady}
-          />
-          
-          {/* Error Message */}
-          {error && (
-            <div className="error-message">
-              <span>⚠️ {error}</span>
-              {error.includes('not running') && (
-                <small>Backend API should be running on http://localhost:8000</small>
-              )}
-            </div>
-          )}
-
-          {/* Loading Spinner */}
-          {isLoading && (
-            <div className="loading-overlay">
-              <div className="spinner"></div>
-              <p>Analyzing {selectedStock}...</p>
-            </div>
-          )}
-
-          {/* Dashboard Results */}
-          {analysisData && !isLoading && <Dashboard data={analysisData} />}
-        </main>
-
-        {/* Alerts Modal */}
-        <AlertsModal 
-          isOpen={isAlertsOpen}
-          alerts={analysisData?.alerts || []}
-          onClose={() => setIsAlertsOpen(false)}
-        />
-      </div>
       <Router>
         <div className="app">
-          <Header demoMode={demoMode} onDemoModeChange={setDemoMode} />
+          <Header 
+            demoMode={demoMode} 
+            onDemoModeChange={setDemoMode}
+            alerts={analysisData?.alerts || []}
+            onAlertsToggle={() => setIsAlertsOpen(!isAlertsOpen)}
+          />
           <main className="app-main">
             <Routes>
               <Route 
@@ -140,7 +109,7 @@ function App() {
                   <>
                     {error && (
                       <div className="error-message">
-                        <span>⚠️ {error}</span>
+                        <span><FaExclamationTriangle style={{ marginRight: '8px' }} />{error}</span>
                         {error.includes('not running') && (
                           <small>Backend API should be running on http://localhost:8000</small>
                         )}
@@ -151,6 +120,8 @@ function App() {
                 } 
               />
               <Route path="/chat" element={<ChatPage />} />
+              <Route path="/portfolio" element={<PortfolioPage />} />
+              <Route path="/video-engine" element={<VideoEnginePage />} />
             </Routes>
           </main>
         </div>

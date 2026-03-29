@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react'
+import { FaChartLine, FaChartBar } from 'react-icons/fa'
 import { 
   Chart as ChartJS, 
   CategoryScale, 
@@ -26,7 +27,7 @@ try {
     Legend, 
     Filler
   )
-  console.log('✅ Chart.js registered successfully')
+  console.log('Chart.js registered successfully')
 } catch (e) {
   console.warn('Chart.js already registered or registration error:', e.message)
 }
@@ -36,21 +37,21 @@ function StockChart({ stock, confidence, opportunityLevel }) {
   const chartRef = useRef(null)
 
   useEffect(() => {
-    console.log('🎯 StockChart useEffect running for stock:', stock)
+    console.log('StockChart useEffect running for stock:', stock)
     if (!canvasRef.current) {
-      console.error('❌ Canvas ref is null!')
+      console.error('Canvas ref is null!')
       return
     }
 
     // CRITICAL: Destroy existing chart BEFORE any canvas operations
     if (chartRef.current) {
       try {
-        console.log('🗑️ Destroying existing chart...')
+        console.log('Destroying existing chart...')
         chartRef.current.destroy()
         chartRef.current = null
-        console.log('✅ Chart destroyed successfully')
+        console.log('Chart destroyed successfully')
       } catch (e) {
-        console.error('⚠️ Error destroying chart:', e)
+        console.error('Error destroying chart:', e)
         chartRef.current = null
       }
     }
@@ -63,7 +64,7 @@ function StockChart({ stock, confidence, opportunityLevel }) {
     const ctx = canvas.getContext('2d')
     if (ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      console.log('🧹 Canvas cleared')
+      console.log('Canvas cleared')
     }
 
     // Set canvas display size explicitly
@@ -72,7 +73,7 @@ function StockChart({ stock, confidence, opportunityLevel }) {
       const rect = wrapper.getBoundingClientRect()
       canvas.width = rect.width - 24 // Subtract padding
       canvas.height = rect.height
-      console.log('📐 Canvas size set to:', canvas.width, 'x', canvas.height)
+      console.log('Canvas size set to:', canvas.width, 'x', canvas.height)
     }
 
     // Generate mock price data for demonstration
@@ -105,7 +106,7 @@ function StockChart({ stock, confidence, opportunityLevel }) {
     }
 
     const { labels, prices } = generateMockPriceData(stock)
-    console.log('✅ Generated mock data - labels:', labels.length, 'prices:', prices)
+    console.log('Generated mock data - labels:', labels.length, 'prices:', prices)
 
     // Color based on opportunity level
     const getChartColors = (level) => {
@@ -125,13 +126,13 @@ function StockChart({ stock, confidence, opportunityLevel }) {
 
     try {
       const ctx = canvasRef.current.getContext('2d')
-      console.log('🎨 Got canvas context:', !!ctx)
+      console.log('Got canvas context:', !!ctx)
       if (!ctx) {
-        console.error('❌ Failed to get canvas context')
+        console.error('Failed to get canvas context')
         return
       }
 
-      console.log('🚀 Creating Chart.js instance with type: line')
+      console.log('Creating Chart.js instance with type: line')
 
       chartRef.current = new ChartJS(ctx, {
         type: 'line',
@@ -218,7 +219,7 @@ function StockChart({ stock, confidence, opportunityLevel }) {
     }
 
     return () => {
-      console.log('🧹 Cleanup: destroying chart on unmount/dependency change')
+      console.log('Cleanup: destroying chart on unmount/dependency change')
       if (chartRef.current) {
         try {
           chartRef.current.destroy()
@@ -233,7 +234,7 @@ function StockChart({ stock, confidence, opportunityLevel }) {
   return (
     <div className="stock-chart-container">
       <div className="chart-header">
-        <h3 className="chart-title">📈 {stock} Price Trend (30 Days)</h3>
+        <h3 className="chart-title"><FaChartLine style={{ marginRight: '8px' }} />{stock} Price Trend (30 Days)</h3>
         <div className="chart-meta">
           <span className="meta-item">
             <span className="meta-label">Confidence:</span>
@@ -249,7 +250,7 @@ function StockChart({ stock, confidence, opportunityLevel }) {
         <canvas ref={canvasRef}></canvas>
       </div>
       <div className="chart-footer">
-        <p className="chart-note">📊 Chart shows historical price movement with trend analysis</p>
+        <p className="chart-note"><FaChartBar style={{ marginRight: '8px' }} />Chart shows historical price movement with trend analysis</p>
       </div>
     </div>
   )

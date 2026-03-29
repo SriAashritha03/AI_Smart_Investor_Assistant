@@ -1,22 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { FaChartBar, FaTrash } from "react-icons/fa";
 import { analyzePortfolio } from "../../services/api";
+import { getAvailableStocks } from "../../services/stockApi";
 import "./Portfolio.css";
 
 function Portfolio() {
   const [selectedStock, setSelectedStock] = useState("");
   const [stocks, setStocks] = useState([]);
+  const [availableStocks, setAvailableStocks] = useState([]);
+  const [stocksLoading, setStocksLoading] = useState(true);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // 👉 Dropdown options (can later come from API)
-  const STOCK_OPTIONS = [
-    "AAPL",
-    "RELIANCE.NS",
-    "TCS.NS",
-    "INFY.NS",
-    "MSFT",
-    "TSLA"
-  ];
+  // Fetch available stocks on mount
+  useEffect(() => {
+    const fetchStocks = async () => {
+      try {
+        const response = await getAvailableStocks();
+        setAvailableStocks(response.stocks || []);
+      } catch (error) {
+        console.error('Failed to fetch stocks:', error);
+        // Fallback to default stocks if API fails
+        setAvailableStocks([
+          { symbol: 'AAPL', name: 'Apple Inc.' },
+          { symbol: 'RELIANCE.NS', name: 'Reliance Industries' },
+          { symbol: 'TCS.NS', name: 'Tata Consultancy Services' },
+          { symbol: 'INFY.NS', name: 'Infosys Limited' },
+          { symbol: 'MSFT', name: 'Microsoft Corporation' },
+          { symbol: 'TSLA', name: 'Tesla Inc.' },
+        ]);
+      } finally {
+        setStocksLoading(false);
+      }
+    };
+
+    fetchStocks();
+  }, []);
 
   // ➕ Add stock
   const addStock = () => {
@@ -55,8 +74,8 @@ function Portfolio() {
 
       {/* HEADER */}
       <div className="portfolio-header">
-        <h3>📊 Portfolio Analyzer</h3>
-        <span className="info-subtitle">Select stocks & analyze</span>
+        <h3><FaChartBar style={{ marginRight: '8px' }} />Portfolio Analyzer</h3>
+        <span className="info-subtitle">Select stocks & analyze ({availableStocks.length} available)</span>
       </div>
 
       {/* DROPDOWN */}
@@ -64,11 +83,12 @@ function Portfolio() {
         <select
           value={selectedStock}
           onChange={(e) => setSelectedStock(e.target.value)}
+          disabled={stocksLoading}
         >
-          <option value="">Select Stock</option>
-          {STOCK_OPTIONS.map((stock) => (
-            <option key={stock} value={stock}>
-              {stock}
+          <option value="">{stocksLoading ? 'Loading stocks...' : 'Select Stock'}</option>
+          {availableStocks.map((stock) => (
+            <option key={stock.symbol} value={stock.symbol}>
+              {stock.symbol} - {stock.name || ''}
             </option>
           ))}
         </select>
@@ -81,7 +101,7 @@ function Portfolio() {
         {stocks.map((stock) => (
           <div key={stock} className="stock-chip">
             {stock}
-            <span onClick={() => removeStock(stock)}>✕</span>
+            <span onClick={() => removeStock(stock)}><FaTrash style={{ fontSize: '0.8em' }} /></span>
           </div>
         ))}
       </div>

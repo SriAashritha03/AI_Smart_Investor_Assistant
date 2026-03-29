@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { FaComments, FaTrash, FaRobot, FaUser, FaExclamationCircle } from 'react-icons/fa'
 import './ChatComponent.css'
 
 function ChatComponent({ onSendMessage }) {
@@ -87,7 +88,7 @@ function ChatComponent({ onSendMessage }) {
       const errorMessage = {
         id: messages.length + 2,
         role: 'bot',
-        text: `❌ Error: ${error.message || 'Unable to process your request'}`
+        text: `Error: ${error.message || 'Unable to process your request'}`
       }
       setMessages(prev => [...prev, errorMessage])
     } finally {
@@ -119,14 +120,14 @@ function ChatComponent({ onSendMessage }) {
     <div className="chat-container">
       {/* Chat Header */}
       <div className="chat-header">
-        <h3 className="chat-title">💬 Financial Assistant</h3>
+        <h3 className="chat-title"><FaComments style={{ marginRight: '8px' }} />Financial Assistant</h3>
         <p className="chat-subtitle">Ask anything about stocks & portfolios</p>
         <button 
           onClick={clearChatHistory} 
           className="clear-chat-btn"
           title="Clear chat history"
         >
-          🗑️
+          <FaTrash />
         </button>
       </div>
 
@@ -138,14 +139,14 @@ function ChatComponent({ onSendMessage }) {
             className={`chat-message ${message.role === 'user' ? 'user-message' : 'bot-message'}`}
           >
             <div className={`message-bubble ${message.role}`}>
-              {message.role === 'bot' && <span className="message-avatar">🤖</span>}
+              {message.role === 'bot' && <span className="message-avatar"><FaRobot /></span>}
               <div className="message-text">
                 {/* Render message text with newlines preserved */}
                 {message.text.split('\n').map((line, idx) => (
                   <div key={idx}>{line}</div>
                 ))}
               </div>
-              {message.role === 'user' && <span className="message-avatar">👤</span>}
+              {message.role === 'user' && <span className="message-avatar"><FaUser /></span>}
             </div>
           </div>
         ))}

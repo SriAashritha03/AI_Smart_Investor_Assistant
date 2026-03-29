@@ -1,33 +1,51 @@
 import React, { useState, useEffect } from 'react'
+import { FaEye, FaChartBar, FaCircle } from 'react-icons/fa'
 import { getDemoResponse } from '../../constants/mockData'
+import { getAvailableStocks } from '../../services/stockApi'
 import './Watchlist.css'
 
 function Watchlist() {
   const [watchlistData, setWatchlistData] = useState([])
   const [loading, setLoading] = useState(true)
 
-  const WATCHLIST_STOCKS = ['AAPL', 'RELIANCE.NS', 'TCS.NS', 'INFY.NS', 'MSFT', 'TSLA']
-
   useEffect(() => {
     const loadWatchlistData = async () => {
       setLoading(true)
       try {
-        // Get demo responses for all stocks in watchlist
-        const data = WATCHLIST_STOCKS.map(ticker => {
-          const response = getDemoResponse(ticker)
+        // Fetch available stocks from API
+        const response = await getAvailableStocks()
+        const availableStocks = (response.stocks || []).map(s => s.symbol)
+        
+        // Get demo responses for all available stocks
+        const data = availableStocks.map(ticker => {
+          const demoResponse = getDemoResponse(ticker)
           return {
             stock: ticker,
-            opportunity_level: response.opportunity_level,
-            confidence: response.confidence,
-            action: response.action,
-            signals_triggered: response.signals_triggered.length,
-            total_signals: response.signal_details.length
+            opportunity_level: demoResponse.opportunity_level,
+            confidence: demoResponse.confidence,
+            action: demoResponse.action,
+            signals_triggered: demoResponse.signals_triggered.length,
+            total_signals: demoResponse.signal_details.length
           }
         })
 
         setWatchlistData(data)
       } catch (error) {
         console.error('Error loading watchlist:', error)
+        // Fallback to default stocks if API fails
+        const defaultStocks = ['AAPL', 'RELIANCE.NS', 'TCS.NS', 'INFY.NS', 'MSFT', 'TSLA']
+        const fallbackData = defaultStocks.map(ticker => {
+          const demoResponse = getDemoResponse(ticker)
+          return {
+            stock: ticker,
+            opportunity_level: demoResponse.opportunity_level,
+            confidence: demoResponse.confidence,
+            action: demoResponse.action,
+            signals_triggered: demoResponse.signals_triggered.length,
+            total_signals: demoResponse.signal_details.length
+          }
+        })
+        setWatchlistData(fallbackData)
       } finally {
         setLoading(false)
       }
@@ -108,7 +126,7 @@ function Watchlist() {
   return (
     <div className="watchlist-container">
       <div className="watchlist-header">
-        <h3 className="watchlist-title">👀 Watchlist</h3>
+        <h3 className="watchlist-title"><FaEye style={{ marginRight: '8px' }} />Watchlist</h3>
         <div className="watchlist-info">
           <span className="info-badge">{watchlistData.length} Stocks</span>
           <span className="info-subtitle">Real-time Analysis</span>
@@ -131,7 +149,7 @@ function Watchlist() {
               <tr key={idx} className="table-body-row">
                 <td className="cell-stock">
                   <div className="stock-info">
-                    <span className="stock-icon">📊</span>
+                    <span className="stock-icon"><FaChartBar /></span>
                     <span className="stock-name">{item.stock}</span>
                   </div>
                 </td>
@@ -195,10 +213,10 @@ function Watchlist() {
           <div className="legend-item">
             <span className="legend-label">Opportunity Levels:</span>
             <span className="legend-values">
-              <span className="legend-value" style={{ color: '#10b981' }}>🟢 Strong</span>
-              <span className="legend-value" style={{ color: '#f59e0b' }}>🟡 Moderate</span>
-              <span className="legend-value" style={{ color: '#3b82f6' }}>🔵 Weak</span>
-              <span className="legend-value" style={{ color: '#6b7280' }}>⚪ None</span>
+              <span className="legend-value" style={{ color: '#10b981' }}><FaCircle style={{ marginRight: '4px' }} />Strong</span>
+              <span className="legend-value" style={{ color: '#f59e0b' }}><FaCircle style={{ marginRight: '4px' }} />Moderate</span>
+              <span className="legend-value" style={{ color: '#3b82f6' }}><FaCircle style={{ marginRight: '4px' }} />Weak</span>
+              <span className="legend-value" style={{ color: '#6b7280' }}><FaCircle style={{ marginRight: '4px' }} />None</span>
             </span>
           </div>
           <div className="legend-item">

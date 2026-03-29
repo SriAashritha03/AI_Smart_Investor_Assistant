@@ -1,11 +1,10 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { FaChartBar, FaChartLine, FaComments, FaFilm, FaBell, FaMask } from 'react-icons/fa'
 import './Header.css'
 
 function Header({ demoMode = true, onDemoModeChange = () => {}, alerts = [], onAlertsToggle = () => {} }) {
   const criticalCount = alerts.filter((a) => a.severity === 'CRITICAL').length
-  
-function Header({ demoMode = true, onDemoModeChange = () => {} }) {
   const location = useLocation()
 
   const isActive = (path) => location.pathname === path ? 'active' : ''
@@ -15,7 +14,7 @@ function Header({ demoMode = true, onDemoModeChange = () => {} }) {
       <div className="header-content">
         <div className="header-left">
           <h1 className="header-title">
-            <span className="title-icon">📊</span>
+            <span className="title-icon"><FaChartBar /></span>
             AI Smart Investor Assistant
           </h1>
           <p className="header-subtitle">Technical Signal Analysis & Opportunity Detection</p>
@@ -24,10 +23,16 @@ function Header({ demoMode = true, onDemoModeChange = () => {} }) {
         {/* Navigation Bar */}
         <nav className="navbar">
           <Link to="/" className={`nav-link ${isActive('/')}`}>
-            📈 Dashboard
+            <FaChartLine style={{ marginRight: '8px' }} /> Dashboard
           </Link>
           <Link to="/chat" className={`nav-link ${isActive('/chat')}`}>
-            💬 Chat
+            <FaComments style={{ marginRight: '8px' }} /> Chat
+          </Link>
+          <Link to="/portfolio" className={`nav-link ${isActive('/portfolio')}`}>
+            <FaChartBar style={{ marginRight: '8px' }} /> Portfolio
+          </Link>
+          <Link to="/video-engine" className={`nav-link ${isActive('/video-engine')}`}>
+            <FaFilm style={{ marginRight: '8px' }} /> Video Engine
           </Link>
         </nav>
 
@@ -38,7 +43,7 @@ function Header({ demoMode = true, onDemoModeChange = () => {} }) {
             onClick={onAlertsToggle}
             title={`${alerts.length} alerts`}
           >
-            <span className="bell-icon">🔔</span>
+            <span className="bell-icon"><FaBell /></span>
             {alerts.length > 0 && (
               <span className="notification-badge">
                 {alerts.length > 9 ? '9+' : alerts.length}
@@ -62,7 +67,7 @@ function Header({ demoMode = true, onDemoModeChange = () => {} }) {
               <span className="demo-toggle-switch"></span>
               <span className="demo-toggle-text">Demo Mode</span>
             </label>
-            {demoMode && <span className="demo-badge">🎭 Demo Active</span>}
+            {demoMode && <span className="demo-badge"><FaMask style={{ marginRight: '6px' }} />Demo Active</span>}
           </div>
 
           {/* Status Indicator */}
