@@ -24,48 +24,45 @@ function VideoEngine() {
         `http://localhost:8000/generate-video?ticker=${ticker}`
       );
 
-      // ✅ check response
-      if (!response.ok) {
-        throw new Error("Server error");
-      }
-
-      // ✅ convert to blob
+      if (!response.ok) throw new Error("Server error");
       const blob = await response.blob();
-
-      // ✅ create URL
       const url = URL.createObjectURL(blob);
-
       setVideoUrl(url);
 
     } catch (err) {
       console.error(err);
-      alert("Failed to generate video");
+      alert("Terminal Error: Synthesis protocol failed. Check backend connectivity.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
     <div className="video-container">
-
       {/* HEADER */}
       <div className="video-header">
-        <h3>🎬 AI Market Video Engine</h3>
+        <h3>
+          <span className="material-symbols-outlined" style={{ color: 'var(--primary)' }}>videocam</span>
+          AI Market Synthesis
+        </h3>
         <span className="video-subtitle">
-          Auto-generate market insights video
+          Generate Dynamic Intelligence Visualisation
         </span>
       </div>
 
       {/* CONTROLS */}
       <div className="video-controls">
-        <select value={ticker} onChange={(e) => setTicker(e.target.value)}>
+        <select value={ticker} onChange={(e) => setTicker(e.target.value)} disabled={loading}>
           {STOCKS.map((s) => (
             <option key={s}>{s}</option>
           ))}
         </select>
 
-        <button onClick={generateVideo}>
-          Generate Video
+        <button onClick={generateVideo} disabled={loading}>
+          <span className="material-symbols-outlined">
+            {loading ? 'sync' : 'movie_filter'}
+          </span>
+          {loading ? 'Synthesizing...' : 'Generate Matrix'}
         </button>
       </div>
 
@@ -73,7 +70,9 @@ function VideoEngine() {
       {loading && (
         <div className="video-loading">
           <div className="spinner"></div>
-          <p>Generating AI video...</p>
+          <p style={{ color: 'var(--on-surface-variant)', fontSize: '14px' }}>
+            Compiling market data & rendering visualisation streams...
+          </p>
         </div>
       )}
 
@@ -82,12 +81,8 @@ function VideoEngine() {
         <div className="video-player">
           <video
             controls
+            autoPlay
             src={videoUrl}
-            style={{
-              width: "100%",
-              maxHeight: "400px",
-              background: "black"
-            }}
           />
         </div>
       )}

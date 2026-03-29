@@ -2,43 +2,25 @@ import React from 'react'
 import './AlertsModal.css'
 
 function AlertsModal({ isOpen, alerts = [], onClose }) {
-  if (!isOpen) {
-    return null
-  }
+  if (!isOpen) return null
 
-  const getSeverityColor = (severity) => {
+  const getSeverityClass = (severity) => {
     switch (severity) {
-      case 'CRITICAL':
-        return '#ef4444'
-      case 'WARNING':
-        return '#f59e0b'
-      case 'SUCCESS':
-        return '#10b981'
-      case 'INFO':
-      default:
-        return '#3b82f6'
-    }
-  }
-
-  const getSeverityStyle = (severity) => {
-    const baseColor = getSeverityColor(severity)
-    return {
-      borderLeftColor: baseColor,
+      case 'CRITICAL': return 'alert-critical';
+      case 'WARNING':  return 'alert-warning';
+      case 'SUCCESS':  return 'alert-success';
+      case 'INFO':     return 'alert-info';
+      default:         return '';
     }
   }
 
   const getActionBadgeColor = (action) => {
     switch (action) {
-      case 'BUY':
-        return '#10b981'
-      case 'SELL':
-        return '#ef4444'
-      case 'HOLD':
-        return '#f59e0b'
-      case 'WATCH':
-        return '#3b82f6'
-      default:
-        return '#6b7280'
+      case 'BUY':    return 'var(--secondary)';
+      case 'SELL':   return 'var(--tertiary-container)';
+      case 'HOLD':   return 'var(--primary-fixed-dim)';
+      case 'WATCH':  return 'var(--primary)';
+      default:       return 'var(--outline)';
     }
   }
 
@@ -47,49 +29,36 @@ function AlertsModal({ isOpen, alerts = [], onClose }) {
 
   return (
     <>
-      {/* Backdrop */}
       <div className="alerts-modal-backdrop" onClick={onClose}></div>
 
-      {/* Modal */}
       <div className="alerts-modal">
-        {/* Modal Header */}
         <div className="alerts-modal-header">
           <div className="alerts-modal-title-group">
-            <h2 className="alerts-modal-title">📢 Smart Alerts</h2>
-            <span className="alerts-modal-badge">{alerts.length}</span>
-            {criticalCount > 0 && (
-              <span className="alerts-modal-critical-badge">🔴 {criticalCount}</span>
-            )}
-            {warningCount > 0 && (
-              <span className="alerts-modal-warning-badge">🟠 {warningCount}</span>
-            )}
+            <span className="material-symbols-outlined" style={{ color: 'var(--primary)' }}>campaign</span>
+            <h2 className="alerts-modal-title">System Alerts</h2>
+            <span className="alerts-modal-badge">{alerts.length} Active</span>
           </div>
           <button className="alerts-modal-close" onClick={onClose}>
-            ✕
+            <span className="material-symbols-outlined">close</span>
           </button>
         </div>
 
-        {/* Alerts Content */}
         <div className="alerts-modal-content">
           {alerts.length === 0 ? (
             <div className="alerts-empty">
-              <span className="empty-icon">😊</span>
-              <p>No alerts at this time. Everything looks good!</p>
+              <span className="material-symbols-outlined empty-icon">check_circle</span>
+              <p>No active alerts detected. Monitoring market feeds...</p>
             </div>
           ) : (
             <div className="alerts-modal-list">
               {alerts.map((alert, idx) => (
-                <div
-                  key={idx}
-                  className={`alerts-modal-item alert-${alert.severity.toLowerCase()}`}
-                  style={getSeverityStyle(alert.severity)}
-                >
+                <div key={idx} className={`alerts-modal-item ${getSeverityClass(alert.severity)}`}>
                   <div className="alert-modal-header-item">
                     <div className="alert-modal-title-text">{alert.title}</div>
                     {alert.action && (
                       <span
                         className="alert-modal-action-badge"
-                        style={{ backgroundColor: getActionBadgeColor(alert.action) }}
+                        style={{ background: getActionBadgeColor(alert.action), color: 'var(--on-primary)' }}
                       >
                         {alert.action}
                       </span>
@@ -97,14 +66,9 @@ function AlertsModal({ isOpen, alerts = [], onClose }) {
                   </div>
                   <p className="alert-modal-message">{alert.message}</p>
                   <div className="alert-modal-footer">
-                    {alert.timestamp && (
-                      <span className="alert-modal-timestamp">
-                        ⏱️ {new Date(alert.timestamp).toLocaleTimeString()}
-                      </span>
-                    )}
-                    <span className="alert-modal-type">
-                      {alert.alert_type}
-                    </span>
+                    <span className="material-symbols-outlined" style={{ fontSize: '12px', marginRight: '4px' }}>schedule</span>
+                    {alert.timestamp ? new Date(alert.timestamp).toLocaleTimeString() : 'Live'}
+                    <span style={{ marginLeft: 'auto' }}>{alert.alert_type}</span>
                   </div>
                 </div>
               ))}
@@ -112,7 +76,6 @@ function AlertsModal({ isOpen, alerts = [], onClose }) {
           )}
         </div>
 
-        {/* Modal Stats */}
         <div className="alerts-modal-stats">
           <div className="modal-stat-item">
             <span className="modal-stat-label">Critical</span>

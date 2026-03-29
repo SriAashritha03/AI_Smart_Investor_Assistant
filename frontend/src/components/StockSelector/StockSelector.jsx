@@ -16,10 +16,10 @@ function StockSelector({ selectedStock, onSelectStock, onAnalyze, isLoading = fa
         console.error('Failed to fetch stocks:', error)
         // Fallback to default stocks if API fails
         setStocks([
-          { symbol: 'AAPL', name: 'Apple Inc.' },
-          { symbol: 'RELIANCE.NS', name: 'Reliance Industries' },
-          { symbol: 'TCS.NS', name: 'Tata Consultancy Services' },
-          { symbol: 'INFY.NS', name: 'Infosys Limited' },
+          { symbol: 'AAPL', name: 'Apple Inc.', market: 'US' },
+          { symbol: 'RELIANCE.NS', name: 'Reliance Industries', market: 'IN' },
+          { symbol: 'TCS.NS', name: 'Tata Consultancy Services', market: 'IN' },
+          { symbol: 'INFY.NS', name: 'Infosys Limited', market: 'IN' },
         ])
       } finally {
         setStocksLoading(false)
@@ -37,68 +37,46 @@ function StockSelector({ selectedStock, onSelectStock, onAnalyze, isLoading = fa
 
   return (
     <div className="stock-selector-container">
-      <div className="stock-selector">
-        <div className="selector-header">
-          <h2 className="selector-title">Stock Selection</h2>
-          <p className="selector-subtitle">Choose from {stocks.length} available stocks for analysis</p>
-        </div>
+      {/* Page Title Section */}
+      <div className="selector-header">
+        <h1 className="selector-title">Market Overview</h1>
+        <p className="selector-subtitle">Active Asset Terminal • Intelligence Center</p>
+      </div>
 
-        <div className="selector-controls">
-          <div className="control-group">
-            <label htmlFor="stock-dropdown" className="control-label">
-              Select Stock ({stocks.length})
-            </label>
-            <select
-              id="stock-dropdown"
-              className="stock-dropdown"
-              value={selectedStock}
-              onChange={(e) => onSelectStock(e.target.value)}
-              disabled={isLoading || stocksLoading}
-            >
-              {stocks.length === 0 ? (
-                <option>Loading stocks...</option>
-              ) : (
-                stocks.map((stock) => (
-                  <option key={stock.symbol} value={stock.symbol}>
-                    {stock.symbol} - {stock.name} ({stock.market})
-                  </option>
-                ))
-              )}
-            </select>
-            <span className="dropdown-icon">▼</span>
-          </div>
-
-          <button 
-            className={`analyze-button ${isButtonDisabled ? 'disabled' : ''}`}
-            onClick={onAnalyze}
-            disabled={isButtonDisabled}
-            title={!isBackendReady ? 'Backend API is not running' : isLoading ? 'Analyzing...' : 'Click to analyze'}
+      {/* Selector Controls Row */}
+      <div className="selector-controls">
+        <div className="control-group">
+          <select
+            id="stock-dropdown"
+            className="stock-dropdown"
+            value={selectedStock}
+            onChange={(e) => onSelectStock(e.target.value)}
+            disabled={isLoading || stocksLoading}
           >
-            <span className="button-icon">{isLoading ? '⏳' : '⚡'}</span>
-            <span className="button-text">{isLoading ? 'Analyzing...' : 'Analyze Stock'}</span>
-          </button>
+            {stocks.length === 0 ? (
+              <option>Loading available assets...</option>
+            ) : (
+              stocks.map((stock) => (
+                <option key={stock.symbol} value={stock.symbol}>
+                  {stock.symbol} — {stock.name}
+                </option>
+              ))
+            )}
+          </select>
+          <span className="material-symbols-outlined dropdown-icon">expand_more</span>
         </div>
 
-        <div className="stock-info">
-          <div className="info-item">
-            <span className="info-label">Current Selection</span>
-            <span className="info-value">{selectedStock}</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Data Period</span>
-            <span className="info-value">6 Months</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Analysis Type</span>
-            <span className="info-value">Technical Signals</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Backend Status</span>
-            <span className={`info-value ${isBackendReady ? 'status-ready' : 'status-error'}`}>
-              {isBackendReady ? '🟢 Connected' : '🔴 Disconnected'}
-            </span>
-          </div>
-        </div>
+        <button 
+          className={`analyze-button ${isButtonDisabled ? 'disabled' : ''}`}
+          onClick={onAnalyze}
+          disabled={isButtonDisabled}
+          title={!isBackendReady ? 'Backend API is not running' : isLoading ? 'Analyzing...' : 'Run Analysis'}
+        >
+          <span className="material-symbols-outlined button-icon">
+            {isLoading ? 'progress_activity' : 'analytics'}
+          </span>
+          <span className="button-text">{isLoading ? 'Analysing...' : 'Run Analysis'}</span>
+        </button>
       </div>
     </div>
   )

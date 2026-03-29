@@ -2,6 +2,7 @@ import React from 'react'
 import { FaExclamationTriangle } from 'react-icons/fa'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Header from './components/Header/Header'
+import Sidebar from './components/Sidebar/Sidebar'
 import StockSelector from './components/StockSelector/StockSelector'
 import Dashboard from './components/Dashboard/Dashboard'
 import AlertsModal from './components/AlertsModal/AlertsModal'
@@ -95,12 +96,26 @@ function App() {
     <ErrorBoundary>
       <Router>
         <div className="app">
+          {/* Persistent Sidebar (desktop) */}
+          <Sidebar />
+
+          {/* Top Header Bar */}
           <Header 
             demoMode={demoMode} 
             onDemoModeChange={setDemoMode}
             alerts={analysisData?.alerts || []}
             onAlertsToggle={() => setIsAlertsOpen(!isAlertsOpen)}
           />
+
+          {/* Alerts Modal */}
+          {isAlertsOpen && (
+            <AlertsModal
+              alerts={analysisData?.alerts || []}
+              onClose={() => setIsAlertsOpen(false)}
+            />
+          )}
+
+          {/* Main Content */}
           <main className="app-main">
             <Routes>
               <Route 
@@ -124,9 +139,36 @@ function App() {
               <Route path="/video-engine" element={<VideoEnginePage />} />
             </Routes>
           </main>
+
+          {/* Mobile Bottom Nav */}
+          <MobileBottomNav />
         </div>
       </Router>
     </ErrorBoundary>
+  )
+}
+
+/* ── Mobile Bottom Navigation (matches Stitch) ───────────────────────── */
+function MobileBottomNav() {
+  return (
+    <nav className="mobile-bottom-nav">
+      <a href="/" className="mobile-nav-btn mobile-nav-btn--active">
+        <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>dashboard</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="/chat" className="mobile-nav-btn">
+        <span className="material-symbols-outlined">chat_bubble</span>
+        <span>Chat</span>
+      </a>
+      <a href="/portfolio" className="mobile-nav-btn">
+        <span className="material-symbols-outlined">account_balance_wallet</span>
+        <span>Assets</span>
+      </a>
+      <a href="/video-engine" className="mobile-nav-btn">
+        <span className="material-symbols-outlined">videocam</span>
+        <span>Video</span>
+      </a>
+    </nav>
   )
 }
 

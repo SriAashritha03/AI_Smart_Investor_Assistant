@@ -1,16 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { FaComments, FaTrash, FaRobot, FaUser, FaExclamationCircle } from 'react-icons/fa'
 import './ChatComponent.css'
 
 function ChatComponent({ onSendMessage }) {
   const [messages, setMessages] = useState(() => {
-    // Load messages from localStorage on component mount
     const saved = localStorage.getItem('chat_history')
     return saved ? JSON.parse(saved) : [
       {
         id: 1,
         role: 'bot',
-        text: 'Hello! I\'m your Financial Assistant. Ask me about stocks, portfolio analysis, market trends, or investment strategies. How can I help you today?'
+        text: 'Hello! I\'m your Financial AI Assistant. How can I help you analyze the markets today?'
       }
     ]
   })
@@ -18,26 +16,16 @@ function ChatComponent({ onSendMessage }) {
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef(null)
 
-  // Save messages to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('chat_history', JSON.stringify(messages))
-  }, [messages])
-
-  // Auto-scroll to latest message
-  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  useEffect(() => {
-    scrollToBottom()
   }, [messages])
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return
 
-    // Add user message
     const userMessage = {
-      id: messages.length + 1,
+      id: Date.now(),
       role: 'user',
       text: inputValue
     }
@@ -48,49 +36,30 @@ function ChatComponent({ onSendMessage }) {
 
     try {
       let response = ''
-      
-      // Use provided handler or call backend API
       if (onSendMessage) {
         response = await onSendMessage(inputValue)
       } else {
-        // Call backend API
         const apiResponse = await fetch('http://localhost:8000/chat', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: inputValue })
         })
-        
-        if (!apiResponse.ok) {
-          const errorData = await apiResponse.json()
-          throw new Error(errorData.detail || `HTTP ${apiResponse.status}`)
-        }
-        
+        if (!apiResponse.ok) throw new Error(`HTTP ${apiResponse.status}`)
         const data = await apiResponse.json()
         response = data.reply
       }
       
-      if (!response) {
-        throw new Error('No response received')
-      }
-      
-      // Add bot response
-      const botMessage = {
-        id: messages.length + 2,
+      setMessages(prev => [...prev, {
+        id: Date.now() + 1,
         role: 'bot',
-        text: response
-      }
-      
-      setMessages(prev => [...prev, botMessage])
+        text: response || 'I couldn\'t process that request. Please try again.'
+      }])
     } catch (error) {
-      console.error('Chat error:', error)
-      const errorMessage = {
-        id: messages.length + 2,
+      setMessages(prev => [...prev, {
+        id: Date.now() + 1,
         role: 'bot',
-        text: `Error: ${error.message || 'Unable to process your request'}`
-      }
-      setMessages(prev => [...prev, errorMessage])
+        text: `Technical Error: ${error.message}`
+      }])
     } finally {
       setIsLoading(false)
     }
@@ -104,72 +73,102 @@ function ChatComponent({ onSendMessage }) {
   }
 
   const clearChatHistory = () => {
-    if (window.confirm('Are you sure? This will clear all chat history.')) {
-      setMessages([
-        {
-          id: 1,
-          role: 'bot',
-          text: 'Hello! I\'m your Financial Assistant. Ask me about stocks, portfolio analysis, market trends, or investment strategies. How can I help you today?'
-        }
-      ])
+    if (window.confirm('Clear all conversation history?')) {
+      setMessages([{
+        id: 1,
+        role: 'bot',
+        text: 'System cleared. How can I help you analyze the markets?'
+      }])
       localStorage.removeItem('chat_history')
     }
   }
 
   return (
     <div className="chat-container">
-      {/* Chat Header */}
       <div className="chat-header">
-        <h3 className="chat-title"><FaComments style={{ marginRight: '8px' }} />Financial Assistant</h3>
-        <p className="chat-subtitle">Ask anything about stocks & portfolios</p>
-        <button 
-          onClick={clearChatHistory} 
-          className="clear-chat-btn"
-          title="Clear chat history"
-        >
-          <FaTrash />
+        <span className="material-symbols-outlined chat-header-icon" style={{ fontSize: '24px', color: 'var(--primary)' }}>auto_awesome</span>
+        <h3 className="chat-title">Intelligence Interface</h3>
+        <button onClick={clearChatHistory} className="clear-chat-btn" title="Clear History">
+          <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>delete_sweep</span>
         </button>
       </div>
 
-      {/* Messages Area */}
       <div className="chat-messages">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`chat-message ${message.role === 'user' ? 'user-message' : 'bot-message'}`}
-          >
-            <div className={`message-bubble ${message.role}`}>
-              {message.role === 'bot' && <span className="message-avatar"><FaRobot /></span>}
-              <div className="message-text">
-                {/* Render message text with newlines preserved */}
-                {message.text.split('\n').map((line, idx) => (
-                  <div key={idx}>{line}</div>
-                ))}
+        <div className="messages-container">
+          {messages.length === 1 && messages[0].role === 'bot' && (
+            <div className="system-greeting">
+              <div className="greeting-icon">
+                <span className="material-symbols-outlined">auto_awesome</span>
               </div>
-              {message.role === 'user' && <span className="message-avatar"><FaUser /></span>}
+              <h2 className="greeting-title">Intelligence Interface</h2>
+              <p className="greeting-subtitle">System calibrated for high-frequency analysis and predictive modeling. How can I assist your portfolio today?</p>
             </div>
-          </div>
-        ))}
-
+          )}
+          
+          {messages.map((msg, idx) => {
+            const timestamp = new Date().toLocaleTimeString('en-US', { 
+              hour: '2-digit', 
+              minute: '2-digit',
+              hour12: true 
+            })
+            return (
+              <div key={msg.id} className={`chat-message ${msg.role === 'user' ? 'user-message' : 'bot-message'}`}>
+                {msg.role === 'bot' && (
+                  <div className="ai-avatar">
+                    <span className="material-symbols-outlined">terminal</span>
+                  </div>
+                )}
+                <div className={`message-wrapper ${msg.role}`}>
+                  <div className={`message-bubble ${msg.role}`}>
+                    <div className="message-text">
+                      {msg.text.split('\n').map((line, idx) => (
+                        <div key={idx}>{line}</div>
+                      ))}
+                    </div>
+                    
+                    {/* Insight Card - Only for bot messages */}
+                    
+                  </div>
+                  
+                  {/* Message Actions (Hover) */}
+                  {msg.role === 'bot' && (
+                    <div className="message-actions">
+                      <button className="action-button" title="Copy message">
+                        <span className="material-symbols-outlined">content_copy</span>
+                      </button>
+                      <button className="action-button" title="Like">
+                        <span className="material-symbols-outlined">thumb_up</span>
+                      </button>
+                      <button className="action-button" title="Dislike">
+                        <span className="material-symbols-outlined">thumb_down</span>
+                      </button>
+                    </div>
+                  )}
+                  
+                  <span className="message-timestamp">
+                    {timestamp} • {msg.role === 'user' ? 'User' : 'Smart Investor Intelligence'}
+                  </span>
+                </div>
+              </div>
+            )
+          })}
         {isLoading && (
           <div className="chat-message bot-message">
-            <div className="message-bubble bot">
-              <span className="message-avatar">🤖</span>
-              <div className="message-text">
+            <div className="ai-avatar">
+              <span className="material-symbols-outlined">terminal</span>
+            </div>
+            <div className="message-wrapper bot">
+              <div className="message-bubble bot">
                 <div className="typing-indicator">
-                  <span></span>
-                  <span></span>
-                  <span></span>
+                  <span></span><span></span><span></span>
                 </div>
               </div>
             </div>
           </div>
         )}
-
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area */}
       <div className="chat-input-area">
         <div className="input-wrapper">
           <input
@@ -177,23 +176,37 @@ function ChatComponent({ onSendMessage }) {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Ask about stocks, portfolios, or market trends..."
+            placeholder="Inquire about market trends, portfolio data, or strategy..."
             className="chat-input"
             disabled={isLoading}
           />
+          <button className="voice-button" title="Voice input" disabled={isLoading}>
+            <span className="material-symbols-outlined">mic</span>
+            <span className="voice-label">Voice</span>
+          </button>
           <button
             onClick={handleSendMessage}
             disabled={!inputValue.trim() || isLoading}
             className="send-button"
-            title="Send message (Enter)"
           >
-            {isLoading ? '⏳' : '📤'}
+            <span className="material-symbols-outlined">
+              {isLoading ? 'hourglass_bottom' : 'send'}
+            </span>
           </button>
         </div>
-        <p className="chat-help-text">💡 Tip: Press Enter to send, Shift+Enter for new line</p>
+        <div className="status-indicators">
+          <div className="status-item">
+            <span className="status-dot synchronized"></span>
+            <span className="status-text">Node 04: Synchronized</span>
+          </div>
+          <div className="status-item">
+            <span className="status-dot latency"></span>
+            <span className="status-text">Latency: 14ms</span>
+          </div>
+        </div>
       </div>
+    </div>
     </div>
   )
 }
-
-export default ChatComponent
+export default ChatComponent;

@@ -1,242 +1,159 @@
 /* ============================================================================
-   Chart Patterns Component Styles - Using Dashboard CSS Variables
+   ChartPatterns.css — Pattern Detection Section
+   Matches the detected patterns area in dashboard_stitch.html
    ============================================================================ */
 
 .chart-patterns-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-lg);
-  padding: var(--spacing-lg);
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-/* Success rates section - no full width span */
-.success-rates-section {
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
-}
-
-/* Patterns section - no full width span */
-.patterns-section {
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
-}
-
-/* Interpretation guide - no full width span */
-.interpretation-guide {
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
-}
-
-/* ============================================================================
-   Recommendation Section - HIGHLIGHTED
-   ============================================================================ */
-
+/* ── Recommendation Section ──────────────────────────────────────────── */
 .recommendation-section {
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .recommendation-header {
-  background: linear-gradient(135deg, var(--accent-primary) 0%, #764ba2 100%);
-  padding: var(--spacing-md) var(--spacing-lg);
-  color: var(--text-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .recommendation-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--on-surface-variant);
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 8px;
 }
 
 .recommendation-card {
-  padding: var(--spacing-lg);
-  border-left: 6px solid;
-  background: var(--bg-tertiary);
+  background: var(--surface-container-low);
+  border: 1px solid rgba(66, 71, 84, 0.15);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  transition: transform 0.2s;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-2px);
+  background: var(--surface-container);
 }
 
 .recommendation-value {
   font-size: 32px;
-  font-weight: 700;
-  margin-bottom: var(--spacing-md);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
 }
 
 .recommendation-reasoning {
   font-size: 14px;
-  color: var(--text-secondary);
+  color: var(--on-surface);
   line-height: 1.6;
   margin: 0;
-  font-style: italic;
 }
 
-/* ============================================================================
-   Success Rates Section
-   ============================================================================ */
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-lg);
-}
-
-.section-title {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.pattern-count,
-.signal-count {
-  font-size: 12px;
-  background: rgba(59, 130, 246, 0.15);
-  color: var(--accent-primary);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-md);
-  font-weight: 600;
+/* ── Success Rates Section ───────────────────────────────────────────── */
+.success-rates-section {
+  background: var(--surface-container-low);
+  border-radius: var(--radius-xl);
+  padding: 24px;
 }
 
 .success-rates-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--spacing-md);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
 }
 
 .success-rate-card {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  text-align: center;
-  transition: all 0.3s ease;
-}
-
-.success-rate-card:hover {
-  background: var(--bg-tertiary);
-  border-color: var(--accent-primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.success-rate-card.overall {
-  background: linear-gradient(135deg, var(--accent-primary) 0%, #764ba2 100%);
-  border: 1px solid var(--accent-primary);
-}
-
-.success-rate-card.overall .sr-label,
-.success-rate-card.overall .sr-value {
-  color: var(--text-primary);
+  background: var(--surface-container);
+  border: 1px solid rgba(66, 71, 84, 0.1);
+  border-radius: var(--radius-lg);
+  padding: 16px;
 }
 
 .sr-label {
-  font-size: 12px;
-  color: var(--text-muted);
-  font-weight: 500;
-  margin-bottom: var(--spacing-sm);
+  font-size: 10px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.success-rate-card.overall .sr-label {
-  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.05em;
+  color: var(--on-surface-variant);
+  margin-bottom: 12px;
 }
 
 .sr-value {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-sm);
+  color: var(--on-surface);
+  margin-bottom: 8px;
 }
 
 .sr-bar {
-  height: 6px;
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
+  height: 4px;
+  background: var(--surface-container-highest);
+  border-radius: var(--radius-full);
   overflow: hidden;
 }
 
 .sr-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent-success), #059669);
-  border-radius: var(--radius-md);
-  transition: width 0.3s ease;
+  background: var(--primary-gradient);
+  border-radius: var(--radius-full);
 }
 
-.success-rate-card.overall .sr-bar {
-  background: rgba(255, 255, 255, 0.3);
+.success-rate-card.overall {
+  background: rgba(173, 198, 255, 0.05);
+  border: 1px solid rgba(173, 198, 255, 0.2);
 }
 
-.success-rate-card.overall .sr-fill {
-  background: rgba(255, 255, 255, 0.9);
+.success-rate-card.overall .sr-value {
+  color: var(--primary);
 }
 
-/* ============================================================================
-   Patterns Section
-   ============================================================================ */
-
+/* ── Patterns Grid ──────────────────────────────────────────────────── */
 .patterns-section {
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
+  background: var(--surface-container-low);
+  border-radius: var(--radius-xl);
+  padding: 24px;
 }
 
 .patterns-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
 }
 
 .pattern-card {
+  background: var(--surface-container);
+  border: 1px solid rgba(66, 71, 84, 0.15);
+  border-radius: var(--radius-xl);
+  padding: 20px;
   display: flex;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--bg-secondary);
-  transition: all 0.3s ease;
-  align-items: flex-start;
-}
-
-.pattern-card.detected {
-  border-color: var(--accent-success);
-  background: rgba(16, 185, 129, 0.05);
-}
-
-.pattern-card.not-detected {
-  opacity: 0.7;
-  border-color: var(--border-color);
+  gap: 16px;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .pattern-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  background: var(--surface-container-high);
+  border-color: rgba(173, 198, 255, 0.2);
 }
 
 .pattern-indicator {
-  font-size: 28px;
-  font-weight: 700;
-  min-width: 40px;
-  text-align: center;
+  font-size: 24px;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .pattern-content {
@@ -244,159 +161,56 @@
 }
 
 .pattern-name {
-  margin: 0 0 var(--spacing-md) 0;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--on-surface);
+  margin: 0 0 12px 0;
 }
 
 .pattern-detail {
-  margin: var(--spacing-sm) 0;
-  font-size: 12px;
   display: flex;
   justify-content: space-between;
-  color: var(--text-secondary);
+  margin: 4px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(66, 71, 84, 0.05);
 }
 
 .detail-label {
-  font-weight: 500;
-  color: var(--text-muted);
+  font-size: 12px;
+  color: var(--on-surface-variant);
 }
 
 .detail-value {
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.pattern-status {
-  margin: var(--spacing-sm) 0;
   font-size: 12px;
-  color: var(--text-muted);
-  font-style: italic;
+  font-weight: 600;
+  color: var(--on-surface);
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
 
 .pattern-strength {
-  margin-top: var(--spacing-md);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
+  margin-top: 12px;
+  display: inline-block;
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-full);
 }
 
-/* ============================================================================
-   Interpretation Guide
-   ============================================================================ */
-
-.interpretation-guide {
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
-}
-
-.guide-items {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-md);
-}
-
-.guide-item {
-  display: flex;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
-  border-left: 4px solid var(--accent-primary);
-}
-
-.guide-icon {
-  font-size: 24px;
-  min-width: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.guide-content h4 {
-  margin: 0 0 var(--spacing-sm) 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.guide-content p {
-  margin: 0;
+.pattern-status {
   font-size: 12px;
-  color: var(--text-muted);
-  line-height: 1.5;
+  color: var(--on-surface-variant);
+  font-style: italic;
+  margin: 0;
 }
 
-/* ============================================================================
-   Responsive Design
-   ============================================================================ */
-
-@media (max-width: 1200px) {
-  .success-rates-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .patterns-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .guide-items {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .chart-patterns-container {
-    grid-template-columns: 1fr;
-    padding: var(--spacing-md);
-    gap: var(--spacing-md);
-  }
-
-  .success-rates-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .patterns-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .recommendation-value {
-    font-size: 24px;
-  }
-
-  .guide-items {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .chart-patterns-container {
-    grid-template-columns: 1fr;
-    padding: var(--spacing-sm);
-    gap: var(--spacing-sm);
-  }
-
-  .success-rates-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .section-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
-  }
-
-  .pattern-card {
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
-
-  .pattern-indicator {
-    font-size: 20px;
-    min-width: auto;
-  }
+.pattern-count {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary);
+  background: rgba(173, 198, 255, 0.1);
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
 }

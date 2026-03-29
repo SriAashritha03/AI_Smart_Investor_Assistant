@@ -1,24 +1,98 @@
 /* ============================================================================
-   index.css - Global Styles
+   index.css — Global Design System matching dashboard_stitch.html exactly
    ============================================================================ */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+/* ── Material Design 3 Color Tokens (exact from Stitch) ─────────────── */
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* Backgrounds / Surfaces */
+  --background:                  #0f131e;
+  --surface:                     #0f131e;
+  --surface-dim:                 #0f131e;
+  --surface-container-lowest:    #0a0e19;
+  --surface-container-low:       #171b27;
+  --surface-container:           #1b1f2b;
+  --surface-container-high:      #262a36;
+  --surface-container-highest:   #313441;
+  --surface-variant:             #313441;
+  --surface-bright:              #353945;
 
-  color-scheme: dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Text */
+  --on-background:               #dfe2f2;
+  --on-surface:                  #dfe2f2;
+  --on-surface-variant:          #c2c6d6;
+  --inverse-on-surface:          #2c303c;
+  --inverse-surface:             #dfe2f2;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+  /* Primary (blue) */
+  --primary:                     #adc6ff;
+  --primary-container:           #4d8eff;
+  --primary-fixed:               #d8e2ff;
+  --primary-fixed-dim:           #adc6ff;
+  --on-primary:                  #002e6a;
+  --on-primary-container:        #00285d;
+  --on-primary-fixed:            #001a42;
+  --on-primary-fixed-variant:    #004395;
+  --inverse-primary:             #005ac2;
+  --surface-tint:                #adc6ff;
+
+  /* Secondary (green) */
+  --secondary:                   #4ae176;
+  --secondary-container:         #00b954;
+  --secondary-fixed:             #6bff8f;
+  --secondary-fixed-dim:         #4ae176;
+  --on-secondary:                #003915;
+  --on-secondary-container:      #004119;
+  --on-secondary-fixed:          #002109;
+  --on-secondary-fixed-variant:  #005321;
+
+  /* Tertiary (red/salmon) */
+  --tertiary:                    #ffb3ad;
+  --tertiary-container:          #ff5451;
+  --tertiary-fixed:              #ffdad7;
+  --tertiary-fixed-dim:          #ffb3ad;
+  --on-tertiary:                 #68000a;
+  --on-tertiary-container:       #5c0008;
+  --on-tertiary-fixed:           #410004;
+  --on-tertiary-fixed-variant:   #930013;
+
+  /* Error */
+  --error:                       #ffb4ab;
+  --error-container:             #93000a;
+  --on-error:                    #690005;
+  --on-error-container:          #ffdad6;
+
+  /* Outline */
+  --outline:                     #8c909f;
+  --outline-variant:             #424754;
+
+  /* Derived composites */
+  --primary-gradient: linear-gradient(135deg, #adc6ff 0%, #4d8eff 100%);
+  --glass-card-bg: rgba(49, 52, 65, 0.4);
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Border radius (Stitch: default 0.25rem, lg 0.5rem, xl 0.75rem) */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   12px;   /* Stitch uses 0.75rem = 12px for xl */
+  --radius-full: 9999px;
+
+  /* Sidebar width */
+  --sidebar-width: 256px;
+  --header-height: 120px;
 }
 
-* {
+/* ── Reset ─────────────────────────────────────────────────────────── */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -27,10 +101,64 @@
 html, body {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background);
+  color: var(--on-background);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Typography ─────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', sans-serif;
+  color: var(--on-surface);
+  line-height: 1.25;
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { color: var(--primary-fixed); }
+
+/* ── Scrollbar ───────────────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--outline-variant); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--outline); }
+
+/* ── Selection ───────────────────────────────────────────────────────── */
+::selection { background: rgba(173,198,255,.25); color: var(--on-surface); }
+
+/* ── Shared Utility Classes ──────────────────────────────────────────── */
+.glass-card {
+  background: var(--glass-card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.primary-gradient {
+  background: var(--primary-gradient);
+}
+
+.surface-card {
+  background: var(--surface-container-low);
+  border-radius: var(--radius-xl);
+}
+
+.label-xs {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
 }

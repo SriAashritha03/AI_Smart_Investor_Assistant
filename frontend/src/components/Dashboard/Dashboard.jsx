@@ -1,80 +1,82 @@
 import React from 'react'
 import { FaCircle, FaLightbulb, FaExclamationTriangle, FaEye, FaChartBar, FaMask, FaClipboardList, FaBullseye, FaCheckCircle, FaNewspaper, FaBolt } from 'react-icons/fa'
 import StockChart from '../StockChart/StockChart'
-import Watchlist from '../Watchlist/Watchlist'
 import ChartPatterns from '../ChartPatterns/ChartPatterns'
 import OpportunityRadar from '../OpportunityRadar/OpportunityRadar'
+import TradeInsightPanel from '../TradeInsightPanel/TradeInsightPanel'
+import Watchlist from '../Watchlist/Watchlist'
 import './Dashboard.css'
 
 function Dashboard({ data }) {
+  if (!data) return null;
+
+  // DEBUG: Log data structure to console
+  React.useEffect(() => {
+    console.log('[Dashboard] Data received:', {
+      stock: data.stock,
+      has_explanation_block: !!data.explanation_block,
+      explanation_block: data.explanation_block,
+      has_score_breakdown: !!data.score_breakdown,
+      score_breakdown: data.score_breakdown,
+      has_signal_summary: !!data.signal_summary,
+      action: data.action,
+      confidence: data.confidence,
+    })
+  }, [data])
+
   const getOpportunityColor = (level) => {
     switch (level) {
-      case 'Strong':
-        return '#10b981'
-      case 'Moderate':
-        return '#f59e0b'
-      case 'Weak':
-        return '#3b82f6'
-      default:
-        return '#6b7280'
+      case 'Strong': return 'var(--secondary)';
+      case 'Moderate': return 'var(--primary)';
+      case 'Weak': return 'var(--on-surface-variant)';
+      default: return 'var(--on-surface-variant)';
     }
-  }
-
-  const getSignalStatusClass = (triggered) => {
-    return triggered ? 'signal-triggered' : 'signal-not-triggered'
   }
 
   const getActionColor = (action) => {
     switch (action) {
-      case 'BUY':
-        return '#10b981'
-      case 'HOLD':
-        return '#f59e0b'
-      case 'PASS':
-        return '#ef4444'
-      default:
-        return '#6b7280'
+      case 'BUY': return 'var(--secondary)';
+      case 'HOLD': return 'var(--primary)';
+      case 'PASS': return 'var(--tertiary-container)';
+      default: return 'var(--on-surface-variant)';
     }
   }
 
   const getSignalStrengthColor = (strength) => {
     switch (strength) {
-      case 'Strong':
-        return '#22c55e'
-      case 'Moderate':
-        return '#f59e0b'
-      case 'Weak':
-        return '#3b82f6'
-      default:
-        return '#6b7280'
-    }
-  }
-
-  const getSignalStrengthBadge = (strength) => {
-    switch (strength) {
-      case 'Strong':
-        return <FaCircle style={{ color: '#22c55e' }} />
-      case 'Moderate':
-        return <FaCircle style={{ color: '#f59e0b' }} />
-      case 'Weak':
-        return <FaCircle style={{ color: '#3b82f6' }} />
-      default:
-        return <FaCircle style={{ color: '#d1d5db' }} />
+      case 'Strong': return 'var(--secondary)';
+      case 'Moderate': return 'var(--primary)';
+      case 'Weak': return 'var(--outline)';
+      default: return 'var(--outline)';
     }
   }
 
   const getRadarData = (data) => {
     if (!data) return null
+    
+    // CONSISTENT: Use backend score_breakdown values for radar
+    // Ensures radar and score breakdown show same Technical score
+    let technicalValue = 50  // default middle value
+    
+    if (data.score_breakdown?.technical !== undefined) {
+      technicalValue = data.score_breakdown.technical
+    } else {
+      // Fallback: use same formula as backend
+      const signalCount = data.signals_triggered?.length || 0
+      const detectedPatterns = data.chart_patterns?.patterns_detected?.filter(p => p.detected).length || 0
+      technicalValue = Math.min(100, (signalCount * 15) + (detectedPatterns * 20) + (data.confidence * 0.5))
+    }
+    
     return [
       {
         subject: 'Technical',
-        value: Math.min(100, (data.signals_triggered.length / data.signal_details.length) * 100)
+        value: technicalValue
       },
       {
         subject: 'Sentiment',
-        value: data.news_sentiment 
-          ? Math.round((data.news_sentiment.sentiment_score + 1) / 2 * 100)
-          : 50
+        value: data.score_breakdown?.sentiment !== undefined 
+          ? Math.round(data.score_breakdown.sentiment)
+          : (data.news_sentiment ? Math.round((data.news_sentiment.sentiment_score + 1) / 2 * 100) : 50)
       },
       {
         subject: 'Volume',
@@ -94,346 +96,381 @@ function Dashboard({ data }) {
   }
 
   const generateCombinedInsight = () => {
-    const hasBreakout = data.signals_triggered.includes('Breakout')
-    const hasUptrend = data.signals_triggered.includes('Uptrend')
-    const hasVolumeSpike = data.signals_triggered.includes('Volume Spike')
-    const hasPriceSurge = data.signals_triggered.includes('Price Surge')
+    // CONTEXT-AWARE INSIGHTS: Match decision fusion logic
+    const action = data.action?.toUpperCase()
+    const bearishPatterns = data.bearish_patterns || []
+    const bullishPatterns = data.bullish_patterns || []
+    const bullishSignals = data.signals_triggered || []
     const sentiment = data.news_sentiment?.sentiment_label?.toLowerCase() || ''
-    const hasPositiveSentiment = sentiment === 'positive'
-    const hasNegativeSentiment = sentiment === 'negative'
-    const hasPriceSpike = data.event_signals?.events_detected?.includes('Price Spike')
-    const hasVolumeSurge = data.event_signals?.events_detected?.includes('Volume Surge')
-
-    // Strong bullish setup
-    if ((hasBreakout || hasUptrend) && (hasVolumeSpike || hasVolumeSurge) && hasPositiveSentiment) {
-      return 'Strong bullish setup: Positive sentiment + Technical breakout + Volume confirmation = High conviction opportunity'
+    const priceSpike = data.event_signals?.price_spike
+    const hasNegativeMove = priceSpike?.direction === 'downward'
+    
+    // SELL SIGNALS: Bearish patterns
+    if (action === 'SELL') {
+      if (bearishPatterns.includes('Death Cross')) {
+        const context = hasNegativeMove ? 'Recent price weakness confirms' : 'Signals'
+        return `Bearish setup: Death Cross indicates trend reversal. ${context} downtrend risk.`
+      }
+      if (bearishPatterns.length > 0) {
+        return `Trend weakness: ${bearishPatterns.join(', ')} pattern(s) detected - caution advised.`
+      }
+      return 'Bearish pressure detected across technical and sentiment factors.'
     }
-
-    // Moderate bullish
-    if ((hasBreakout || hasUptrend) && hasPositiveSentiment) {
-      return 'Moderate bullish setup: Positive sentiment backing technical strength = Solid opportunity'
+    
+    // BUY SIGNALS: Bullish patterns + confirmation
+    if (action === 'BUY') {
+      if (bullishPatterns.length > 0 && sentiment === 'positive') {
+        return `Strong bullish setup: ${bullishPatterns.slice(0, 2).join(' + ')} confirmed with positive sentiment.`
+      }
+      if (bullishPatterns.length > 0) {
+        return `Bullish patterns detected: ${bullishPatterns.join(', ')} suggest upside potential.`
+      }
+      if (sentiment === 'positive') {
+        return 'Positive sentiment with technical support provides opportunity.'
+      }
     }
-
-    // Price action with momentum
-    if ((hasPriceSurge || hasPriceSpike) && (hasVolumeSpike || hasVolumeSurge)) {
-      return 'Strong momentum detected: Price surge + Volume increase = Short-term buying pressure'
+    
+    // HOLD SIGNALS: Mixed or uncertain
+    if (action === 'HOLD') {
+      if (bearishPatterns.length > 0 && bullishPatterns.length > 0) {
+        return 'Mixed signals: Bearish and bullish patterns in conflict - wait for clearer direction.'
+      }
+      if (bullishSignals.length === 0 && bearishPatterns.length === 0) {
+        return 'No clear signals. Monitor for trend formation before entering position.'
+      }
+      return 'Balanced risk-reward. Insufficient conviction for directional trade.'
     }
-
-    // Bearish setup
-    if (hasNegativeSentiment && data.opportunity_level === 'None') {
-      return 'Bearish sentiment: Negative news with no technical support = Avoid until sentiment improves'
-    }
-
-    // Mixed signals
-    if (data.signals_triggered.length > 0 && hasPositiveSentiment) {
-      return 'Mixed signals with positive sentiment: Monitor for confirmation before entry'
-    }
-
-    // No clear setup
-    if (data.signals_triggered.length === 0) {
-      return 'No clear signals detected: Waiting for technical setup or sentiment change'
-    }
-
-    // Default
-    return 'Monitor for emerging opportunity based on current signals and market sentiment'
+    
+    return 'Analyzing market factors...'
   }
 
+  const triggeredCount = data.signals_triggered?.length || 0
+  const detailedCount = data.signal_details?.length || 0
+
   return (
-    <div className={`dashboard-container ${data.isDemo ? 'demo-mode' : ''}`}>
+    <div className="dashboard-container">
       {/* Demo Mode Indicator */}
       {data.isDemo && (
         <div className="demo-indicator">
-          <span className="demo-indicator-icon"><FaMask /></span>
-          <span className="demo-indicator-text">Demo Mode - Using Sample Data</span>
+          <span className="material-symbols-outlined demo-indicator-icon">visibility</span>
+          <span className="demo-indicator-text">Demo Mode Active</span>
         </div>
       )}
 
-      {/* Combined Insight Section - HIGH IMPACT */}
-      <div className="dashboard-section combined-insight-section">
-        <div className="combined-insight-content">
-          <div className="combined-insight-label"><FaLightbulb style={{ marginRight: '8px' }} />AI Insight</div>
-          <div className="combined-insight-text">{generateCombinedInsight()}</div>
-        </div>
-      </div>
-
-      {/* Stock Chart Section */}
-      <StockChart 
-        stock={data.stock} 
-        confidence={data.confidence}
-        opportunityLevel={data.opportunity_level}
-      />
-
-      {/* Summary Cards */}
-      <div className="summary-cards">
-        <div className="summary-card opportunity-card">
-          <span className="card-label">Opportunity Level</span>
-          <span
-            className="card-value opportunity-value"
-            style={{ color: getOpportunityColor(data.opportunity_level) }}
-          >
-            {data.opportunity_level}
-          </span>
-          <span className="card-sublabel">Technical Analysis</span>
-          {data.isDemo && <span className="demo-chip">Demo</span>}
-        </div>
-
-        <div className="summary-card confidence-card">
-          <span className="card-label">Confidence Score</span>
-          <div className="confidence-display">
-            <span className="card-value confidence-value">{data.confidence}%</span>
-            <div className="confidence-bar">
-              <div
-                className="confidence-fill"
-                style={{ width: `${data.confidence}%` }}
-              ></div>
-            </div>
+      {/* ==================== HERO SECTION ==================== */}
+      {/* Trading Recommendation + AI Insight + Key Metrics */}
+      <div className="dashboard-hero-section">
+        {/* Primary Decision: Trading Recommendation */}
+        <div className="hero-main">
+          <div className={`trading-rec-action action-${data.action.toLowerCase()}`}>
+            <span className="action-text">{data.action}</span>
           </div>
-          <span className="confidence-explanation">Based on combined signals + sentiment analysis</span>
-        </div>
-
-        <div className="summary-card action-card">
-          <span className="card-label">Recommended Action</span>
-          <span
-            className="card-value action-value"
-            style={{ color: getActionColor(data.action) }}
-          >
-            {data.action}
-          </span>
-          <span className="card-sublabel">Trading Signal</span>
-        </div>
-
-        <div className="summary-card data-card">
-          <span className="card-label">Data Points</span>
-          <span className="card-value data-value">{data.data_points}</span>
-          <span className="card-sublabel">Trading Days</span>
-        </div>
-      </div>
-
-      {/* Opportunity Radar Visualization */}
-      {data && (
-        <div className="dashboard-section radar-section">
-          <OpportunityRadar data={getRadarData(data)} />
-        </div>
-      )}
-
-      {/* Main Content Grid */}
-      <div className="dashboard-grid">
-        {/* Analysis Summary */}
-        <div className="dashboard-section summary-section">
-          <div className="section-header">
-            <h3 className="section-title"><FaClipboardList style={{ marginRight: '8px' }} />Analysis Summary</h3>
-          </div>
-          <div className="section-content">
-            <p className="summary-text">{data.summary}</p>
-            <div className="analysis-meta">
-              <div className="meta-item">
-                <span className="meta-label">Stock</span>
-                <span className="meta-value">{data.stock}</span>
-              </div>
-              <div className="meta-item">
-                <span className="meta-label">Analysis Date</span>
-                <span className="meta-value">{data.date}</span>
-              </div>
+          <div className="hero-meta">
+            <div className="hero-item">
+              <span className="hero-label">Recommendation</span>
+              <p className="hero-description">{data.summary}</p>
             </div>
           </div>
         </div>
 
-        {/* Signals Detail */}
-        <div className="dashboard-section signals-section">
-          <div className="section-header">
-            <h3 className="section-title"><FaBullseye style={{ marginRight: '8px' }} />Opportunity Radar - Signal Details</h3>
-            <span className="signal-count">
-              {data.signals_triggered.length}/{data.signal_details.length} Triggered
-            </span>
+        {/* Secondary Metrics: Confidence + Opportunity */}
+        <div className="hero-metrics">
+          <div className="hero-metric-card">
+            <span className="metric-label">Confidence</span>
+            <div className="metric-value confidence-large">{data.confidence}%</div>
+            <div className="metric-bar">
+              <div className="metric-bar-fill" style={{ width: `${data.confidence}%` }}></div>
+            </div>
           </div>
-          <div className="signals-list">
-            {data.signal_details.map((signal, idx) => (
-              <div
-                key={idx}
-                className={`signal-item ${getSignalStatusClass(signal.triggered)}`}
-              >
-                <div className="signal-header">
-                  <div className="signal-name-group">
-                    <span className={`signal-indicator ${signal.triggered ? 'active' : 'inactive'}`}>
-                      {signal.triggered ? <FaCheckCircle /> : '○'}
-                    </span>
-                    <span className="signal-name">{signal.name}</span>
-                  </div>
-                  {signal.triggered && (
-                    <div className="signal-badges">
-                      <span className={`signal-strength strength-${signal.strength.toLowerCase()}`}>
-                        {getSignalStrengthBadge(signal.strength)} {signal.strength}
-                      </span>
-                    </div>
-                  )}
-                </div>
-                <p className="signal-reasoning">{signal.reasoning}</p>
+
+          <div className="hero-metric-card">
+            <span className="metric-label">Opportunity</span>
+            <div className="metric-value" style={{ color: getOpportunityColor(data.opportunity_level) }}>
+              {data.opportunity_level} {data.action === 'SELL' ? '(Bearish)' : data.action === 'BUY' ? '(Bullish)' : ''}
+            </div>
+          </div>
+
+          <div className="hero-metric-card">
+            <span className="metric-label">Data Points</span>
+            <div className="metric-value">{data.data_points}</div>
+          </div>
+        </div>
+
+        {/* AI Insight Banner */}
+        <div className="hero-insight">
+          <span className="insight-icon material-symbols-outlined">lightbulb</span>
+          <div className="insight-content">
+            <span className="insight-header">AI Insight</span>
+            <span className="insight-text">{generateCombinedInsight()}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ==================== ROW 1: CHART + RADAR/METRICS ==================== */}
+      <div className="dashboard-row-main">
+        {/* LEFT: Stock Chart (Large) */}
+        <div className="main-chart-panel">
+          <StockChart 
+            stock={data.stock} 
+            confidence={data.confidence}
+            opportunityLevel={data.opportunity_level}
+          />
+        </div>
+
+        {/* RIGHT: Opportunity Radar + Key Metrics Pills */}
+        <div className="radar-metrics-panel">
+          {/* Radar */}
+          <div className="radar-box">
+            <OpportunityRadar data={getRadarData(data)} />
+          </div>
+
+          {/* Quick Metrics (Tech/Sentiment/Trend/Risk) */}
+          <div className="key-metrics-grid">
+            <div className="metric-pill">
+              <span className="pill-label">Technical</span>
+              <span className="pill-icon material-symbols-outlined">analytics</span>
+            </div>
+            <div className="metric-pill">
+              <span className="pill-label">Sentiment</span>
+              <span className="pill-icon material-symbols-outlined">thumbs_up</span>
+            </div>
+            <div className="metric-pill">
+              <span className="pill-label">Trend</span>
+              <span className="pill-icon material-symbols-outlined">trending_up</span>
+            </div>
+            <div className="metric-pill">
+              <span className="pill-label">Risk</span>
+              <span className="pill-icon material-symbols-outlined">warning</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ==================== HEADLINES (Top News Context) ==================== */}
+      {data.news_sentiment?.top_headlines && data.news_sentiment.top_headlines.length > 0 && (
+        <div className="dashboard-headlines-section">
+          <div className="section-header">
+            <h3 className="section-title">
+              <span className="material-symbols-outlined">newspaper</span>
+              Top Headlines for {data.stock}
+            </h3>
+            <span className="headline-count">{data.news_sentiment.articles_analyzed} articles analyzed</span>
+          </div>
+          {data.news_sentiment.summary && (
+            <p className="headline-subtitle">{data.news_sentiment.summary}</p>
+          )}
+          <div className="headlines-list">
+            {data.news_sentiment.top_headlines.slice(0, 5).map((headline, idx) => (
+              <div key={idx} className="headline-item">
+                <span className="headline-number">{idx + 1}</span>
+                <p className="headline-text">{headline}</p>
               </div>
             ))}
           </div>
         </div>
+      )}
 
-        {/* Triggered Signals Summary */}
-        <div className="dashboard-section triggered-section">
-          <div className="section-header">
-            <h3 className="section-title"><FaCheckCircle style={{ marginRight: '8px' }} />Triggered Signals</h3>
-          </div>
-          <div className="triggered-list">
-            {data.signals_triggered.length > 0 ? (
-              data.signals_triggered.map((signal, idx) => (
-                <div key={idx} className="triggered-item">
-                  <span className="triggered-badge"><FaCheckCircle style={{ marginRight: '6px' }} /></span>
-                  <span className="triggered-name">{signal}</span>
-                </div>
-              ))
-            ) : (
-              <p className="no-signals">No signals currently triggered</p>
-            )}
-          </div>
-        </div>
-
-        {/* News Sentiment Section */}
-        <div className="dashboard-section news-sentiment-section">
-          <div className="section-header">
-            <h3 className="section-title"><FaNewspaper style={{ marginRight: '8px' }} />News Sentiment</h3>
-            {data.news_sentiment && (
-              <span className={`sentiment-badge sentiment-${data.news_sentiment.sentiment_label.toLowerCase()}`}>
-                {data.news_sentiment.sentiment_label}
-              </span>
-            )}
-          </div>
-          {data.news_sentiment ? (
-            <div className="section-content">
-              <div className="sentiment-score-card">
-                <span className="sentiment-label">Overall Sentiment</span>
-                <div className="sentiment-display">
-                  <span className={`sentiment-value sentiment-${data.news_sentiment.sentiment_label.toLowerCase()}`}>
-                    {data.news_sentiment.sentiment_score > 0 ? '+' : ''}{data.news_sentiment.sentiment_score.toFixed(2)}
-                  </span>
-                  <span className="sentiment-range">(-1.0 to +1.0)</span>
-                </div>
-              </div>
-
-              <div className="news-stats">
-                <div className="stat-item">
-                  <span className="stat-label">Articles Analyzed</span>
-                  <span className="stat-value">{data.news_sentiment.articles_analyzed}</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-label">Confidence</span>
-                  <span className="stat-value">{data.news_sentiment.confidence.toFixed(1)}%</span>
-                </div>
-              </div>
-
-              <div className="confidence-bar-small">
-                <div
-                  className="confidence-fill-small"
-                  style={{ width: `${data.news_sentiment.confidence}%` }}
-                ></div>
-              </div>
-
-              {data.news_sentiment.top_headlines && data.news_sentiment.top_headlines.length > 0 && (
-                <div className="headlines-list">
-                  <span className="headlines-title">Top Headlines</span>
-                  {data.news_sentiment.top_headlines.map((headline, idx) => (
-                    <div key={idx} className="headline-item">
-                      <span className="headline-bullet">•</span>
-                      <span className="headline-text">{headline}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+      {/* ==================== ROW 2: SIGNAL DETAILS + SENTIMENT/EVENTS ==================== */}
+      <div className="dashboard-row-analysis">
+        {/* LEFT: Signal Details (Technical Analysis) */}
+        {data.signal_details && data.signal_details.length > 0 && (
+          <div className="signals-detail-panel">
+            <div className="section-header">
+              <h3 className="section-title">
+                <span className="material-symbols-outlined">analytics</span>
+                Signal Details
+              </h3>
+              <span className="signal-count">{triggeredCount} Triggered</span>
             </div>
-          ) : (
-            <p className="no-data">No sentiment data available</p>
-          )}
-        </div>
-
-        {/* Event Signals Section */}
-        <div className="dashboard-section event-signals-section">
-          <div className="section-header">
-            <h3 className="section-title"><FaBolt style={{ marginRight: '8px' }} />Event Signals</h3>
-            {data.event_signals && data.event_signals.events_detected && (
-              <span className="event-count">
-                {data.event_signals.events_detected.length} Event(s)
-              </span>
-            )}
+            
+            <div className="signal-details-list">
+              {data.signal_details.map((signal, idx) => (
+                <div key={idx} className={`signal-detail-item ${signal.triggered ? 'signal-triggered' : 'signal-not-triggered'}`}>
+                  <div className="signal-detail-header">
+                    <div className="signal-detail-indicator">
+                      {signal.triggered ? (
+                        <FaCheckCircle style={{ color: 'var(--secondary)', fontSize: '14px' }} />
+                      ) : (
+                        <FaCircle style={{ color: 'var(--outline)', fontSize: '14px' }} />
+                      )}
+                    </div>
+                    <div className="signal-detail-title-group">
+                      <span className="signal-detail-name">{signal.name}</span>
+                      {signal.strength !== '-' && (
+                        <span className={`signal-detail-strength strength-${signal.strength.toLowerCase()}`}>
+                          {signal.strength}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <p className="signal-detail-reasoning">{signal.reasoning}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          {data.event_signals ? (
-            <div className="section-content">
-              {/* Price Spike */}
+        )}
+
+        {/* RIGHT: News Sentiment + Event Signals (Stacked) */}
+        <div className="sentiment-events-panel">
+          {/* News Sentiment */}
+          <div className="news-sentiment-box">
+            <div className="section-header">
+              <h3 className="section-title">
+                <span className="material-symbols-outlined">newspaper</span>
+                News Sentiment
+              </h3>
+            </div>
+            <div className="sentiment-display-large">
+              <span className={`sentiment-value sentiment-${data.news_sentiment?.sentiment_label?.toLowerCase() || 'neutral'}`}>
+                {data.news_sentiment?.sentiment_label || 'Neutral'}
+              </span>
+              <div className="sentiment-gauge-large">
+                <div className="sentiment-score-info">
+                  <span className="sentiment-score-value">
+                    {data.news_sentiment?.sentiment_score !== undefined ? data.news_sentiment.sentiment_score.toFixed(2) : '0.00'}
+                  </span>
+                  <span className="sentiment-score-scale">
+                    / Scale: -1 to 1
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Market Events */}
+          <div className="events-box">
+            <div className="section-header">
+              <h3 className="section-title">
+                <span className="material-symbols-outlined">campaign</span>
+                Market Events
+              </h3>
+            </div>
+            
+            {/* Price Spike Event */}
+            {data.event_signals?.price_spike && (
               <div className={`event-item ${data.event_signals.price_spike.detected ? 'event-triggered' : 'event-not-triggered'}`}>
                 <div className="event-header">
                   <div className="event-name-group">
-                    <span className={`event-indicator ${data.event_signals.price_spike.detected ? 'active' : 'inactive'}`}>
-                      {data.event_signals.price_spike.detected ? <FaBolt /> : '○'}
-                    </span>
-                    <div className="event-title-group">
-                      <span className="event-name"><FaBolt style={{ marginRight: '6px' }} />Price Spike Detected</span>
-                      <span className="event-desc">(Short-term momentum indicator)</span>
-                    </div>
+                    {data.event_signals.price_spike.detected ? (
+                      <FaBolt style={{ color: 'var(--primary)', fontSize: '14px' }} />
+                    ) : (
+                      <FaCircle style={{ color: 'var(--outline)', fontSize: '14px' }} />
+                    )}
+                    <span className="event-name">
+                    Price Spike {data.event_signals.price_spike.direction === 'downward' ? '(Bearish)' : '(Bullish)'}
+                  </span>
                   </div>
-                  {data.event_signals.price_spike.detected && (
-                    <span className={`event-change event-${data.event_signals.price_spike.direction}`}>
-                      {data.event_signals.price_spike.direction === 'upward' ? '↑' : '↓'} {Math.abs(data.event_signals.price_spike.change_percent).toFixed(2)}%
-                    </span>
-                  )}
+                  <span className="event-change" style={{ 
+                    color: data.event_signals.price_spike.direction === 'upward' ? 'var(--secondary)' : 'var(--tertiary-container)'
+                  }}>
+                    {data.event_signals.price_spike.direction === 'upward' ? '↑' : '↓'} {data.event_signals.price_spike.change_percent?.toFixed(1)}%
+                  </span>
                 </div>
                 <p className="event-description">{data.event_signals.price_spike.description}</p>
               </div>
+            )}
 
-              {/* Volume Surge */}
+            {/* Volume Surge Event */}
+            {data.event_signals?.volume_surge && (
               <div className={`event-item ${data.event_signals.volume_surge.detected ? 'event-triggered' : 'event-not-triggered'}`}>
                 <div className="event-header">
                   <div className="event-name-group">
-                    <span className={`event-indicator ${data.event_signals.volume_surge.detected ? 'active' : 'inactive'}`}>
-                      {data.event_signals.volume_surge.detected ? <FaChartBar /> : '○'}
-                    </span>
-                    <div className="event-title-group">
-                      <span className="event-name"><FaChartBar style={{ marginRight: '6px' }} />Volume Surge Detected</span>
-                      <span className="event-desc">(Institutional or retail buying pressure)</span>
-                    </div>
+                    {data.event_signals.volume_surge.detected ? (
+                      <FaBolt style={{ color: 'var(--primary)', fontSize: '14px' }} />
+                    ) : (
+                      <FaCircle style={{ color: 'var(--outline)', fontSize: '14px' }} />
+                    )}
+                    <span className="event-name">Volume Surge</span>
                   </div>
-                  {data.event_signals.volume_surge.detected && (
-                    <span className="event-ratio">
-                      {data.event_signals.volume_surge.ratio.toFixed(2)}x
-                    </span>
-                  )}
+                  <span className="event-change">Ratio: {data.event_signals.volume_surge.ratio?.toFixed(2)}x</span>
                 </div>
                 <p className="event-description">{data.event_signals.volume_surge.description}</p>
                 {data.event_signals.volume_surge.detected && (
-                  <div className="volume-details">
-                    <div className="volume-item">
-                      <span className="volume-label">Current</span>
-                      <span className="volume-value">{(data.event_signals.volume_surge.current_volume / 1000000).toFixed(1)}M</span>
-                    </div>
-                    <span className="volume-divider">/</span>
-                    <div className="volume-item">
-                      <span className="volume-label">Avg</span>
-                      <span className="volume-value">{(data.event_signals.volume_surge.average_volume / 1000000).toFixed(1)}M</span>
-                    </div>
+                  <div className="volume-details-inline">
+                    <span className="volume-detail">Current: {(data.event_signals.volume_surge.current_volume / 1000000).toFixed(1)}M</span>
+                    <span className="volume-detail">Average: {(data.event_signals.volume_surge.average_volume / 1000000).toFixed(1)}M</span>
                   </div>
                 )}
               </div>
+            )}
 
-              {data.event_signals.summary && (
-                <div className="event-summary">
-                  <span className="event-summary-label">Summary</span>
-                  <span className="event-summary-text">{data.event_signals.summary}</span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <p className="no-data">No event data available</p>
-          )}
+            {(!data.event_signals?.price_spike && !data.event_signals?.volume_surge) && (
+              <p className="no-data">No major events detected</p>
+            )}
+          </div>
         </div>
-
-        {/* Chart Patterns Section */}
-        {data.chart_patterns && <ChartPatterns patterns={data.chart_patterns} />}
       </div>
 
-      {/* Watchlist Section */}
-      <Watchlist />
+      {/* ==================== ROW 3: CHART PATTERNS + SUCCESS RATES (MERGED) ==================== */}
+      <div className="dashboard-patterns-section">
+        <div className="patterns-and-success">
+          {/* Patterns Info */}
+          {data.chart_patterns && (
+            <div className="patterns-box">
+              {data.chart_patterns && <ChartPatterns patterns={data.chart_patterns} />}
+            </div>
+          )}
+
+          {/* Success Rates */}
+          {data.chart_patterns?.success_rates && (
+            <div className="success-rates-box">
+              <div className="section-header">
+                <h3 className="section-title">
+                  <span className="material-symbols-outlined">trending_up</span>
+                  Pattern Success Rates (Backtested)
+                </h3>
+              </div>
+              
+              <div className="success-rates-grid">
+                <div className="success-rate-item">
+                  <span className="rate-label">Breakout</span>
+                  <span className="rate-value">{data.chart_patterns.success_rates.breakout?.toFixed(1) || '0'}%</span>
+                  <div className="rate-progress">
+                    <div className="rate-progress-fill" style={{ width: `${data.chart_patterns.success_rates.breakout || 0}%` }}></div>
+                  </div>
+                </div>
+                <div className="success-rate-item">
+                  <span className="rate-label">Support</span>
+                  <span className="rate-value">{data.chart_patterns.success_rates.support?.toFixed(1) || '0'}%</span>
+                  <div className="rate-progress">
+                    <div className="rate-progress-fill" style={{ width: `${data.chart_patterns.success_rates.support || 0}%` }}></div>
+                  </div>
+                </div>
+                <div className="success-rate-item">
+                  <span className="rate-label">MA Cross</span>
+                  <span className="rate-value">{data.chart_patterns.success_rates.ma_crossover?.toFixed(1) || '0'}%</span>
+                  <div className="rate-progress">
+                    <div className="rate-progress-fill" style={{ width: `${data.chart_patterns.success_rates.ma_crossover || 0}%` }}></div>
+                  </div>
+                </div>
+                <div className="success-rate-item overall">
+                  <span className="rate-label">Overall Success</span>
+                  <span className="rate-value">{data.chart_patterns.success_rates.overall?.toFixed(1) || '0'}%</span>
+                  <div className="rate-progress">
+                    <div className="rate-progress-fill" style={{ width: `${data.chart_patterns.success_rates.overall || 0}%` }}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ==================== FINAL SECTION: TRADE INSIGHT (ONLY ONCE, HIGHLIGHTED) ==================== */}
+      {data.chart_patterns && (
+        <div className="dashboard-trade-insight-final">
+          <TradeInsightPanel 
+            analysisData={data}
+            explanationBlock={data.explanation_block}
+            scoreBreakdown={data.score_breakdown}
+          />
+        </div>
+      )}
+
+      {/* ==================== LAST ROW: WATCHLIST ==================== */}
+      <div className="dashboard-watchlist-section">
+        <Watchlist />
+      </div>
     </div>
   )
 }

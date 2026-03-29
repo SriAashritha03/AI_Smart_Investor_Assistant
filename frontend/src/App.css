@@ -1,158 +1,46 @@
 /* ============================================================================
-   App.css - Main Application Styling
+   App.css — Application Shell with Sidebar Layout
+   Matches dashboard_stitch.html structure exactly
    ============================================================================ */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-:root {
-  /* Dark Theme Colors */
-  --bg-primary: #0f172a;
-  --bg-secondary: #1a2847;
-  --bg-tertiary: #243556;
-  
-  /* Text Colors */
-  --text-primary: #ffffff;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  
-  /* Accent Colors */
-  --accent-primary: #3b82f6;
-  --accent-success: #10b981;
-  --accent-warning: #f59e0b;
-  --accent-danger: #ef4444;
-  
-  /* Borders & Shadows */
-  --border-color: #334155;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
-  
-  /* Spacing */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  
-  /* Border Radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  line-height: 1.6;
-  letter-spacing: 0.3px;
-}
-
-#root {
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ============================================================================
-   App Container
-   ============================================================================ */
-
+/* ── App Shell ─────────────────────────────────────────────────────── */
 .app {
   width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  min-height: 100vh;
+  background-color: var(--background);
+  color: var(--on-surface);
 }
 
+/* ── Main Content (offset for sidebar + sticky header) ──────────────── */
 .app-main {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--spacing-xl);
-  max-width: 1400px;
-  width: 100%;
-  margin: 0 auto;
+  padding-top: var(--header-height);
+  padding-bottom: var(--spacing-xl);
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
+  /* On desktop, push right of sidebar */
+  margin-left: 0;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
-/* ============================================================================
-   Scrollbar Styling
-   ============================================================================ */
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
-
-/* ============================================================================
-   Responsive Design
-   ============================================================================ */
-
-/* ============================================================================
-   Error Message
-   ============================================================================ */
-
-.error-message {
-  background-color: rgba(239, 68, 68, 0.1);
-  border: 1px solid #dc2626;
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-md) var(--spacing-lg);
-  margin-bottom: var(--spacing-lg);
-  color: #fca5a5;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  animation: slideDown 0.3s ease;
-}
-
-.error-message span {
-  font-weight: 500;
-}
-
-.error-message small {
-  font-size: 0.85rem;
-  color: #fecaca;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+@media (min-width: 768px) {
+  .app-main {
+    margin-left: var(--sidebar-width);
+    padding-left: var(--spacing-xl);
+    padding-right: var(--spacing-xl);
   }
 }
 
-/* ============================================================================
-   Page Containers
-   ============================================================================ */
-
+/* ── Page Containers ────────────────────────────────────────────────── */
 .page-container {
+  
   width: 100%;
-  height: 100%;
-  animation: fadeIn 0.3s ease;
+  animation: pageEnter 0.3s ease;
+}
+
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .dashboard-page {
@@ -164,80 +52,102 @@ body {
 .chat-page {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: calc(100vh - var(--header-height) - var(--spacing-xl) * 2);
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* ============================================================================
-   Loading Overlay
-   ============================================================================ */
-
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(15, 23, 42, 0.8);
+/* ── Error Message ──────────────────────────────────────────────────── */
+.error-message {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: rgba(147, 0, 10, 0.15);
+  border: 1px solid rgba(255, 84, 81, 0.3);
+  border-left: 4px solid var(--tertiary-container);
+  border-radius: var(--radius-xl);
+  margin-bottom: var(--spacing-lg);
+  color: var(--tertiary);
+}
+
+.error-message span  { font-weight: 600; font-size: 14px; }
+.error-message small { font-size: 12px; opacity: 0.75; }
+
+/* ── Loading Overlay ────────────────────────────────────────────────── */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 19, 30, 0.85);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(4px);
+  justify-content: center;
+  z-index: 9999;
+  gap: var(--spacing-lg);
 }
 
 .spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid rgba(59, 130, 246, 0.2);
-  border-top-color: #3b82f6;
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--surface-container-highest);
+  border-top-color: var(--primary);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: var(--spacing-lg);
+  animation: spin 0.9s linear infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 .loading-overlay p {
-  color: var(--text-primary);
-  font-size: 1.1rem;
-  letter-spacing: 1px;
+  color: var(--on-surface-variant);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-/* ============================================================================
-   Responsive Design
-   ============================================================================ */
-
-@media (max-width: 768px) {
-  .app-main {
-    padding: var(--spacing-lg);
-  }
-
-  .error-message {
-    padding: var(--spacing-md);
-  }
+/* ── Mobile Bottom Nav ───────────────────────────────────────────────── */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 50;
+  background: rgba(15, 19, 30, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 12px 24px;
+  border-top: 1px solid rgba(66, 71, 84, 0.15);
 }
 
-@media (max-width: 480px) {
-  .app-main {
-    padding: var(--spacing-md);
-  }
+@media (min-width: 768px) {
+  .mobile-bottom-nav { display: none; }
+}
 
-  .error-message {
-    padding: var(--spacing-sm) var(--spacing-md);
-    font-size: 0.9rem;
+.mobile-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--on-surface-variant);
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+}
+
+.mobile-nav-btn .material-symbols-outlined { font-size: 22px; }
+
+.mobile-nav-btn--active {
+  color: var(--primary);
+}
+
+/* ── Responsive Mobile bottom bar padding ────────────────────────────── */
+@media (max-width: 767px) {
+  .app-main {
+    padding-bottom: 80px;
   }
 }

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AURA | Intelligence Terminal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-highest": "#313441",
+              "on-error-container": "#ffdad6",
+              "primary-fixed": "#d8e2ff",
+              "on-primary": "#002e6a",
+              "on-background": "#dfe2f2",
+              "on-tertiary": "#68000a",
+              "secondary-container": "#00b954",
+              "secondary": "#4ae176",
+              "tertiary-container": "#ff5451",
+              "secondary-fixed": "#6bff8f",
+              "primary-fixed-dim": "#adc6ff",
+              "error": "#ffb4ab",
+              "on-primary-fixed-variant": "#004395",
+              "tertiary-fixed": "#ffdad7",
+              "inverse-on-surface": "#2c303c",
+              "secondary-fixed-dim": "#4ae176",
+              "error-container": "#93000a",
+              "tertiary": "#ffb3ad",
+              "on-secondary": "#003915",
+              "on-error": "#690005",
+              "background": "#0f131e",
+              "tertiary-fixed-dim": "#ffb3ad",
+              "inverse-surface": "#dfe2f2",
+              "surface": "#0f131e",
+              "surface-dim": "#0f131e",
+              "surface-container-low": "#171b27",
+              "on-tertiary-fixed": "#410004",
+              "surface-variant": "#313441",
+              "on-primary-container": "#00285d",
+              "on-surface": "#dfe2f2",
+              "on-tertiary-container": "#5c0008",
+              "on-secondary-fixed": "#002109",
+              "surface-tint": "#adc6ff",
+              "outline-variant": "#424754",
+              "on-secondary-fixed-variant": "#005321",
+              "surface-container": "#1b1f2b",
+              "primary": "#adc6ff",
+              "surface-container-lowest": "#0a0e19",
+              "on-tertiary-fixed-variant": "#930013",
+              "on-primary-fixed": "#001a42",
+              "outline": "#8c909f",
+              "inverse-primary": "#005ac2",
+              "surface-bright": "#353945",
+              "on-secondary-container": "#004119",
+              "primary-container": "#4d8eff",
+              "surface-container-high": "#262a36",
+              "on-surface-variant": "#c2c6d6"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #0f131e;
+        color: #dfe2f2;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        background: rgba(49, 52, 65, 0.4);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      .trend-spark-up {
+        filter: drop-shadow(0 0 4px #4ae176);
+      }
+      .primary-gradient {
+        background: linear-gradient(135deg, #adc6ff 0%, #4d8eff 100%);
+      }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- SideNavBar (Persistent) -->
+<aside class="h-full w-64 fixed left-0 top-0 bg-[#171b27] flex flex-col py-6 z-40 hidden md:flex">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 rounded-xl primary-gradient flex items-center justify-center shadow-[0_0_15px_rgba(173,198,255,0.3)]">
+<span class="material-symbols-outlined text-on-primary">insights</span>
+</div>
+<div>
+<h2 class="text-[#dfe2f2] font-bold text-lg tracking-tight">Intelligence</h2>
+<p class="text-[#c2c6d6] text-[10px] uppercase tracking-widest font-medium">Active Terminal</p>
+</div>
+</div>
+<nav class="space-y-1">
+<a class="bg-[#313441] text-[#adc6ff] rounded-r-xl border-l-4 border-[#adc6ff] shadow-[4px_0_15px_rgba(74,225,118,0.1)] py-3 px-6 flex items-center gap-3 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-['Inter'] text-sm font-medium tracking-wide">Dashboard</span>
+</a>
+<a class="text-[#c2c6d6] hover:bg-[#353945] hover:text-[#dfe2f2] py-3 px-6 flex items-center gap-3 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-['Inter'] text-sm font-medium tracking-wide">Chat</span>
+</a>
+<a class="text-[#c2c6d6] hover:bg-[#353945] hover:text-[#dfe2f2] py-3 px-6 flex items-center gap-3 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-['Inter'] text-sm font-medium tracking-wide">Portfolio</span>
+</a>
+<a class="text-[#c2c6d6] hover:bg-[#353945] hover:text-[#dfe2f2] py-3 px-6 flex items-center gap-3 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">videocam</span>
+<span class="font-['Inter'] text-sm font-medium tracking-wide">Video Engine</span>
+</a>
+</nav>
+</div>
+<div class="mt-auto px-6 space-y-1">
+<a class="text-[#c2c6d6] hover:bg-[#353945] hover:text-[#dfe2f2] py-3 px-6 flex items-center gap-3 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-['Inter'] text-sm font-medium tracking-wide">Settings</span>
+</a>
+<a class="text-[#c2c6d6] hover:bg-[#353945] hover:text-[#dfe2f2] py-3 px-6 flex items-center gap-3 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-['Inter'] text-sm font-medium tracking-wide">Support</span>
+</a>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-[#0f131e]/60 backdrop-blur-xl shadow-[0_20px_40px_rgba(173,198,255,0.08)]">
+<div class="flex justify-between items-center px-8 py-4 w-full max-w-[1920px] mx-auto md:pl-72">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black tracking-tighter text-[#dfe2f2]">AURA</span>
+<div class="hidden lg:flex items-center gap-6">
+<a class="text-[#adc6ff] border-b-2 border-[#adc6ff] pb-1 font-bold font-['Inter'] tracking-tight uppercase text-[12px]" href="#">Dashboard</a>
+<a class="text-[#c2c6d6] hover:text-[#dfe2f2] transition-colors font-['Inter'] tracking-tight font-medium uppercase text-[12px]" href="#">Chat</a>
+<a class="text-[#c2c6d6] hover:text-[#dfe2f2] transition-colors font-['Inter'] tracking-tight font-medium uppercase text-[12px]" href="#">Portfolio</a>
+<a class="text-[#c2c6d6] hover:text-[#dfe2f2] transition-colors font-['Inter'] tracking-tight font-medium uppercase text-[12px]" href="#">Video Engine</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="bg-surface-container-highest border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/40 w-64" placeholder="Search Markets..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-[#353945]/50 transition-all rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 hover:bg-[#353945]/50 transition-all rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined">toggle_on</span>
+</button>
+<button class="p-2 hover:bg-[#353945]/50 transition-all rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined">sensors</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-12 px-6 md:pl-72 max-w-[1920px] mx-auto">
+<!-- Top Section: Stock Selector & CTA -->
+<section class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+<div class="flex flex-col gap-2">
+<h1 class="text-3xl font-bold tracking-tight text-on-surface">Market Overview</h1>
+<p class="text-on-surface-variant text-sm font-medium uppercase tracking-widest">Real-time Intelligence Stream</p>
+</div>
+<div class="flex items-center gap-3 w-full md:w-auto">
+<div class="flex-grow md:w-80 relative">
+<select class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-on-surface appearance-none focus:ring-2 focus:ring-primary/20 cursor-pointer">
+<option>NVDA - NVIDIA Corporation</option>
+<option>AAPL - Apple Inc.</option>
+<option>TSLA - Tesla, Inc.</option>
+<option>MSFT - Microsoft Corp.</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+<button class="primary-gradient px-8 py-3 rounded-xl font-bold text-on-primary shadow-[0_0_25px_rgba(173,198,255,0.25)] hover:scale-105 transition-transform active:scale-95 whitespace-nowrap">
+                    Analyze Asset
+                </button>
+</div>
+</section>
+<!-- Main Bento Grid -->
+<div class="grid grid-cols-12 gap-6 mb-10">
+<!-- 1. Main Stock Chart (Large) -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-low rounded-xl p-8 shadow-sm">
+<div class="flex justify-between items-start mb-8">
+<div>
+<div class="flex items-center gap-3 mb-1">
+<h2 class="text-4xl font-bold tracking-tighter">$842.12</h2>
+<span class="text-secondary font-bold text-lg flex items-center">
+<span class="material-symbols-outlined">trending_up</span>
+                                +4.21%
+                            </span>
+</div>
+<p class="text-on-surface-variant text-sm font-medium">NVIDIA Corporation • NASDAQ</p>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1 bg-surface-container-highest rounded-lg text-xs font-bold text-primary">1D</button>
+<button class="px-3 py-1 hover:bg-surface-container-highest rounded-lg text-xs font-bold text-on-surface-variant">1W</button>
+<button class="px-3 py-1 hover:bg-surface-container-highest rounded-lg text-xs font-bold text-on-surface-variant">1M</button>
+<button class="px-3 py-1 hover:bg-surface-container-highest rounded-lg text-xs font-bold text-on-surface-variant">1Y</button>
+</div>
+</div>
+<div class="relative h-[400px] w-full bg-surface-container-lowest/30 rounded-lg overflow-hidden border border-outline-variant/10">
+<img alt="Stock Price Chart" class="w-full h-full object-cover opacity-80" data-alt="abstract financial line chart with glowing green data line and soft gradient fill below on deep navy background minimalist professional" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAqT47xbnkik0mYI09alEFqtgHPGT2k-rV8ZK7oeZm9N2-v-h2mHdbBfAIvfwlb7enrwuefGSLbfw1ha97L4AFXYjZ8BMODnYUxswkH5BCnnOleMa8yHphYnm-bsT-AI0tYmBXleO-bKrz9XdnRyTyz4bFjrB-z16Fxhh8q8ZnoRMxFeJtuEk7zYA3azJYqfNb33ngqlralsLtMOPRuedX4VYyiIysy_AYVC3Ncigx5tCsFcqWlabN97Anj0aS45yPsvvGrULrBlc"/>
+<!-- Overlay Trend Indicators -->
+<div class="absolute top-10 right-10 flex flex-col gap-2">
+<div class="glass-card px-4 py-2 rounded-lg border border-outline-variant/20 flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#4ae176]"></div>
+<span class="text-xs font-bold uppercase tracking-wider text-on-surface">Bullish Divergence</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 2. Opportunity Stats Sidebar -->
+<div class="col-span-12 lg:col-span-4 grid grid-cols-1 gap-6">
+<!-- Summary Cards Nesting -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/10 flex flex-col justify-between">
+<span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-widest mb-4">Opportunity Level</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-bold text-secondary">High</span>
+<span class="text-xs text-on-surface-variant">Alpha</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/10 flex flex-col justify-between">
+<span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-widest mb-4">Confidence Score</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-bold text-primary">94.2</span>
+<span class="text-xs text-on-surface-variant">%</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/10 flex flex-col justify-between">
+<span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-widest mb-4">Recommended</span>
+<span class="text-xl font-bold text-on-surface">STRONG BUY</span>
+</div>
+<div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/10 flex flex-col justify-between">
+<span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-widest mb-4">Strength</span>
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden mt-2">
+<div class="h-full w-[85%] primary-gradient"></div>
+</div>
+</div>
+</div>
+<!-- 3. Opportunity Radar Chart -->
+<div class="bg-surface-container-low rounded-xl p-6 relative overflow-hidden h-full min-h-[300px]">
+<h3 class="text-on-surface-variant text-[10px] uppercase font-bold tracking-widest mb-6">Opportunity Radar</h3>
+<div class="flex items-center justify-center h-48">
+<!-- Custom Data Visualization Mockup -->
+<img alt="Radar Analysis Chart" class="w-40 h-40 object-contain" data-alt="futuristic radar chart with pentagon axes Technical Sentiment Volume Trend Risk glowing cyan shape on dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxrMQ6pyTv5StDtDdDmfL9VQaTu3KYwJNs8oh0ArQX6YWP1-vIsR4mYx-nUDVZLw7PFi8-TzyeSS1ZwOiyvDWrL12wdzifbkgiu55ejt5BOZ57CP3SwRdQtjUstyc4DNuzHS9RSZO1OIS9-JSBu3hMB9XkIEarIfaFCbSwY2YSExG-d_SLIH25PFf9cwfD2aj4x7IrCuiV_8330QaAYNzUhNh13EDJNXKEqfvHK0iIKngsYkipQ9ee5I7S4U6aS6t-oJLYUZwOIU0"/>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-4">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="text-[10px] text-on-surface-variant">Volume: Extreme</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="text-[10px] text-on-surface-variant">Sentiment: Bullish</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Mid Section: Patterns & Watchlist -->
+<div class="grid grid-cols-12 gap-6 mb-10">
+<!-- Chart Patterns -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-low p-6 rounded-xl">
+<h3 class="text-on-surface font-bold text-sm mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">auto_graph</span>
+                    Chart Patterns
+                </h3>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between text-xs mb-2">
+<span class="text-on-surface-variant">Golden Cross Breakout</span>
+<span class="text-secondary font-bold">92% Match</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full">
+<div class="h-full w-[92%] bg-secondary rounded-full"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs mb-2">
+<span class="text-on-surface-variant">Support Zone Resilience</span>
+<span class="text-primary font-bold">Strong</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full">
+<div class="h-full w-[78%] bg-primary rounded-full"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs mb-2">
+<span class="text-on-surface-variant">200-Day Moving Average</span>
+<span class="text-on-surface font-bold">In Range</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full">
+<div class="h-full w-[45%] bg-outline rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Trade Insight Panel -->
+<div class="mt-8 p-4 bg-primary-container/10 border border-primary/20 rounded-xl relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-16 h-16 bg-primary/20 blur-2xl group-hover:bg-primary/40 transition-all"></div>
+<p class="text-[11px] font-bold text-primary uppercase tracking-tighter mb-2">Alpha Signal Insight</p>
+<p class="text-xs text-on-surface leading-relaxed">
+                        Whale activity detected at $835 support. Institutional accumulation phase nearing completion.
+                    </p>
+</div>
+</div>
+<!-- Watchlist Table -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-low rounded-xl overflow-hidden shadow-sm">
+<div class="p-6 flex justify-between items-center border-b border-outline-variant/5">
+<h3 class="text-on-surface font-bold text-sm">Priority Watchlist</h3>
+<button class="text-primary text-[11px] font-bold uppercase tracking-wider hover:underline">View Full Terminal</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="text-[10px] text-on-surface-variant uppercase tracking-widest border-b border-outline-variant/10">
+<th class="px-6 py-4 font-bold">Symbol</th>
+<th class="px-6 py-4 font-bold">Price</th>
+<th class="px-6 py-4 font-bold">24h Change</th>
+<th class="px-6 py-4 font-bold">Trend Aura</th>
+<th class="px-6 py-4 font-bold text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="hover:bg-surface-bright/30 transition-colors cursor-pointer group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center font-bold text-xs">A</div>
+<span class="text-sm font-bold">AAPL</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">$189.42</td>
+<td class="px-6 py-4">
+<span class="text-secondary text-xs font-bold">+1.2%</span>
+</td>
+<td class="px-6 py-4">
+<div class="w-16 h-6 flex items-center">
+<img alt="AAPL Trend" class="w-full opacity-60 group-hover:opacity-100 transition-opacity" data-alt="micro sparkline chart bright green glowing line on transparent background abstract" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFaDGiOi1fS6l0MesODL5N2T-is0F4QIFLp1EOGTtkCABUhyKZ5K0UDfJGFj0KOzQCNNidUPmNKIYpb2dPDs_upU5nwCzUx6Mi1yMkXR9CjCUmwqxtWBQK7gE3AO88j69_iy1evfMJ0dMA-OG6nBtiS-VzV31LUyVAo7g4xtNujArCSe9pqegc81Mzi_6TPGRKFRMwqlvhj2xLsRENfK6TqlHYJ3c2e9np7AbQAR1jaZ43n5yJuL3vJp6RXlEq6M04Zd5SyoeZ6Yg"/>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/30 transition-colors cursor-pointer group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center font-bold text-xs text-tertiary">T</div>
+<span class="text-sm font-bold">TSLA</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">$175.20</td>
+<td class="px-6 py-4">
+<span class="text-tertiary-container text-xs font-bold">-0.8%</span>
+</td>
+<td class="px-6 py-4">
+<div class="w-16 h-6 flex items-center">
+<img alt="TSLA Trend" class="w-full opacity-60 group-hover:opacity-100 transition-opacity" data-alt="micro sparkline chart red glowing line on transparent background abstract" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsH84iJoyK1MYq5WnRt8yu_QW4bmfjGkV0df4r07M-07TMmC03r206mM8k9XijV3fgzHsMl3hxLGn6Ju17zspwbTeUkgZi-ukDU4FDZUGIYojjx-9JT1Pw0jV5v8fpklj1b5xR77QsDuD6SA_WU2vHpnsnW4WVEv_wMjLm4sCvTeE8AVCXaFrUQxnexnkLvM-wfZJqKzQgXLJnUiJMW2Su_8y5f_FgxriiVijD6wVAKVOA11ypOJb0jKdVP71wt_ZyO4F0MsZwXy8"/>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/30 transition-colors cursor-pointer group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center font-bold text-xs text-primary">M</div>
+<span class="text-sm font-bold">MSFT</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">$412.30</td>
+<td class="px-6 py-4">
+<span class="text-secondary text-xs font-bold">+2.4%</span>
+</td>
+<td class="px-6 py-4">
+<div class="w-16 h-6 flex items-center">
+<img alt="MSFT Trend" class="w-full opacity-60 group-hover:opacity-100 transition-opacity" data-alt="micro sparkline chart blue glowing line on transparent background abstract" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXuKvUAKLM0ITn4Nrn9Xz5Ks-CqIm287rOgmrw9-G-E5bQOQrtsibd9jJykFXIgJsXstnP0bXVHquuqIzzEeklS1IjPpf93I7MQAOTMJfGIaotVQDgrrVWwJ5Fq8Hgr5As99fS22eHw39s4VSo0WVTQ-z8DWPCiPUeqOD_BbQuEmG3J5rkByhm5coUPTCzV0hh0W6ahO-o_xuxcbkBt05U5F2Hcw99fVJD6mY0rPkXQmNkYjr8e1CmD3u6Uk4MAzbFT-kJbMd4a8c"/>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Lower Section: Deep Analysis & Signals -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Analysis Summary & Signal Details -->
+<div class="col-span-12 lg:col-span-7 bg-surface-container-low rounded-xl p-8">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">terminal</span>
+<h3 class="text-lg font-bold">Deep Intelligence Summary</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div>
+<p class="text-on-surface leading-relaxed text-sm mb-6">
+                            NVDA is exhibiting a classic <span class="text-primary font-bold">re-accumulation pattern</span> following the Q4 earnings rally. On-balance volume (OBV) continues to trend upward despite price consolidation, suggesting strong underlying support.
+                        </p>
+<div class="space-y-4">
+<div class="flex items-center gap-4 group">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-lg">bolt</span>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface">Momentum Vector</p>
+<p class="text-[11px] text-on-surface-variant">Accelerating in +2.5σ region</p>
+</div>
+</div>
+<div class="flex items-center gap-4 group">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-lg">shield</span>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface">Risk Mitigation</p>
+<p class="text-[11px] text-on-surface-variant">Stop-loss localized at $795.00</p>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest/50 rounded-xl p-6 border border-outline-variant/10">
+<h4 class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant mb-4">Triggered Signals</h4>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-secondary-container/20 text-secondary-fixed text-[10px] font-bold rounded-full border border-secondary/20">RSI_OVERSOLD</span>
+<span class="px-3 py-1 bg-primary-container/20 text-primary-fixed text-[10px] font-bold rounded-full border border-primary/20">VOL_SPIKE</span>
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-[10px] font-bold rounded-full">EMA_CROSS_20</span>
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-[10px] font-bold rounded-full">MACD_CONV</span>
+<span class="px-3 py-1 bg-secondary-container/20 text-secondary-fixed text-[10px] font-bold rounded-full border border-secondary/20">WHALE_BUY</span>
+</div>
+</div>
+</div>
+</div>
+<!-- News Sentiment & Events -->
+<div class="col-span-12 lg:col-span-5 flex flex-col gap-6">
+<!-- Sentiment Score -->
+<div class="bg-surface-container-low p-6 rounded-xl flex items-center justify-between">
+<div>
+<h4 class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant mb-1">Global Sentiment</h4>
+<p class="text-2xl font-bold text-secondary">Extreme Greed</p>
+</div>
+<div class="w-16 h-16 rounded-full border-4 border-surface-container-highest flex items-center justify-center relative">
+<span class="text-lg font-black text-secondary">82</span>
+<svg class="absolute inset-0 w-full h-full -rotate-90">
+<circle cx="32" cy="32" fill="transparent" r="30" stroke="#4ae176" stroke-dasharray="188.4" stroke-dashoffset="34" stroke-width="4"></circle>
+</svg>
+</div>
+</div>
+<!-- Event Signals -->
+<div class="bg-surface-container-low p-6 rounded-xl flex-grow">
+<h4 class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant mb-6">Impending Events</h4>
+<div class="space-y-4">
+<div class="p-4 bg-surface-container rounded-xl border-l-4 border-primary">
+<div class="flex justify-between items-start mb-2">
+<p class="text-sm font-bold">Earnings Report Q1</p>
+<span class="text-[10px] text-primary font-bold">IN 4 DAYS</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">Estimated EPS: 4.58. Market pricing in significant beat.</p>
+</div>
+<div class="p-4 bg-surface-container rounded-xl border-l-4 border-outline">
+<div class="flex justify-between items-start mb-2">
+<p class="text-sm font-bold">FOMC Meeting Minutes</p>
+<span class="text-[10px] text-on-surface-variant font-bold">TOMORROW</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">Potential rate trajectory clarity. High volatility expected.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile only) -->
+<nav class="fixed bottom-0 w-full z-50 bg-[#0f131e]/80 backdrop-blur-xl md:hidden flex justify-around items-center py-4 px-6 border-t border-outline-variant/10">
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-[10px] font-bold uppercase">Dashboard</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="text-[10px] font-bold uppercase">Chat</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="text-[10px] font-bold uppercase">Assets</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-bold uppercase">Settings</span>
+</button>
+</nav>
+</body></html>

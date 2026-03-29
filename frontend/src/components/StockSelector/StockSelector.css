@@ -1,243 +1,148 @@
 /* ============================================================================
-   StockSelector.css - Stock Selector Component Styling
+   StockSelector.css — Stock Selector & Analyze CTA Section
+   Matches the top section in dashboard_stitch.html exactly
    ============================================================================ */
 
+/* ── Page Title Section ─────────────────────────────────────────────── */
 .stock-selector-container {
-  width: 100%;
-  margin-bottom: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  padding-top: 48px;
+  gap: 8px;
+  margin-bottom: 40px;
 }
 
-.stock-selector {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
+@media (min-width: 768px) {
+  .stock-selector-container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
 }
 
-/* ============================================================================
-   Header Section
-   ============================================================================ */
-
+/* ── Left: Page Title ────────────────────────────────────────────────── */
 .selector-header {
-  margin-bottom: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .selector-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-sm);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--on-surface);
+  margin: 0;
 }
 
 .selector-subtitle {
-  font-size: 14px;
-  color: var(--text-muted);
-  font-weight: 400;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--on-surface-variant);
 }
 
-/* ============================================================================
-   Controls Section
-   ============================================================================ */
-
+/* ── Right: Dropdown + Button row ────────────────────────────────────── */
 .selector-controls {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-  align-items: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
 }
 
+@media (min-width: 768px) {
+  .selector-controls {
+    width: auto;
+  }
+}
+
+/* ── Dropdown Wrapper ────────────────────────────────────────────────── */
 .control-group {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
+  flex: 1;
 }
 
-.control-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+@media (min-width: 768px) {
+  .control-group { flex: none; width: 320px; }
 }
 
 .stock-dropdown {
-  padding: var(--spacing-md) var(--spacing-md);
-  padding-right: var(--spacing-lg);
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  width: 100%;
+  background: var(--surface-container-low);
+  border: none;
+  outline: none;
+  border-radius: var(--radius-xl);
+  padding: 12px 16px;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  color: var(--on-surface);
   appearance: none;
   -webkit-appearance: none;
-  -moz-appearance: none;
-}
-
-.stock-dropdown:hover {
-  border-color: var(--accent-primary);
-  background: var(--bg-tertiary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  cursor: pointer;
+  transition: box-shadow 0.2s;
 }
 
 .stock-dropdown:focus {
-  outline: none;
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 2px rgba(173, 198, 255, 0.2);
+}
+
+.stock-dropdown option {
+  background: var(--surface-container);
+  color: var(--on-surface);
 }
 
 .dropdown-icon {
   position: absolute;
-  right: var(--spacing-md);
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
-  color: var(--text-muted);
-  font-size: 12px;
-  margin-top: 14px;
+  color: var(--on-surface-variant);
+  font-size: 20px;
 }
 
-/* ============================================================================
-   Analyze Button
-   ============================================================================ */
-
+/* ── Analyze Button ──────────────────────────────────────────────────── */
 .analyze-button {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
-  background: linear-gradient(135deg, var(--accent-primary) 0%, #2563eb 100%);
-  color: white;
+  gap: 8px;
+  padding: 12px 32px;
+  background: var(--primary-gradient);
+  color: var(--on-primary);
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-xl);
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
   white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 0 25px rgba(173, 198, 255, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.analyze-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+.analyze-button:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 0 32px rgba(173, 198, 255, 0.4);
 }
 
-.analyze-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+.analyze-button:active:not(:disabled) {
+  transform: scale(0.95);
 }
 
-.button-icon {
-  font-size: 16px;
-}
-
-.button-text {
-  letter-spacing: 0.3px;
-}
-
-.analyze-button.disabled,
-.analyze-button:disabled {
+.analyze-button:disabled,
+.analyze-button.disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
-.analyze-button.disabled:hover,
-.analyze-button:disabled:hover {
-  transform: none;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
-}
+.button-icon { font-size: 16px; }
+.button-text { }
 
-.stock-dropdown:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background: var(--bg-tertiary);
-}
-
-/* ============================================================================
-   Stock Info Grid
-   ============================================================================ */
-
-.stock-info {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
-  background: rgba(36, 53, 86, 0.5);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-}
-
-.info-item {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.info-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.info-value {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--accent-primary);
-}
-
-.info-value.status-ready {
-  color: var(--accent-success);
-}
-
-.info-value.status-error {
-  color: var(--accent-danger);
-}
-
-/* ============================================================================
-   Responsive Design
-   ============================================================================ */
-
-@media (max-width: 768px) {
-  .selector-controls {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-md);
-  }
-
-  .analyze-button {
-    width: 100%;
-  }
-
-  .stock-info {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 480px) {
-  .stock-selector {
-    padding: var(--spacing-md);
-  }
-
-  .selector-title {
-    font-size: 18px;
-  }
-
-  .stock-info {
-    grid-template-columns: 1fr;
-  }
-}
-
-  .info-value {
-    font-size: 14px;
-  }
-
+/* Hide old stock info / label elements if present */
+.control-label { display: none; }
+.stock-info     { display: none; }

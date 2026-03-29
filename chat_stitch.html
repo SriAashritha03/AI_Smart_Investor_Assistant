@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f131e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #313441;
+            border-radius: 10px;
+        }
+        .glass-panel {
+            background: rgba(49, 52, 65, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-highest": "#313441",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary": "#002e6a",
+                        "on-background": "#dfe2f2",
+                        "on-tertiary": "#68000a",
+                        "secondary-container": "#00b954",
+                        "secondary": "#4ae176",
+                        "tertiary-container": "#ff5451",
+                        "secondary-fixed": "#6bff8f",
+                        "primary-fixed-dim": "#adc6ff",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed-variant": "#004395",
+                        "tertiary-fixed": "#ffdad7",
+                        "inverse-on-surface": "#2c303c",
+                        "secondary-fixed-dim": "#4ae176",
+                        "error-container": "#93000a",
+                        "tertiary": "#ffb3ad",
+                        "on-secondary": "#003915",
+                        "on-error": "#690005",
+                        "background": "#0f131e",
+                        "tertiary-fixed-dim": "#ffb3ad",
+                        "inverse-surface": "#dfe2f2",
+                        "surface": "#0f131e",
+                        "surface-dim": "#0f131e",
+                        "surface-container-low": "#171b27",
+                        "on-tertiary-fixed": "#410004",
+                        "surface-variant": "#313441",
+                        "on-primary-container": "#00285d",
+                        "on-surface": "#dfe2f2",
+                        "on-tertiary-container": "#5c0008",
+                        "on-secondary-fixed": "#002109",
+                        "surface-tint": "#adc6ff",
+                        "outline-variant": "#424754",
+                        "on-secondary-fixed-variant": "#005321",
+                        "surface-container": "#1b1f2b",
+                        "primary": "#adc6ff",
+                        "surface-container-lowest": "#0a0e19",
+                        "on-tertiary-fixed-variant": "#930013",
+                        "on-primary-fixed": "#001a42",
+                        "outline": "#8c909f",
+                        "inverse-primary": "#005ac2",
+                        "surface-bright": "#353945",
+                        "on-secondary-container": "#004119",
+                        "primary-container": "#4d8eff",
+                        "surface-container-high": "#262a36",
+                        "on-surface-variant": "#c2c6d6"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary/30">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 bg-[#0f131e]/60 backdrop-blur-xl shadow-[0_20px_40px_rgba(173,198,255,0.08)]">
+<div class="flex justify-between items-center px-8 py-4 w-full max-w-[1920px] mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black tracking-tighter text-[#dfe2f2]">AURA</span>
+<div class="hidden md:flex gap-6 items-center">
+<a class="font-['Inter'] tracking-tight font-medium uppercase text-[12px] text-[#c2c6d6] hover:text-[#dfe2f2] transition-colors" href="#">Dashboard</a>
+<a class="font-['Inter'] tracking-tight font-medium uppercase text-[12px] text-[#adc6ff] border-b-2 border-[#adc6ff] pb-1 font-bold" href="#">Chat</a>
+<a class="font-['Inter'] tracking-tight font-medium uppercase text-[12px] text-[#c2c6d6] hover:text-[#dfe2f2] transition-colors" href="#">Portfolio</a>
+<a class="font-['Inter'] tracking-tight font-medium uppercase text-[12px] text-[#c2c6d6] hover:text-[#dfe2f2] transition-colors" href="#">Video Engine</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-[#353945]/50 rounded-lg transition-all duration-300">
+<span class="material-symbols-outlined text-[#adc6ff]">notifications</span>
+</button>
+<button class="p-2 hover:bg-[#353945]/50 rounded-lg transition-all duration-300">
+<span class="material-symbols-outlined text-[#adc6ff]">toggle_on</span>
+</button>
+<button class="p-2 hover:bg-[#353945]/50 rounded-lg transition-all duration-300">
+<span class="material-symbols-outlined text-[#adc6ff]">sensors</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Side Navigation Bar -->
+<aside class="hidden lg:flex flex-col h-full w-64 fixed left-0 top-0 bg-[#171b27] py-6 pt-24 z-40">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="Intelligence" data-alt="Abstract glowing blue neural network sphere on a dark deep space background representing digital artificial intelligence core" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_eeB9T1Rop2IiCFAlnnuNESNCfyew-sv_sb-fj0U6G9XFgTFrL4MN6ZhWCk-wkB5SbHTaFRK2IWFSF6kHOSGu18EU6r5ktfdBBGlkZlygwhw0xZBSuxVKJYH-wMl_CIT8SuCreLKsAUZHpCsUDYYOM6DuHgaNOpKf_dZLnra2r0zUcEIDm-wZ5-xR6AkIo7hO-ZBi3VuhZ8ZjRqlZvWGRBC4NdoYqeI_ofF2jFH-sBFOufEdpdKrCBvYkg4m4GV2zhEN-jWaQqY4"/>
+</div>
+<div>
+<h3 class="font-['Inter'] text-sm font-medium tracking-wide text-[#adc6ff]">Intelligence</h3>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest">Active Terminal</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-[#c2c6d6] py-3 px-6 flex items-center gap-3 font-['Inter'] text-sm font-medium tracking-wide hover:bg-[#353945] hover:text-[#dfe2f2] transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="bg-[#313441] text-[#adc6ff] rounded-r-xl border-l-4 border-[#adc6ff] shadow-[4px_0_15px_rgba(74,225,118,0.1)] py-3 px-6 flex items-center gap-3 font-['Inter'] text-sm font-medium tracking-wide transition-all duration-200" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+                Chat
+            </a>
+<a class="text-[#c2c6d6] py-3 px-6 flex items-center gap-3 font-['Inter'] text-sm font-medium tracking-wide hover:bg-[#353945] hover:text-[#dfe2f2] transition-all duration-200" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+                Portfolio
+            </a>
+<a class="text-[#c2c6d6] py-3 px-6 flex items-center gap-3 font-['Inter'] text-sm font-medium tracking-wide hover:bg-[#353945] hover:text-[#dfe2f2] transition-all duration-200" href="#">
+<span class="material-symbols-outlined">videocam</span>
+                Video Engine
+            </a>
+</nav>
+<div class="mt-auto space-y-1">
+<a class="text-[#c2c6d6] py-3 px-6 flex items-center gap-3 font-['Inter'] text-sm font-medium tracking-wide hover:bg-[#353945] hover:text-[#dfe2f2] transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+<a class="text-[#c2c6d6] py-3 px-6 flex items-center gap-3 font-['Inter'] text-sm font-medium tracking-wide hover:bg-[#353945] hover:text-[#dfe2f2] transition-all duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+                Support
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-64 pt-20 pb-24 h-screen flex flex-col bg-surface-container-lowest">
+<!-- Chat Area -->
+<div class="flex-1 overflow-y-auto px-6 py-8 space-y-10 max-w-5xl mx-auto w-full">
+<!-- System Greeting -->
+<div class="flex flex-col items-center justify-center py-12 text-center opacity-80">
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(173,198,255,0.3)]">
+<span class="material-symbols-outlined text-on-primary text-3xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<h2 class="text-2xl font-bold tracking-tight text-on-surface">Intelligence Interface</h2>
+<p class="text-on-surface-variant max-w-md mt-2 text-sm leading-relaxed">System calibrated for high-frequency analysis and predictive modeling. How can I assist your portfolio today?</p>
+</div>
+<!-- Message: User -->
+<div class="flex justify-end w-full group">
+<div class="max-w-[80%] flex flex-col items-end">
+<div class="bg-surface-bright text-on-surface px-6 py-4 rounded-2xl rounded-tr-none shadow-lg border border-outline-variant/10">
+<p class="text-[15px] leading-relaxed">Analyze the volatility of the tech sector over the last 48 hours and provide a sentiment report for high-growth assets.</p>
+</div>
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant mt-2 font-medium">10:42 AM • User</span>
+</div>
+</div>
+<!-- Message: AI -->
+<div class="flex justify-start w-full group">
+<div class="max-w-[85%] flex flex-col items-start gap-4">
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0 mt-1 border border-primary/30">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</div>
+<div class="glass-panel text-on-surface px-6 py-5 rounded-2xl rounded-tl-none border border-outline-variant/20 shadow-xl space-y-4">
+<p class="text-[15px] leading-relaxed">Processing multi-modal data points. Tech sector volatility (VIX-T) has spiked <span class="text-secondary font-bold">+4.2%</span> following recent semiconductor earning reports.</p>
+<!-- AI Generated Insight Card (Glassmorphism) -->
+<div class="bg-surface-container-high/40 rounded-xl p-5 border border-outline-variant/10 space-y-4">
+<div class="flex justify-between items-center">
+<h4 class="text-xs uppercase tracking-widest font-bold text-on-surface-variant">Live Sector Sentiment</h4>
+<span class="text-[10px] bg-secondary/10 text-secondary px-2 py-0.5 rounded-full font-bold">Bullish Bias</span>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="space-y-1">
+<p class="text-[10px] text-on-surface-variant uppercase">Volatility</p>
+<p class="text-lg font-black text-on-surface tracking-tighter">Med-High</p>
+</div>
+<div class="space-y-1">
+<p class="text-[10px] text-on-surface-variant uppercase">Liquidity</p>
+<p class="text-lg font-black text-on-surface tracking-tighter">98.2B</p>
+</div>
+<div class="space-y-1">
+<p class="text-[10px] text-on-surface-variant uppercase">Alpha</p>
+<p class="text-lg font-black text-secondary tracking-tighter">+12.4%</p>
+</div>
+</div>
+<!-- Trend Spark Component -->
+<div class="h-16 w-full bg-surface-container-lowest/50 rounded-lg relative overflow-hidden group/chart">
+<div class="absolute inset-0 bg-gradient-to-t from-secondary/5 to-transparent"></div>
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 40">
+<path class="drop-shadow-[0_0_8px_rgba(74,225,118,0.6)]" d="M0 35 Q 10 32, 20 36 T 40 25 T 60 28 T 80 15 T 100 10" fill="none" stroke="#4ae176" stroke-width="2.5"></path>
+</svg>
+</div>
+</div>
+<p class="text-[15px] leading-relaxed">Sentiment remains resilient despite short-term fluctuations. Recommend focusing on AI-infrastructure plays for the Q3 window.</p>
+</div>
+</div>
+<div class="flex items-center gap-4 ml-12">
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-medium">10:43 AM • AURA Intelligence</span>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary text-sm">content_copy</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary text-sm">thumb_up</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary text-sm">thumb_down</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Message: User (Follow-up) -->
+<div class="flex justify-end w-full group">
+<div class="max-w-[80%] flex flex-col items-end">
+<div class="bg-surface-bright text-on-surface px-6 py-4 rounded-2xl rounded-tr-none shadow-lg border border-outline-variant/10">
+<p class="text-[15px] leading-relaxed">Can you visualize the asset correlation matrix for my current portfolio holdings?</p>
+</div>
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant mt-2 font-medium">10:45 AM • User</span>
+</div>
+</div>
+<!-- Message: AI (Generating) -->
+<div class="flex justify-start w-full group">
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0 border border-primary/30">
+<span class="material-symbols-outlined text-primary text-lg animate-pulse" style="font-variation-settings: 'FILL' 1;">analytics</span>
+</div>
+<div class="flex items-center gap-1 mt-2">
+<div class="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+<div class="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+<div class="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Input Bar (Fixed Bottom) -->
+<div class="p-6 bg-surface-container-lowest/80 backdrop-blur-md border-t border-outline-variant/10">
+<div class="max-w-5xl mx-auto">
+<div class="relative flex items-center bg-surface-container-highest/60 border border-outline-variant/30 rounded-2xl p-2 focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary/50 transition-all shadow-2xl">
+<button class="p-3 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+<input class="flex-1 bg-transparent border-none text-on-surface focus:ring-0 placeholder:text-on-surface-variant/40 text-[15px] px-4" placeholder="Inquire about market trends, portfolio data, or strategy..." type="text"/>
+<div class="flex items-center gap-2 pr-2">
+<button class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest text-on-surface-variant hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined text-sm">mic</span>
+                            Voice
+                        </button>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container w-10 h-10 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(173,198,255,0.4)] hover:scale-105 active:scale-95 transition-all duration-200 group">
+<span class="material-symbols-outlined group-hover:translate-x-0.5 transition-transform" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+<div class="flex justify-center mt-3 gap-6">
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(74,225,118,0.6)]"></div>
+<span class="text-[9px] uppercase tracking-widest text-on-surface-variant font-bold">Node 04: Synchronized</span>
+</div>
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(173,198,255,0.6)]"></div>
+<span class="text-[9px] uppercase tracking-widest text-on-surface-variant font-bold">Latency: 14ms</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-outline-variant/10 z-50 flex justify-around py-3 px-6">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] uppercase font-bold tracking-tighter">Dash</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="text-[10px] uppercase font-bold tracking-tighter">Chat</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="text-[10px] uppercase font-bold tracking-tighter">Port</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">videocam</span>
+<span class="text-[10px] uppercase font-bold tracking-tighter">Video</span>
+</a>
+</nav>
+</body></html>

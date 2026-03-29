@@ -591,11 +591,18 @@ from services.portfolio import analyze_portfolio
 
 class PortfolioResponse(BaseModel):
     success: bool
-    portfolio_size: int
-    risk_score: float
-    avg_correlation: float
-    diversification: str
-    rebalance_suggestion: str
+    portfolio_summary: dict = None
+    stock_breakdown: list = None
+    weaknesses: list = None
+    recommendations: dict = None
+    insight: str = None
+    # Legacy fields for backwards compatibility
+    portfolio_size: int = None
+    risk_score: float = None
+    avg_correlation: float = None
+    diversification: str = None
+    rebalance_suggestion: str = None
+    error: str = None
 
 
 class PortfolioRequest(BaseModel):
@@ -622,6 +629,54 @@ async def portfolio_health_endpoint(request: PortfolioRequest):
         raise  # Re-raise HTTPExceptions
     except Exception as e:
         error_msg = f"Portfolio analysis error: {type(e).__name__}: {str(e)}"
+        logger.error(error_msg)
+        raise HTTPException(
+            status_code=500,
+            detail=error_msg
+        )
+
+
+class PortfolioFitRequest(BaseModel):
+    tickers: list[str] = Field(..., description="Current portfolio tickers")
+    test_stock: str = Field(..., description="Stock to analyze fit for")
+
+
+class PortfolioFitResponse(BaseModel):
+    success: bool
+    stock: str = None
+    fit_score: int = None
+    fit_level: str = None
+    reasons: list[str] = None
+    action: str = None
+    confidence: int = None
+    error: str = None
+
+
+@app.post(
+    "/portfolio-fit",
+    response_model=PortfolioFitResponse,
+    tags=["Portfolio"],
+)
+async def portfolio_fit_endpoint(request: PortfolioFitRequest):
+    """
+    💡 Analyze how well a new stock fits with the current portfolio.
+    Provides fit score, recommendations, and reasons.
+    """
+    try:
+        from services.portfolio import analyze_stock_fit
+        
+        result = analyze_stock_fit(request.tickers, request.test_stock)
+        
+        if not result.get("success"):
+            logger.error(f"Stock fit analysis failed: {result.get('error')}")
+            raise HTTPException(status_code=400, detail=result.get("error"))
+
+        return result
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        error_msg = f"Portfolio fit analysis error: {type(e).__name__}: {str(e)}"
         logger.error(error_msg)
         raise HTTPException(
             status_code=500,

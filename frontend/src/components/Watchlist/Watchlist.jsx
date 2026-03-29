@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { FaEye, FaChartBar, FaCircle } from 'react-icons/fa'
 import { getDemoResponse } from '../../constants/mockData'
 import { getAvailableStocks } from '../../services/stockApi'
 import './Watchlist.css'
@@ -7,16 +6,15 @@ import './Watchlist.css'
 function Watchlist() {
   const [watchlistData, setWatchlistData] = useState([])
   const [loading, setLoading] = useState(true)
+  const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
     const loadWatchlistData = async () => {
       setLoading(true)
       try {
-        // Fetch available stocks from API
         const response = await getAvailableStocks()
         const availableStocks = (response.stocks || []).map(s => s.symbol)
         
-        // Get demo responses for all available stocks
         const data = availableStocks.map(ticker => {
           const demoResponse = getDemoResponse(ticker)
           return {
@@ -28,11 +26,9 @@ function Watchlist() {
             total_signals: demoResponse.signal_details.length
           }
         })
-
         setWatchlistData(data)
       } catch (error) {
         console.error('Error loading watchlist:', error)
-        // Fallback to default stocks if API fails
         const defaultStocks = ['AAPL', 'RELIANCE.NS', 'TCS.NS', 'INFY.NS', 'MSFT', 'TSLA']
         const fallbackData = defaultStocks.map(ticker => {
           const demoResponse = getDemoResponse(ticker)
@@ -54,62 +50,28 @@ function Watchlist() {
     loadWatchlistData()
   }, [])
 
-  const getOpportunityColor = (level) => {
+  const getOpportunityStyle = (level) => {
     switch (level) {
-      case 'Strong':
-        return '#10b981'
-      case 'Moderate':
-        return '#f59e0b'
-      case 'Weak':
-        return '#3b82f6'
-      default:
-        return '#6b7280'
+      case 'Strong':   return { color: 'var(--secondary)', background: 'rgba(74, 225, 118, 0.1)', borderColor: 'rgba(74, 225, 118, 0.2)' }
+      case 'Moderate': return { color: 'var(--primary)', background: 'rgba(173, 198, 255, 0.1)', borderColor: 'rgba(173, 198, 255, 0.2)' }
+      case 'Weak':     return { color: 'var(--on-surface-variant)', background: 'rgba(66, 71, 84, 0.1)', borderColor: 'rgba(66, 71, 84, 0.2)' }
+      default:         return { color: 'var(--outline)', background: 'rgba(66, 71, 84, 0.05)', borderColor: 'rgba(66, 71, 84, 0.1)' }
     }
   }
 
-  const getActionColor = (action) => {
+  const getActionStyle = (action) => {
     switch (action) {
-      case 'BUY':
-        return '#10b981'
-      case 'HOLD':
-        return '#f59e0b'
-      case 'PASS':
-        return '#ef4444'
-      default:
-        return '#6b7280'
+      case 'BUY':  return { color: 'var(--secondary)', background: 'rgba(74, 225, 118, 0.1)', borderColor: 'rgba(74, 225, 118, 0.2)' }
+      case 'HOLD': return { color: 'var(--primary)', background: 'rgba(173, 198, 255, 0.1)', borderColor: 'rgba(173, 198, 255, 0.2)' }
+      case 'PASS': return { color: 'var(--tertiary-container)', background: 'rgba(255, 180, 171, 0.1)', borderColor: 'rgba(255, 180, 171, 0.2)' }
+      default:     return { color: 'var(--outline)', background: 'rgba(66, 71, 84, 0.05)', borderColor: 'rgba(66, 71, 84, 0.1)' }
     }
   }
 
-  const getOpportunityBgColor = (level) => {
-    switch (level) {
-      case 'Strong':
-        return 'rgba(16, 185, 129, 0.1)'
-      case 'Moderate':
-        return 'rgba(245, 158, 11, 0.1)'
-      case 'Weak':
-        return 'rgba(59, 130, 246, 0.1)'
-      default:
-        return 'rgba(107, 114, 128, 0.1)'
-    }
-  }
-
-  const getActionBgColor = (action) => {
-    switch (action) {
-      case 'BUY':
-        return 'rgba(16, 185, 129, 0.1)'
-      case 'HOLD':
-        return 'rgba(245, 158, 11, 0.1)'
-      case 'PASS':
-        return 'rgba(239, 68, 68, 0.1)'
-      default:
-        return 'rgba(107, 114, 128, 0.1)'
-    }
-  }
-
-  const getConfidenceBarColor = (confidence) => {
-    if (confidence >= 70) return '#10b981'
-    if (confidence >= 50) return '#f59e0b'
-    return '#3b82f6'
+  const getConfidenceColor = (conf) => {
+    if (conf >= 70) return 'var(--secondary)'
+    if (conf >= 50) return 'var(--primary)'
+    return 'var(--outline)'
   }
 
   if (loading) {
@@ -117,7 +79,7 @@ function Watchlist() {
       <div className="watchlist-container">
         <div className="watchlist-loading">
           <div className="spinner-small"></div>
-          <p>Loading watchlist data...</p>
+          <p>Initialising market matrix...</p>
         </div>
       </div>
     )
@@ -126,10 +88,13 @@ function Watchlist() {
   return (
     <div className="watchlist-container">
       <div className="watchlist-header">
-        <h3 className="watchlist-title"><FaEye style={{ marginRight: '8px' }} />Watchlist</h3>
+        <h3 className="watchlist-title">
+          <span className="material-symbols-outlined">visibility</span>
+          Market Watchlist
+        </h3>
         <div className="watchlist-info">
-          <span className="info-badge">{watchlistData.length} Stocks</span>
-          <span className="info-subtitle">Real-time Analysis</span>
+          <span className="info-badge">{watchlistData.length} Assets</span>
+          <span className="info-subtitle">Omni-Channel Stream</span>
         </div>
       </div>
 
@@ -137,32 +102,25 @@ function Watchlist() {
         <table className="watchlist-table">
           <thead>
             <tr className="table-header-row">
-              <th className="column-stock">Stock</th>
-              <th className="column-opportunity">Opportunity</th>
-              <th className="column-confidence">Confidence</th>
-              <th className="column-action">Action</th>
+              <th className="column-stock">Asset</th>
+              <th className="column-opportunity">Sentiment</th>
+              <th className="column-confidence">Quality</th>
+              <th className="column-action">Logic</th>
               <th className="column-signals">Signals</th>
             </tr>
           </thead>
           <tbody>
-            {watchlistData.map((item, idx) => (
+            {watchlistData.slice(0, showAll ? watchlistData.length : 5).map((item, idx) => (
               <tr key={idx} className="table-body-row">
                 <td className="cell-stock">
                   <div className="stock-info">
-                    <span className="stock-icon"><FaChartBar /></span>
+                    <span className="material-symbols-outlined stock-icon">monitoring</span>
                     <span className="stock-name">{item.stock}</span>
                   </div>
                 </td>
 
                 <td className="cell-opportunity">
-                  <span
-                    className="opportunity-badge"
-                    style={{
-                      color: getOpportunityColor(item.opportunity_level),
-                      backgroundColor: getOpportunityBgColor(item.opportunity_level),
-                      borderColor: getOpportunityColor(item.opportunity_level)
-                    }}
-                  >
+                  <span className="opportunity-badge" style={getOpportunityStyle(item.opportunity_level)}>
                     {item.opportunity_level}
                   </span>
                 </td>
@@ -173,24 +131,14 @@ function Watchlist() {
                     <div className="confidence-mini-bar">
                       <div
                         className="confidence-fill"
-                        style={{
-                          width: `${item.confidence}%`,
-                          backgroundColor: getConfidenceBarColor(item.confidence)
-                        }}
+                        style={{ width: `${item.confidence}%`, background: getConfidenceColor(item.confidence) }}
                       ></div>
                     </div>
                   </div>
                 </td>
 
                 <td className="cell-action">
-                  <span
-                    className="action-badge"
-                    style={{
-                      color: getActionColor(item.action),
-                      backgroundColor: getActionBgColor(item.action),
-                      borderColor: getActionColor(item.action)
-                    }}
-                  >
+                  <span className="action-badge" style={getActionStyle(item.action)}>
                     {item.action}
                   </span>
                 </td>
@@ -206,26 +154,28 @@ function Watchlist() {
             ))}
           </tbody>
         </table>
+        
+        {watchlistData.length > 5 && (
+          <div className="watchlist-show-more">
+            <button 
+              className="show-more-button"
+              onClick={() => setShowAll(!showAll)}
+            >
+              {showAll ? '▲ Show Less' : `▼ Show More (${watchlistData.length - 5} more stocks)`}
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="watchlist-footer">
         <div className="footer-legend">
           <div className="legend-item">
-            <span className="legend-label">Opportunity Levels:</span>
-            <span className="legend-values">
-              <span className="legend-value" style={{ color: '#10b981' }}><FaCircle style={{ marginRight: '4px' }} />Strong</span>
-              <span className="legend-value" style={{ color: '#f59e0b' }}><FaCircle style={{ marginRight: '4px' }} />Moderate</span>
-              <span className="legend-value" style={{ color: '#3b82f6' }}><FaCircle style={{ marginRight: '4px' }} />Weak</span>
-              <span className="legend-value" style={{ color: '#6b7280' }}><FaCircle style={{ marginRight: '4px' }} />None</span>
-            </span>
-          </div>
-          <div className="legend-item">
-            <span className="legend-label">Actions:</span>
-            <span className="legend-values">
-              <span className="legend-value" style={{ color: '#10b981' }}>BUY</span>
-              <span className="legend-value" style={{ color: '#f59e0b' }}>HOLD</span>
-              <span className="legend-value" style={{ color: '#ef4444' }}>PASS</span>
-            </span>
+            <span className="legend-label">Confidence:</span>
+            <div className="legend-values">
+              <span className="legend-value" style={{ color: 'var(--secondary)' }}>High</span>
+              <span className="legend-value" style={{ color: 'var(--primary)' }}>Medium</span>
+              <span className="legend-value" style={{ color: 'var(--outline)' }}>Low</span>
+            </div>
           </div>
         </div>
       </div>

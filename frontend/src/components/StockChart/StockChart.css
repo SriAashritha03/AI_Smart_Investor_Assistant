@@ -1,196 +1,127 @@
+/* ============================================================================
+   StockChart.css — Asset Performance Chart 
+   Matches the main chart area in dashboard_stitch.html
+   ============================================================================ */
+
 .stock-chart-container {
-  background: linear-gradient(135deg, #1a2847 0%, #162239 100%);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 12px;
-  padding: 20px;
-  margin: 16px 0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(15, 23, 42, 0.3);
-  transition: all 0.3s ease;
-  animation: chart-enter 0.4s ease-out;
+  background: transparent;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.stock-chart-container:hover {
-  border-color: rgba(59, 130, 246, 0.4);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 15px 30px rgba(15, 23, 42, 0.4);
-  transform: translateY(-2px);
-}
-
-@keyframes chart-enter {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* ── Header ─────────────────────────────────────────────────────────── */
 .chart-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid rgba(59, 130, 246, 0.1);
+  border-bottom: 1px solid rgba(66, 71, 84, 0.15);
+  padding-bottom: 20px;
 }
 
 .chart-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
-  color: #e5e7eb;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--on-surface-variant);
   margin: 0;
-  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .chart-meta {
   display: flex;
-  gap: 24px;
+  gap: 32px;
   align-items: center;
 }
 
 .meta-item {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 8px;
-  font-size: 12px;
 }
 
 .meta-label {
-  color: #9ca3af;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
+  color: rgba(194, 198, 214, 0.5);
 }
 
 .meta-value {
-  color: #60a5fa;
+  font-size: 13px;
   font-weight: 700;
-  padding: 4px 8px;
-  background: rgba(59, 130, 246, 0.1);
-  border-radius: 4px;
+  color: var(--primary);
+  font-family: 'JetBrains Mono', monospace;
 }
 
+/* ── Chart Wrapper ───────────────────────────────────────────────────── */
 .chart-wrapper {
   position: relative;
   width: 100%;
-  height: 300px;
-  background: rgba(15, 23, 42, 0.4);
-  border-radius: 8px;
-  padding: 12px;
+  height: 480px;
+  background: rgba(10, 14, 25, 0.3);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(66, 71, 84, 0.1);
+  padding: 32px;
   overflow: hidden;
-  transition: background 0.3s ease;
+  transition: background 0.2s;
 }
 
 .stock-chart-container:hover .chart-wrapper {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(10, 14, 25, 0.4);
 }
 
 .chart-wrapper canvas {
   width: 100% !important;
   height: 100% !important;
-  max-height: 280px;
 }
 
+/* ── Footer ──────────────────────────────────────────────────────────── */
 .chart-footer {
   margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(107, 114, 128, 0.1);
+  padding: 12px 20px;
+  background: rgba(173, 198, 255, 0.03);
+  border: 1px solid rgba(173, 198, 255, 0.05);
+  border-radius: var(--radius-lg);
 }
 
 .chart-note {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--on-surface-variant);
   margin: 0;
-  letter-spacing: 0.3px;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.7;
 }
 
-/* Responsive Design */
+/* ── Responsive ─────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  .stock-chart-container {
-    padding: 16px;
-    margin: 12px 0;
-  }
-
-  .chart-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-
-  .chart-meta {
-    width: 100%;
-    gap: 16px;
-  }
-
   .chart-wrapper {
-    height: 250px;
+    height: 380px;
+    padding: 20px;
   }
 }
 
 @media (max-width: 768px) {
-  .stock-chart-container {
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 8px;
-  }
-
-  .chart-title {
-    font-size: 14px;
-  }
-
-  .chart-meta {
-    flex-direction: column;
-    gap: 6px;
-    width: 100%;
-  }
-
-  .meta-item {
-    font-size: 11px;
-  }
-
-  .meta-label {
-    font-size: 10px;
-  }
-
-  .chart-wrapper {
-    height: 200px;
-    padding: 8px;
-  }
-
-  .chart-note {
-    font-size: 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .stock-chart-container {
-    padding: 10px;
-    margin: 6px 0;
-  }
-
   .chart-header {
-    gap: 4px;
-    margin-bottom: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
   }
-
-  .chart-title {
-    font-size: 12px;
-  }
-
-  .chart-wrapper {
-    height: 180px;
-    padding: 6px;
-  }
-
+  
   .chart-meta {
-    gap: 4px;
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
   }
-
-  .meta-item {
-    font-size: 10px;
-    gap: 4px;
+  
+  .chart-wrapper {
+    height: 320px;
   }
 }

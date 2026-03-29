@@ -84,6 +84,9 @@ def generate_investment_advice(question: str, analysis: Dict, query_type: str = 
     """
     Generate investment advice using Gemini based on stock analysis.
     
+    IMPROVED: Now uses unified decision data including signal_summary, explanation_block,
+    and score_breakdown for more consistent and explainable insights.
+    
     Args:
         question: User's investment question
         analysis: Stock analysis data from analyze_stock()
@@ -109,70 +112,110 @@ def generate_investment_advice(question: str, analysis: Dict, query_type: str = 
         signals_text = ', '.join(signals) if signals else 'None (no clear momentum)'
         action = analysis.get('action', 'AVOID')
         
-        # Prepare analysis summary
+        # IMPROVED: Use unified decision data if available
+        signal_summary = analysis.get('signal_summary', signals_text)
+        explanation_block = analysis.get('explanation_block', [])
+        score_breakdown = analysis.get('score_breakdown', {})
+        bearish_patterns = analysis.get('bearish_patterns', [])
+        bullish_patterns = analysis.get('bullish_patterns', [])
+        
+        # Build enhanced analysis summary
+        score_text = ""
+        if score_breakdown:
+            score_text = f"""
+
+SCORE BREAKDOWN:
+- Technical: {score_breakdown.get('technical', 0):.0f}/100
+- Sentiment: {score_breakdown.get('sentiment', 0):.0f}/100
+- Events: {score_breakdown.get('events', 0):.0f}/100"""
+        
+        patterns_text = ""
+        if bearish_patterns or bullish_patterns:
+            patterns_text = f"""
+
+PATTERNS DETECTED:
+- Bullish: {', '.join(bullish_patterns) if bullish_patterns else 'None'}
+- Bearish: {', '.join(bearish_patterns) if bearish_patterns else 'None'}"""
+        
+        explanation_text = ""
+        if explanation_block:
+            explanation_text = "\n".join([f"- {e}" for e in explanation_block[:3]])
+            explanation_text = f"""
+
+WHY THIS DECISION:
+{explanation_text}"""
+        
         analysis_summary = f"""
 Stock: {stock}
 Opportunity Level: {analysis.get('opportunity_level', 'N/A')}
 Confidence: {confidence}% ({confidence_label})
 Action: {action}
-Signals Triggered: {signals_text}
+
+UNIFIED DECISION DATA:
+- Signal Summary: {signal_summary}
+- Data Points: {analysis.get('data_points', 'N/A')}
+{score_text}{patterns_text}{explanation_text}
+
 Summary: {analysis.get('summary', 'No summary available')}
 """
         
         # STRICT CONTROL SYSTEM PROMPT - Deterministic Decision Engine
+        # IMPROVED: Emphasize using the unified decision data
         system_prompt = f"""You are a STRICT financial decision engine.
 
 HARD RULES:
 1. ONLY use provided STOCK ANALYSIS DATA
-2. Each section MUST be on new line
-3. DO NOT compress or change format
-4. NO generic hedging language
+2. Prioritize unified decision data (Signal Summary, Patterns, Score Breakdown)
+3. Each section MUST be on new line
+4. DO NOT compress or change format
+5. NO generic hedging language
+6. If bearish patterns present, acknowledge them
 
 OUTPUT FORMAT (MANDATORY):
 
-Decision: <BUY / HOLD / AVOID>
+Decision: <BUY / HOLD / SELL / AVOID>
 
 Why:
-- Signals: <list OR "no clear signals">
+- Primary signal: <specific reason from data>
 - Confidence: <X>% (<Low/Moderate/High>)
-- Insight: <1-line interpretation>
+- Pattern confirmation: <bearing patterns or signals>
 
 Next Step:
-<ONE specific actionable suggestion>
+<ONE specific actionable suggestion based on signal_summary>
 
 FORMAT RULES:
 - Max 7 lines total
 - Keep format rigid
 - Be confident and direct
+- If Death Cross or bearish patterns → lean SELL
+- If no bullish signals → default to HOLD or AVOID
 
-If no signals → exactly: "no clear signals"
-If confidence < 30% → add caution note
-
-Example:
+Example with bearish:
 
 Decision: HOLD
 
 Why:
-- Signals: RSI reading above 70
-- Confidence: 55% (Moderate)
-- Insight: Early overbuy pattern forming
+- Primary signal: Death Cross detected despite lack of bullish confirmation
+- Confidence: 45% (Moderate) 
+- Pattern confirmation: Bearish reversal setup
 
 Next Step:
-Watch for pullback entry near $150
+Monitor for recovery above moving averages before reconsidering entry
 
-You are deterministic. Not chatbot."""
+You are deterministic. Use the provided unified decision data. Not a chatbot."""
         
-        # Inject stock explicitly and provide data in prompt
+        # Inject stock explicitly and provide enriched data in prompt
         prompt = f"""USER QUESTION: {question}
 
 STOCK: {stock}
 
-STOCK ANALYSIS DATA:
+UNIFIED ANALYSIS DATA (from Decision Fusion Engine):
 {analysis_summary}
 
-Apply the strict format rules. Generate your decision:"""
+Apply the strict format rules. Use the unified decision data. Generate your deterministic decision:"""
         
-        logger.info(f"Generating deterministic advice for {stock} - Confidence: {confidence}%")
+        logger.info(f"Generating deterministic advice for {stock} - Confidence: {confidence}% | Action: {action}")
+        logger.info(f"Using unified decision data: Signal Summary: {signal_summary[:50]}...")
         
         # Call Gemini API
         client = genai.GenerativeModel(
