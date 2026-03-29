@@ -18,6 +18,7 @@ from non_technical_signals_v2 import analyze_news_sentiment, detect_event_signal
 from signal_detector import detect_signals
 from stock_data_fetcher import get_stock_data
 from opportunity_radar import generate_opportunity
+from .alerts import generate_stock_alerts
 
 # Configure logging
 logging.basicConfig(
@@ -129,6 +130,19 @@ def analyze_stock(ticker: str) -> Dict:
             f"Confidence: {opportunity['confidence']}%"
         )
 
+        # Step 3.5: Generate smart alerts
+        logger.debug("Generating smart alerts...")
+        alerts_data = generate_stock_alerts(
+            stock_ticker=ticker,
+            signals_triggered=opportunity["signals_triggered"],
+            signal_details=opportunity["signal_details"],
+            chart_patterns=chart_patterns,
+            opportunity_level=opportunity["opportunity_level"],
+            confidence=opportunity["confidence"],
+            action=opportunity["action"],
+        )
+        logger.info(f"Generated {alerts_data['alert_count']} alerts")
+
         # Step 4: Build comprehensive response
         response = {
             "success": True,
@@ -148,6 +162,8 @@ def analyze_stock(ticker: str) -> Dict:
                 "pattern_count": chart_patterns["pattern_count"],
                 "recommendation": chart_patterns["recommendation"],
                 "recommendation_reasoning": chart_patterns["recommendation_reasoning"],
+            },
+            "alerts": alerts_data["alerts"],
             },
             "news_sentiment": {
                 "sentiment_label": news_sentiment["sentiment_label"],
