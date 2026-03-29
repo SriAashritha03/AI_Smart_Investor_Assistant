@@ -29,6 +29,15 @@ from pydantic import BaseModel, Field
 from services.analyzer import analyze_stock, batch_analyze_stocks
 from services.chat import process_chat_message
 
+# Configure FFmpeg for moviepy (using imageio-ffmpeg)
+try:
+    import imageio_ffmpeg
+    os.environ['IMAGEIO_FFMPEG_EXE'] = imageio_ffmpeg.get_ffmpeg_exe()
+    import moviepy.config
+    moviepy.config.IMAGEMAGICK_BINARY = imageio_ffmpeg.get_ffmpeg_exe()
+except:
+    pass
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -685,29 +694,235 @@ async def portfolio_fit_endpoint(request: PortfolioFitRequest):
         
 from fastapi.responses import FileResponse
 from fastapi import Query, HTTPException
-from services.video_engine import generate_market_video
+from services.video_engine import generate_market_video, generate_structured_video_report, VIDEOS_DIR
 
 
 @app.get("/generate-video")
 async def generate_video(ticker: str = Query(...)):
     """
-    Generate AI video for selected stock
+    Generate AI video for selected stock (Legacy Endpoint)
+    
+    Returns a simple MP4 with stock chart and price narration.
+    For advanced video with insights, use /generate-structured-video instead.
     """
 
     if not ticker:
         raise HTTPException(status_code=400, detail="Ticker is required")
 
     try:
+        logger.info(f"Generating legacy video for {ticker}")
         video_path = generate_market_video(ticker)
+        
+        if not os.path.exists(video_path):
+            raise HTTPException(
+                status_code=500, 
+                detail=f"Video file not created: {video_path}"
+            )
 
+        logger.info(f"✓ Video generated successfully: {video_path}")
+        
         return FileResponse(
             path=video_path,
             media_type="video/mp4",
-            filename="video.mp4"
+            filename=f"{ticker}_video.mp4"
         )
 
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        error_msg = f"Video generation failed: {type(e).__name__}: {str(e)}"
+        logger.error(error_msg)
+        raise HTTPException(status_code=500, detail=error_msg)
+
+
+@app.get("/get-video/{filename}", tags=["Video"])
+async def get_video(filename: str):
+    """
+    Serve a generated video file from the videos/ directory.
+    
+    Args:
+        filename: Name of the video file (e.g., "video_MSFT_abc123.mp4")
+        
+    Returns:
+        FileResponse: MP4 video file
+        
+    Example:
+        GET /get-video/video_MSFT_abc123.mp4
+    """
+    try:
+        import os
+        from pathlib import Path
+        
+        # Security: validate filename to prevent path traversal
+        if ".." in filename or "/" in filename or "\\" in filename:
+            raise HTTPException(status_code=400, detail="Invalid filename")
+        
+        video_path = os.path.join(VIDEOS_DIR, filename)
+        
+        # Verify file exists and is in the correct directory
+        if not os.path.exists(video_path):
+            raise HTTPException(status_code=404, detail=f"Video file not found: {filename}")
+        
+        if not os.path.isfile(video_path):
+            raise HTTPException(status_code=400, detail=f"Invalid path: {filename}")
+        
+        logger.info(f"Serving video file: {filename}")
+        return FileResponse(
+            path=video_path,
+            media_type="video/mp4",
+            filename=filename
+        )
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        error_msg = f"Error serving video: {str(e)}"
+        logger.error(error_msg)
+        raise HTTPException(status_code=500, detail=error_msg)
+
+
+class StructuredVideoRequest(BaseModel):
+    """Request model for structured video report."""
+    ticker: str = Field(..., description="Stock ticker symbol", example="AAPL")
+
+
+class StructuredVideoResponse(BaseModel):
+    """Response model for structured video report."""
+    success: bool = Field(..., description="Whether video generation succeeded")
+    ticker: str = Field(..., description="Stock ticker")
+    video_path: str = Field(..., description="Path to generated MP4 video")
+    frames: list = Field(..., description="List of video frames with content")
+    insights: dict = Field(..., description="Extracted AI insights")
+    recommendation: dict = Field(..., description="Final recommendation")
+    generated_at: str = Field(..., description="ISO timestamp")
+    summary: dict = Field(..., description="High-level summary")
+
+
+@app.post(
+    "/generate-structured-video",
+    response_model=StructuredVideoResponse,
+    tags=["Video"],
+)
+async def generate_structured_video_endpoint(request: StructuredVideoRequest) -> Dict:
+    """
+    Generate AI-driven structured video report with intelligent insights.
+    
+    Creates a professional video with:
+    - **Frame 1 (Analysis)**: Trend direction, signals detected, momentum strength, short outlook
+    - **Frame 2 (News)**: Key market drivers with top 2-3 headlines
+    - **Frame 3 (Recommendation)**: BUY/HOLD/SELL with confidence and reasoning
+    
+    Each frame includes:
+    - High-quality visual overlay with text
+    - AI-generated narration via text-to-speech
+    - Structured metadata for downstream processing
+    
+    Args:
+        request (StructuredVideoRequest): Request with stock ticker
+        
+    Returns:
+        Dict: Video path, frame details, insights, recommendation, and summary
+        
+    Example:
+        POST /generate-structured-video
+        {
+            "ticker": "AAPL"
+        }
+        
+        Response:
+        {
+            "success": true,
+            "ticker": "AAPL",
+            "video_path": "video_AAPL_abc123.mp4",
+            "frames": [
+                {
+                    "type": "analysis",
+                    "title": "AAPL AI Insights",
+                    "image": "frame_insight_xyz.png",
+                    "narration": "Based on current market analysis...",
+                    "content": {...}
+                },
+                {
+                    "type": "news",
+                    "title": "AAPL Market Drivers",
+                    "content": {"headlines": [...]}
+                },
+                {
+                    "type": "recommendation",
+                    "title": "AAPL Recommendation",
+                    "content": {
+                        "action": "BUY",
+                        "confidence": "75%",
+                        "reasons": [...]
+                    }
+                }
+            ],
+            "insights": {
+                "trend": "🟢 BULLISH",
+                "trend_direction": "Uptrend",
+                "signal_detected": "Breakout, Volume Spike",
+                "momentum_strength": "STRONG (75%)",
+                "short_outlook": "BULLISH - Entry opportunity"
+            },
+            "recommendation": {
+                "action": "BUY",
+                "action_emoji": "🟢",
+                "confidence": "75%",
+                "reasons": ["Breakout pattern confirmed", "Positive sentiment", "Favorable opportunity"]
+            },
+            "summary": {
+                "trend": "🟢 BULLISH",
+                "action": "BUY",
+                "confidence": "75%",
+                "key_reasons": [...]
+            }
+        }
+    """
+    ticker = request.ticker.strip().upper()
+    
+    logger.info(f"Structured video generation requested for {ticker}")
+    
+    try:
+        # First, analyze the stock
+        logger.debug(f"Analyzing stock {ticker}...")
+        analysis = analyze_stock(ticker)
+        
+        if not analysis.get("success", False):
+            logger.warning(f"Analysis failed for {ticker}: {analysis.get('error')}")
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "error": f"Analysis failed: {analysis.get('error')}",
+                    "stock": ticker,
+                }
+            )
+        
+        # Generate structured video report
+        logger.debug(f"Generating structured video for {ticker}...")
+        report = generate_structured_video_report(ticker, analysis)
+        
+        if not report.get("success", False):
+            logger.error(f"Video generation failed for {ticker}: {report.get('error')}")
+            raise HTTPException(
+                status_code=500,
+                detail={
+                    "error": f"Video generation failed: {report.get('error')}",
+                    "stock": ticker,
+                }
+            )
+        
+        logger.info(f"✓ Successfully generated structured video for {ticker}: {report['video_path']}")
+        return report
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        error_msg = f"Structured video generation error for {ticker}: {type(e).__name__}: {str(e)}"
+        logger.error(error_msg)
+        raise HTTPException(
+            status_code=500,
+            detail={"error": error_msg, "stock": ticker}
+        )
 
 
 # ============================================================================
