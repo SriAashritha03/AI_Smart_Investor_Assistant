@@ -27,6 +27,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from services.analyzer import analyze_stock, batch_analyze_stocks
+from services.chat import process_chat_message
 
 # Configure logging
 logging.basicConfig(
@@ -165,6 +166,8 @@ class AnalyzeStockResponse(BaseModel):
     summary: str = Field(..., description="Human-readable opportunity summary")
     data_points: int = Field(..., description="Number of trading days analyzed")
     chart_patterns: dict = Field(..., description="Chart patterns analysis with success rates")
+    news_sentiment: dict = Field(..., description="News sentiment analysis with NLP")
+    event_signals: dict = Field(..., description="Event signals (price spikes, volume surges)")
 
 
 class ErrorResponse(BaseModel):
@@ -443,6 +446,109 @@ async def portfolio_health_endpoint(request: PortfolioRequest):
         raise  # Re-raise HTTPExceptions
     except Exception as e:
         error_msg = f"Portfolio analysis error: {type(e).__name__}: {str(e)}"
+        logger.error(error_msg)
+        raise HTTPException(
+            status_code=500,
+            detail=error_msg
+        )
+
+
+# ============================================================================
+# Chat Endpoint
+# ============================================================================
+
+class ChatRequest(BaseModel):
+    message: str = Field(..., description="User message for the financial assistant", example="What stocks should I buy?")
+
+
+class ChatResponse(BaseModel):
+    success: bool
+    reply: str
+    type: str = Field("general", description="Query type: stock, portfolio, comparison, general")
+    suggestions: Optional[list[str]] = None
+    ticker: Optional[str] = None
+    tickers: Optional[list[str]] = None
+
+
+@app.post(
+    "/chat",
+    response_model=ChatResponse,
+    tags=["Chat"],
+)
+async def chat_endpoint(request: ChatRequest) -> Dict:
+    """
+    AI-Powered Financial Chat Assistant.
+    
+    Uses Gemini 2.5 Flash AI to provide intelligent investment advice.
+    
+    Supports:
+    - Stock Analysis: "Should I buy AAPL?"
+    - Stock Comparison: "AAPL vs MSFT?"
+    - Portfolio Review: "Is my portfolio good?"
+    - General Knowledge: "What is a breakout?"
+    
+    Features:
+    - Automatic stock ticker extraction
+    - Real-time stock analysis integration
+    - AI-generated contextual responses
+    - Investment recommendations
+    
+    Args:
+        request (ChatRequest): User message containing investment question
+        
+    Returns:
+        ChatResponse: AI-generated reply with type and suggestions
+        
+    Example:
+        POST /chat
+        {
+            "message": "Should I buy Apple stock?"
+        }
+        
+        Response (200 OK):
+        {
+            "success": true,
+            "reply": "Based on AAPL analysis...",
+            "type": "stock",
+            "ticker": "AAPL",
+            "suggestions": ["Deep analysis", "Compare stocks", ...]
+        }
+    """
+    try:
+        message = request.message.strip()
+        
+        if not message:
+            raise HTTPException(status_code=400, detail="Message cannot be empty")
+
+        logger.info(f"Chat request received: {message[:60]}...")
+        
+        result = process_chat_message(message)
+
+        if not result.get("success"):
+            logger.error(f"Chat processing failed: {result.get('error')}")
+            raise HTTPException(status_code=400, detail=result.get("error"))
+
+        # Format response with all fields
+        response_data = {
+            "success": result.get("success", True),
+            "reply": result.get("reply", "Unable to generate response"),
+            "type": result.get("type", "general"),
+            "suggestions": result.get("suggestions", [])
+        }
+        
+        # Add optional fields if present
+        if result.get("ticker"):
+            response_data["ticker"] = result.get("ticker")
+        if result.get("tickers"):
+            response_data["tickers"] = result.get("tickers")
+        
+        logger.info(f"Chat response generated successfully (type: {response_data['type']})")
+        return response_data
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        error_msg = f"Chat error: {type(e).__name__}: {str(e)}"
         logger.error(error_msg)
         raise HTTPException(
             status_code=500,

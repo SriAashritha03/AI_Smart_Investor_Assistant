@@ -14,6 +14,7 @@ import logging
 from typing import Dict
 
 from chart_patterns import analyze_chart_patterns
+from non_technical_signals_v2 import analyze_news_sentiment, detect_event_signals
 from signal_detector import detect_signals
 from stock_data_fetcher import get_stock_data
 from opportunity_radar import generate_opportunity
@@ -34,7 +35,10 @@ def analyze_stock(ticker: str) -> Dict:
     1. Validates and fetches 6 months of historical stock data
     2. Detects four trading signals (volume spike, price surge, uptrend, breakout)
     3. Classifies opportunity level based on signal combination
-    4. Generates confidence score and investment recommendation
+    4. Analyzes chart patterns for trend validation
+    5. Analyzes news sentiment using lightweight keyword matching
+    6. Detects event signals (price spikes, volume surges)
+    7. Generates confidence score and investment recommendation
 
     Args:
         ticker (str): Stock ticker symbol (e.g., 'RELIANCE.NS', 'AAPL', 'GOOGL').
@@ -53,6 +57,21 @@ def analyze_stock(ticker: str) -> Dict:
                 "signal_details": List[Dict],
                 "summary": str,
                 "data_points": int,
+                "chart_patterns": Dict,
+                "news_sentiment": {
+                    "sentiment_label": str ("Positive"/"Neutral"/"Negative"),
+                    "sentiment_score": float (-1.0 to +1.0),
+                    "articles_analyzed": int,
+                    "confidence": float (0-100),
+                    "summary": str,
+                    "top_headlines": List[str]
+                },
+                "event_signals": {
+                    "events_detected": List[str],
+                    "price_spike": Dict,
+                    "volume_surge": Dict,
+                    "summary": str
+                },
                 "error": str (only if success=False)
             }
 
@@ -91,6 +110,17 @@ def analyze_stock(ticker: str) -> Dict:
         chart_patterns = analyze_chart_patterns(stock_data, ticker)
         logger.info(f"Chart pattern analysis complete. Strength: {chart_patterns['overall_pattern_strength']}")
 
+        # Step 2.6: Analyze news sentiment
+        logger.debug("Analyzing news sentiment...")
+        news_sentiment = analyze_news_sentiment(ticker)
+        logger.info(f"News sentiment: {news_sentiment['sentiment_label']} (score: {news_sentiment['sentiment_score']})")
+
+        # Step 2.7: Detect event signals
+        logger.debug("Detecting event signals...")
+        event_signals = detect_event_signals(stock_data, ticker)
+        has_events = len(event_signals.get("events_detected", [])) > 0
+        logger.info(f"Event signals detected: {event_signals['events_detected'] if has_events else 'None'}")
+
         # Step 3: Generate opportunity classification
         logger.debug("Generating opportunity classification...")
         opportunity = generate_opportunity(stock_data, signals, ticker)
@@ -118,7 +148,25 @@ def analyze_stock(ticker: str) -> Dict:
                 "pattern_count": chart_patterns["pattern_count"],
                 "recommendation": chart_patterns["recommendation"],
                 "recommendation_reasoning": chart_patterns["recommendation_reasoning"],
-            }
+            },
+            "news_sentiment": {
+                "sentiment_label": news_sentiment["sentiment_label"],
+                "sentiment_score": news_sentiment["sentiment_score"],
+                "articles_analyzed": news_sentiment["articles_analyzed"],
+                "confidence": news_sentiment["confidence"],
+                "summary": news_sentiment["summary"],
+                "top_headlines": [
+                    h["headline"] for h in news_sentiment["headlines"][:3]
+                ]
+                if news_sentiment["headlines"]
+                else [],
+            },
+            "event_signals": {
+                "events_detected": event_signals["events_detected"],
+                "price_spike": event_signals["price_spike"],
+                "volume_surge": event_signals["volume_surge"],
+                "summary": event_signals["summary"],
+            },
         }
 
         logger.info(f"Analysis completed successfully for {ticker}")

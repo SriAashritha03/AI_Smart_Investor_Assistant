@@ -1,7 +1,12 @@
 import React from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import './Header.css'
 
 function Header({ demoMode = true, onDemoModeChange = () => {} }) {
+  const location = useLocation()
+
+  const isActive = (path) => location.pathname === path ? 'active' : ''
+
   return (
     <header className="header">
       <div className="header-content">
@@ -12,6 +17,17 @@ function Header({ demoMode = true, onDemoModeChange = () => {} }) {
           </h1>
           <p className="header-subtitle">Technical Signal Analysis & Opportunity Detection</p>
         </div>
+
+        {/* Navigation Bar */}
+        <nav className="navbar">
+          <Link to="/" className={`nav-link ${isActive('/')}`}>
+            📈 Dashboard
+          </Link>
+          <Link to="/chat" className={`nav-link ${isActive('/chat')}`}>
+            💬 Chat
+          </Link>
+        </nav>
+
         <div className="header-right">
           {/* Demo Mode Toggle */}
           <div className="demo-mode-section">

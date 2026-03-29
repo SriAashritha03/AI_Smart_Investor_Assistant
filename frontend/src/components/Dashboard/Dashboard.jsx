@@ -35,6 +35,77 @@ function Dashboard({ data }) {
     }
   }
 
+  const getSignalStrengthColor = (strength) => {
+    switch (strength) {
+      case 'Strong':
+        return '#22c55e'
+      case 'Moderate':
+        return '#f59e0b'
+      case 'Weak':
+        return '#3b82f6'
+      default:
+        return '#6b7280'
+    }
+  }
+
+  const getSignalStrengthBadge = (strength) => {
+    switch (strength) {
+      case 'Strong':
+        return '🟢'
+      case 'Moderate':
+        return '🟡'
+      case 'Weak':
+        return '🔵'
+      default:
+        return '⚪'
+    }
+  }
+
+  const generateCombinedInsight = () => {
+    const hasBreakout = data.signals_triggered.includes('Breakout')
+    const hasUptrend = data.signals_triggered.includes('Uptrend')
+    const hasVolumeSpike = data.signals_triggered.includes('Volume Spike')
+    const hasPriceSurge = data.signals_triggered.includes('Price Surge')
+    const sentiment = data.news_sentiment?.sentiment_label?.toLowerCase() || ''
+    const hasPositiveSentiment = sentiment === 'positive'
+    const hasNegativeSentiment = sentiment === 'negative'
+    const hasPriceSpike = data.event_signals?.events_detected?.includes('Price Spike')
+    const hasVolumeSurge = data.event_signals?.events_detected?.includes('Volume Surge')
+
+    // Strong bullish setup
+    if ((hasBreakout || hasUptrend) && (hasVolumeSpike || hasVolumeSurge) && hasPositiveSentiment) {
+      return '💡 Strong bullish setup: Positive sentiment + Technical breakout + Volume confirmation = High conviction opportunity'
+    }
+
+    // Moderate bullish
+    if ((hasBreakout || hasUptrend) && hasPositiveSentiment) {
+      return '💡 Moderate bullish setup: Positive sentiment backing technical strength = Solid opportunity'
+    }
+
+    // Price action with momentum
+    if ((hasPriceSurge || hasPriceSpike) && (hasVolumeSpike || hasVolumeSurge)) {
+      return '💡 Strong momentum detected: Price surge + Volume increase = Short-term buying pressure'
+    }
+
+    // Bearish setup
+    if (hasNegativeSentiment && data.opportunity_level === 'None') {
+      return '⚠️ Bearish sentiment: Negative news with no technical support = Avoid until sentiment improves'
+    }
+
+    // Mixed signals
+    if (data.signals_triggered.length > 0 && hasPositiveSentiment) {
+      return '💡 Mixed signals with positive sentiment: Monitor for confirmation before entry'
+    }
+
+    // No clear setup
+    if (data.signals_triggered.length === 0) {
+      return '👀 No clear signals detected: Waiting for technical setup or sentiment change'
+    }
+
+    // Default
+    return '📊 Monitor for emerging opportunity based on current signals and market sentiment'
+  }
+
   return (
     <div className={`dashboard-container ${data.isDemo ? 'demo-mode' : ''}`}>
       {/* Demo Mode Indicator */}
@@ -44,6 +115,14 @@ function Dashboard({ data }) {
           <span className="demo-indicator-text">Demo Mode - Using Sample Data</span>
         </div>
       )}
+
+      {/* Combined Insight Section - HIGH IMPACT */}
+      <div className="dashboard-section combined-insight-section">
+        <div className="combined-insight-content">
+          <div className="combined-insight-label">💡 AI Insight</div>
+          <div className="combined-insight-text">{generateCombinedInsight()}</div>
+        </div>
+      </div>
 
       {/* Stock Chart Section */}
       <StockChart 
@@ -77,6 +156,7 @@ function Dashboard({ data }) {
               ></div>
             </div>
           </div>
+          <span className="confidence-explanation">Based on combined signals + sentiment analysis</span>
         </div>
 
         <div className="summary-card action-card">
@@ -122,7 +202,7 @@ function Dashboard({ data }) {
         {/* Signals Detail */}
         <div className="dashboard-section signals-section">
           <div className="section-header">
-            <h3 className="section-title">⚡ Signal Details</h3>
+            <h3 className="section-title">🎯 Opportunity Radar - Signal Details</h3>
             <span className="signal-count">
               {data.signals_triggered.length}/{data.signal_details.length} Triggered
             </span>
@@ -141,9 +221,11 @@ function Dashboard({ data }) {
                     <span className="signal-name">{signal.name}</span>
                   </div>
                   {signal.triggered && (
-                    <span className={`signal-strength strength-${signal.strength.toLowerCase()}`}>
-                      {signal.strength}
-                    </span>
+                    <div className="signal-badges">
+                      <span className={`signal-strength strength-${signal.strength.toLowerCase()}`}>
+                        {getSignalStrengthBadge(signal.strength)} {signal.strength}
+                      </span>
+                    </div>
                   )}
                 </div>
                 <p className="signal-reasoning">{signal.reasoning}</p>
@@ -169,6 +251,142 @@ function Dashboard({ data }) {
               <p className="no-signals">No signals currently triggered</p>
             )}
           </div>
+        </div>
+
+        {/* News Sentiment Section */}
+        <div className="dashboard-section news-sentiment-section">
+          <div className="section-header">
+            <h3 className="section-title">📰 News Sentiment</h3>
+            {data.news_sentiment && (
+              <span className={`sentiment-badge sentiment-${data.news_sentiment.sentiment_label.toLowerCase()}`}>
+                {data.news_sentiment.sentiment_label}
+              </span>
+            )}
+          </div>
+          {data.news_sentiment ? (
+            <div className="section-content">
+              <div className="sentiment-score-card">
+                <span className="sentiment-label">Overall Sentiment</span>
+                <div className="sentiment-display">
+                  <span className={`sentiment-value sentiment-${data.news_sentiment.sentiment_label.toLowerCase()}`}>
+                    {data.news_sentiment.sentiment_score > 0 ? '+' : ''}{data.news_sentiment.sentiment_score.toFixed(2)}
+                  </span>
+                  <span className="sentiment-range">(-1.0 to +1.0)</span>
+                </div>
+              </div>
+
+              <div className="news-stats">
+                <div className="stat-item">
+                  <span className="stat-label">Articles Analyzed</span>
+                  <span className="stat-value">{data.news_sentiment.articles_analyzed}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">Confidence</span>
+                  <span className="stat-value">{data.news_sentiment.confidence.toFixed(1)}%</span>
+                </div>
+              </div>
+
+              <div className="confidence-bar-small">
+                <div
+                  className="confidence-fill-small"
+                  style={{ width: `${data.news_sentiment.confidence}%` }}
+                ></div>
+              </div>
+
+              {data.news_sentiment.top_headlines && data.news_sentiment.top_headlines.length > 0 && (
+                <div className="headlines-list">
+                  <span className="headlines-title">Top Headlines</span>
+                  {data.news_sentiment.top_headlines.map((headline, idx) => (
+                    <div key={idx} className="headline-item">
+                      <span className="headline-bullet">•</span>
+                      <span className="headline-text">{headline}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="no-data">No sentiment data available</p>
+          )}
+        </div>
+
+        {/* Event Signals Section */}
+        <div className="dashboard-section event-signals-section">
+          <div className="section-header">
+            <h3 className="section-title">⚡ Event Signals</h3>
+            {data.event_signals && data.event_signals.events_detected && (
+              <span className="event-count">
+                {data.event_signals.events_detected.length} Event(s)
+              </span>
+            )}
+          </div>
+          {data.event_signals ? (
+            <div className="section-content">
+              {/* Price Spike */}
+              <div className={`event-item ${data.event_signals.price_spike.detected ? 'event-triggered' : 'event-not-triggered'}`}>
+                <div className="event-header">
+                  <div className="event-name-group">
+                    <span className={`event-indicator ${data.event_signals.price_spike.detected ? 'active' : 'inactive'}`}>
+                      {data.event_signals.price_spike.detected ? '⚠' : '○'}
+                    </span>
+                    <div className="event-title-group">
+                      <span className="event-name">⚡ Price Spike Detected</span>
+                      <span className="event-desc">(Short-term momentum indicator)</span>
+                    </div>
+                  </div>
+                  {data.event_signals.price_spike.detected && (
+                    <span className={`event-change event-${data.event_signals.price_spike.direction}`}>
+                      {data.event_signals.price_spike.direction === 'upward' ? '↑' : '↓'} {Math.abs(data.event_signals.price_spike.change_percent).toFixed(2)}%
+                    </span>
+                  )}
+                </div>
+                <p className="event-description">{data.event_signals.price_spike.description}</p>
+              </div>
+
+              {/* Volume Surge */}
+              <div className={`event-item ${data.event_signals.volume_surge.detected ? 'event-triggered' : 'event-not-triggered'}`}>
+                <div className="event-header">
+                  <div className="event-name-group">
+                    <span className={`event-indicator ${data.event_signals.volume_surge.detected ? 'active' : 'inactive'}`}>
+                      {data.event_signals.volume_surge.detected ? '📊' : '○'}
+                    </span>
+                    <div className="event-title-group">
+                      <span className="event-name">📊 Volume Surge Detected</span>
+                      <span className="event-desc">(Institutional or retail buying pressure)</span>
+                    </div>
+                  </div>
+                  {data.event_signals.volume_surge.detected && (
+                    <span className="event-ratio">
+                      {data.event_signals.volume_surge.ratio.toFixed(2)}x
+                    </span>
+                  )}
+                </div>
+                <p className="event-description">{data.event_signals.volume_surge.description}</p>
+                {data.event_signals.volume_surge.detected && (
+                  <div className="volume-details">
+                    <div className="volume-item">
+                      <span className="volume-label">Current</span>
+                      <span className="volume-value">{(data.event_signals.volume_surge.current_volume / 1000000).toFixed(1)}M</span>
+                    </div>
+                    <span className="volume-divider">/</span>
+                    <div className="volume-item">
+                      <span className="volume-label">Avg</span>
+                      <span className="volume-value">{(data.event_signals.volume_surge.average_volume / 1000000).toFixed(1)}M</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {data.event_signals.summary && (
+                <div className="event-summary">
+                  <span className="event-summary-label">Summary</span>
+                  <span className="event-summary-text">{data.event_signals.summary}</span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="no-data">No event data available</p>
+          )}
         </div>
       </div>
 

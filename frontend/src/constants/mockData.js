@@ -44,6 +44,35 @@ export const DEMO_RESPONSES = {
     summary:
       'Apple shows strong bullish momentum with breakout confirmation. Stock has crossed 10-day resistance with 5 consecutive up days. Potential buying opportunity on any pullback.',
     data_points: 124,
+    news_sentiment: {
+      sentiment_label: 'Positive',
+      sentiment_score: 0.45,
+      articles_analyzed: 8,
+      confidence: 80.0,
+      summary: 'Analyzed 8 recent headlines. Overall sentiment is Positive.',
+      top_headlines: [
+        'Apple Beats Q1 Earnings Estimates',
+        'iPhone 15 Sales Surge Past Forecasts',
+        'New MacBook Pro M4 Announced'
+      ]
+    },
+    event_signals: {
+      events_detected: ['Price Spike'],
+      price_spike: {
+        detected: true,
+        change_percent: 2.3,
+        direction: 'upward',
+        description: 'Price moved 2.3% upward in 2 days.'
+      },
+      volume_surge: {
+        detected: false,
+        ratio: 1.2,
+        average_volume: 50000000,
+        current_volume: 60000000,
+        description: 'Volume at 1.2x average (threshold: 1.5x).'
+      },
+      summary: 'Events detected: Price Spike'
+    }
   },
 
   'RELIANCE.NS': {
@@ -83,6 +112,35 @@ export const DEMO_RESPONSES = {
     summary:
       'High conviction breakout signal detected. Reliance showing strong volume backing with price breaking through 10-day resistance. Institutional involvement indicated. Strong buy opportunity.',
     data_points: 124,
+    news_sentiment: {
+      sentiment_label: 'Positive',
+      sentiment_score: 0.65,
+      articles_analyzed: 10,
+      confidence: 90.0,
+      summary: 'Analyzed 10 recent headlines. Overall sentiment is Positive.',
+      top_headlines: [
+        'Reliance Q4 Earnings Surge',
+        'Refining Unit Production Recovery',
+        'New Energy Division Expansion Announced'
+      ]
+    },
+    event_signals: {
+      events_detected: ['Volume Surge'],
+      price_spike: {
+        detected: false,
+        change_percent: 1.3,
+        direction: 'upward',
+        description: 'Price moved 1.3% upward in 2 days.'
+      },
+      volume_surge: {
+        detected: true,
+        ratio: 1.8,
+        average_volume: 35000000,
+        current_volume: 63000000,
+        description: 'Volume surged to 1.8x average.'
+      },
+      summary: 'Events detected: Volume Surge'
+    }
   },
 
   'TCS.NS': {
@@ -122,6 +180,35 @@ export const DEMO_RESPONSES = {
     summary:
       'TCS shows early upward momentum with 3-day uptrend. Limited confirmation - no volume spike or breakout. Wait for stronger signals before strong entry.',
     data_points: 124,
+    news_sentiment: {
+      sentiment_label: 'Neutral',
+      sentiment_score: 0.05,
+      articles_analyzed: 5,
+      confidence: 50.0,
+      summary: 'Analyzed 5 recent headlines. Overall sentiment is Neutral.',
+      top_headlines: [
+        'TCS Q4 Results Meet Expectations',
+        'India Tech Hiring Expected to Rise',
+        'TCS Steady on Margins'
+      ]
+    },
+    event_signals: {
+      events_detected: [],
+      price_spike: {
+        detected: false,
+        change_percent: 0.8,
+        direction: 'upward',
+        description: 'Price moved 0.8% upward in 2 days.'
+      },
+      volume_surge: {
+        detected: false,
+        ratio: 0.9,
+        average_volume: 20000000,
+        current_volume: 18000000,
+        description: 'Volume at 0.9x average (threshold: 1.5x).'
+      },
+      summary: 'No significant events detected.'
+    }
   },
 
   'INFY.NS': {
@@ -161,6 +248,35 @@ export const DEMO_RESPONSES = {
     summary:
       'No clear trading signals triggered for Infosys. Price consolidating near 10-day average. Monitor for emerging patterns before committing capital.',
     data_points: 124,
+    news_sentiment: {
+      sentiment_label: 'Negative',
+      sentiment_score: -0.35,
+      articles_analyzed: 7,
+      confidence: 70.0,
+      summary: 'Analyzed 7 recent headlines. Overall sentiment is Negative.',
+      top_headlines: [
+        'Infosys Guidance Reduced for FY27',
+        'Tech Spending Slowdown Concerns',
+        'Client Attrition Risk Flagged'
+      ]
+    },
+    event_signals: {
+      events_detected: [],
+      price_spike: {
+        detected: false,
+        change_percent: -0.5,
+        direction: 'downward',
+        description: 'Price moved 0.5% downward in 2 days.'
+      },
+      volume_surge: {
+        detected: false,
+        ratio: 0.8,
+        average_volume: 15000000,
+        current_volume: 12000000,
+        description: 'Volume at 0.8x average (threshold: 1.5x).'
+      },
+      summary: 'No significant events detected.'
+    }
   },
 
   MSFT: {
@@ -200,6 +316,35 @@ export const DEMO_RESPONSES = {
     summary:
       'Microsoft displays excellent setup with multiple confirmations. Three signals aligned: strong volume, breakout, and uptrend. High-conviction entry opportunity with strong institutional backing.',
     data_points: 124,
+    news_sentiment: {
+      sentiment_label: 'Positive',
+      sentiment_score: 0.55,
+      articles_analyzed: 9,
+      confidence: 85.0,
+      summary: 'Analyzed 9 recent headlines. Overall sentiment is Positive.',
+      top_headlines: [
+        'Microsoft AI Leadership Affirmed',
+        'Cloud Revenue Beats Estimates',
+        'Copilot Integration Drives Adoption'
+      ]
+    },
+    event_signals: {
+      events_detected: ['Price Spike', 'Volume Surge'],
+      price_spike: {
+        detected: true,
+        change_percent: 3.5,
+        direction: 'upward',
+        description: 'Price moved 3.5% upward in 2 days.'
+      },
+      volume_surge: {
+        detected: true,
+        ratio: 2.1,
+        average_volume: 40000000,
+        current_volume: 84000000,
+        description: 'Volume surged to 2.1x average.'
+      },
+      summary: 'Events detected: Price Spike, Volume Surge'
+    }
   },
 
   TSLA: {
@@ -239,6 +384,35 @@ export const DEMO_RESPONSES = {
     summary:
       'Tesla rallying with solid price surge and volume backing. 3.7% gain with increased trading activity. Moderate opportunity - consider position sizing due to volatility.',
     data_points: 124,
+    news_sentiment: {
+      sentiment_label: 'Positive',
+      sentiment_score: 0.40,
+      articles_analyzed: 6,
+      confidence: 60.0,
+      summary: 'Analyzed 6 recent headlines. Overall sentiment is Positive.',
+      top_headlines: [
+        'Tesla Q1 Deliveries Exceed Targets',
+        'New Model Announcement Coming Soon',
+        'Energy Division Ramp Up Ahead'
+      ]
+    },
+    event_signals: {
+      events_detected: ['Price Spike'],
+      price_spike: {
+        detected: true,
+        change_percent: 3.7,
+        direction: 'upward',
+        description: 'Price moved 3.7% upward in 2 days.'
+      },
+      volume_surge: {
+        detected: true,
+        ratio: 1.6,
+        average_volume: 120000000,
+        current_volume: 192000000,
+        description: 'Volume surged to 1.6x average.'
+      },
+      summary: 'Events detected: Price Spike, Volume Surge'
+    }
   },
 };
 
