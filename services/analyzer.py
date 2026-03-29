@@ -164,7 +164,6 @@ def analyze_stock(ticker: str) -> Dict:
                 "recommendation_reasoning": chart_patterns["recommendation_reasoning"],
             },
             "alerts": alerts_data["alerts"],
-            },
             "news_sentiment": {
                 "sentiment_label": news_sentiment["sentiment_label"],
                 "sentiment_score": news_sentiment["sentiment_score"],

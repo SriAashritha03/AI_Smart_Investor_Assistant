@@ -15,7 +15,6 @@ function App() {
   const [demoMode, setDemoMode] = React.useState(true) // Demo mode ON by default
   const [isAlertsOpen, setIsAlertsOpen] = React.useState(false)
   const [error, setError] = React.useState(null)
-  const [demoMode, setDemoMode] = React.useState(false) // Demo mode OFF by default - use real API
 
   // Check if backend is running on mount
   React.useEffect(() => {
