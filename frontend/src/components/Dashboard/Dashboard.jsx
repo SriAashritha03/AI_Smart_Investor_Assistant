@@ -1,5 +1,6 @@
 import React from 'react'
 import StockChart from '../StockChart/StockChart'
+import ChartPatterns from '../ChartPatterns/ChartPatterns'
 import Watchlist from '../Watchlist/Watchlist'
 import './Dashboard.css'
 import Portfolio from "../Portfolio/Portfolio";
@@ -123,7 +124,10 @@ function Dashboard({ data }) {
         {/* Signals Detail */}
         <div className="dashboard-section signals-section">
           <div className="section-header">
-            <h3 className="section-title">⚡ Signal Details</h3>
+            <div className="section-title-group">
+              <h3 className="section-title">⚡ Signal Details</h3>
+              <span className="help-text" title="Technical indicators like momentum, volatility, and trend that trigger buy/hold/sell signals">ℹ️ Tech Signals</span>
+            </div>
             <span className="signal-count">
               {data.signals_triggered.length}/{data.signal_details.length} Triggered
             </span>
@@ -171,6 +175,55 @@ function Dashboard({ data }) {
             )}
           </div>
         </div>
+
+        {/* Why Different Responses - Explanation */}
+        <div className="dashboard-section comparison-section">
+          <div className="section-header">
+            <h3 className="section-title">🤔 Why Different Responses?</h3>
+          </div>
+          <div className="section-content">
+            <p className="comparison-intro">Signal Details and Chart Patterns use different analysis approaches, so they may provide different recommendations:</p>
+            <table className="comparison-table">
+              <thead>
+                <tr>
+                  <th>Factor</th>
+                  <th>{' '}⚡Signals</th>
+                  <th>📊 Patterns</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="factor-label">Analysis Type</td>
+                  <td>Short-term indicators</td>
+                  <td>Long-term trends</td>
+                </tr>
+                <tr>
+                  <td className="factor-label">Data Used</td>
+                  <td>Last 10-20 days</td>
+                  <td>1 year history</td>
+                </tr>
+                <tr>
+                  <td className="factor-label">Reasoning</td>
+                  <td>Current momentum</td>
+                  <td>Historical patterns</td>
+                </tr>
+                <tr>
+                  <td className="factor-label">Actions Available</td>
+                  <td>BUY, HOLD, PASS</td>
+                  <td>BUY, SELL, HOLD, WAIT ✅</td>
+                </tr>
+              </tbody>
+            </table>
+            <p className="comparison-note">💡 <strong>Tip:</strong> For best results, consider both perspectives when making trading decisions. Signals show immediate opportunities, while patterns reveal proven historical strategies.</p>
+          </div>
+        </div>
+
+        {/* Chart Patterns Analysis Section */}
+        {data.chart_patterns && (
+          <div className="dashboard-section chart-patterns-section">
+            <ChartPatterns patterns={data.chart_patterns} />
+          </div>
+        )}
       </div>
 
       {/* Watchlist Section */}

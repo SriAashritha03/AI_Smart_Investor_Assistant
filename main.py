@@ -74,6 +74,81 @@ DEMO_RESPONSES = {
         ],
         "summary": "Apple shows bulls momentum with breakout confirmation. Strong buying opportunity.",
         "data_points": 124,
+        "chart_patterns": {
+            "overall_strength": "Moderate",
+            "pattern_count": 2,
+            "patterns_detected": [
+                {
+                    "pattern_name": "Breakout",
+                    "detected": True,
+                    "strength": "Strong",
+                    "current_price": 185.50,
+                    "resistance_level": 182.30,
+                    "breakout_margin": 1.75,
+                    "volume_confirmation": True
+                },
+                {
+                    "pattern_name": "Support",
+                    "detected": True,
+                    "strength": "Moderate",
+                    "current_price": 185.50,
+                    "support_level": 178.50,
+                    "distance_from_support": 3.87,
+                    "recent_bounce": True
+                },
+                {
+                    "pattern_name": "MA Crossover",
+                    "detected": False,
+                    "strength": "None",
+                    "crossover_type": "Golden Cross",
+                    "sma50": 183.20,
+                    "sma200": 184.10,
+                    "ma_distance": -0.49
+                }
+            ],
+            "success_rates": {
+                "breakout": 62.5,
+                "support": 58.3,
+                "ma_crossover": 0.0,
+                "overall": 40.3
+            },
+            "recommendation": "BUY",
+            "recommendation_reasoning": "Strong breakout detected with volume confirmation and support holding. Dual pattern confirmation suggests good entry point.",
+            "alerts": [
+                {
+                    "title": "📈 Uptrend Detected",
+                    "message": "Stock is showing upward momentum. Bullish signal.",
+                    "severity": "SUCCESS",
+                    "alert_type": "SIGNAL",
+                    "timestamp": "2026-03-27T10:30:00",
+                    "action": "BUY"
+                },
+                {
+                    "title": "🚀 Breakout Detected",
+                    "message": "Price has broken above resistance. Strong bullish signal.",
+                    "severity": "CRITICAL",
+                    "alert_type": "SIGNAL",
+                    "timestamp": "2026-03-27T09:15:00",
+                    "action": "BUY"
+                },
+                {
+                    "title": "🚀 Breakout Pattern",
+                    "message": "Strong breakout pattern detected (Strong). Price breaking above resistance with volume confirmation.",
+                    "severity": "CRITICAL",
+                    "alert_type": "PATTERN",
+                    "timestamp": "2026-03-27T09:00:00",
+                    "action": "BUY"
+                },
+                {
+                    "title": "⚡ Moderate BUY Signal",
+                    "message": "Moderate trading opportunity with 68% confidence. Worth monitoring.",
+                    "severity": "INFO",
+                    "alert_type": "OPPORTUNITY",
+                    "timestamp": "2026-03-27T08:00:00",
+                    "action": "BUY"
+                }
+            ]
+        }
     },
     "RELIANCE.NS": {
         "success": True,
@@ -91,6 +166,97 @@ DEMO_RESPONSES = {
         ],
         "summary": "High conviction breakout. Strong volume backing with institutional interest.",
         "data_points": 124,
+        "chart_patterns": {
+            "overall_strength": "Strong",
+            "pattern_count": 2,
+            "patterns_detected": [
+                {
+                    "pattern_name": "Breakout",
+                    "detected": True,
+                    "strength": "Strong",
+                    "current_price": 2854.50,
+                    "resistance_level": 2793.25,
+                    "breakout_margin": 2.19,
+                    "volume_confirmation": True
+                },
+                {
+                    "pattern_name": "Support",
+                    "detected": False,
+                    "strength": "None",
+                    "current_price": 2854.50,
+                    "support_level": 2680.30,
+                    "distance_from_support": 6.49,
+                    "recent_bounce": False
+                },
+                {
+                    "pattern_name": "MA Crossover",
+                    "detected": True,
+                    "strength": "Strong",
+                    "crossover_type": "Golden Cross",
+                    "sma50": 2820.35,
+                    "sma200": 2750.10,
+                    "ma_distance": 2.56
+                }
+            ],
+            "success_rates": {
+                "breakout": 64.2,
+                "support": 45.8,
+                "ma_crossover": 58.5,
+                "overall": 56.2
+            },
+            "recommendation": "BUY",
+            "recommendation_reasoning": "Multiple bullish signals: Breakout with strong volume + Golden Cross. Highest conviction setup. Strong buy opportunity.",
+            "alerts": [
+                {
+                    "title": "📊 Volume Spike",
+                    "message": "Unusual trading volume detected. Increased market interest.",
+                    "severity": "WARNING",
+                    "alert_type": "SIGNAL",
+                    "timestamp": "2026-03-27T11:00:00",
+                    "action": "WATCH"
+                },
+                {
+                    "title": "🚀 Breakout Detected",
+                    "message": "Price has broken above resistance. Strong bullish signal.",
+                    "severity": "CRITICAL",
+                    "alert_type": "SIGNAL",
+                    "timestamp": "2026-03-27T10:45:00",
+                    "action": "BUY"
+                },
+                {
+                    "title": "🚀 Breakout Pattern",
+                    "message": "Strong breakout pattern detected (Strong). Price breaking above resistance with volume confirmation.",
+                    "severity": "CRITICAL",
+                    "alert_type": "PATTERN",
+                    "timestamp": "2026-03-27T10:30:00",
+                    "action": "BUY"
+                },
+                {
+                    "title": "✨ Golden Cross",
+                    "message": "Moving Average Golden Cross detected. Long-term bullish signal.",
+                    "severity": "SUCCESS",
+                    "alert_type": "PATTERN",
+                    "timestamp": "2026-03-27T09:00:00",
+                    "action": "BUY"
+                },
+                {
+                    "title": "🎯 Strong BUY Signal",
+                    "message": "Strong bullish setup with 75% confidence. High probability trade.",
+                    "severity": "CRITICAL",
+                    "alert_type": "OPPORTUNITY",
+                    "timestamp": "2026-03-27T08:00:00",
+                    "action": "BUY"
+                },
+                {
+                    "title": "🌪️ High Volatility Alert",
+                    "message": "Multiple strong patterns detected. Market volatility is high. Use tight stops.",
+                    "severity": "CRITICAL",
+                    "alert_type": "RISK",
+                    "timestamp": "2026-03-27T07:30:00",
+                    "action": "WATCH"
+                }
+            ]
+        }
     },
 }
 
@@ -174,6 +340,7 @@ class AnalyzeStockResponse(BaseModel):
     summary: str = Field(..., description="Human-readable opportunity summary")
     data_points: int = Field(..., description="Number of trading days analyzed")
     chart_patterns: dict = Field(..., description="Chart patterns analysis with success rates")
+    alerts: list = Field(default=[], description="Smart alerts for the stock")
 
 
 class ErrorResponse(BaseModel):
