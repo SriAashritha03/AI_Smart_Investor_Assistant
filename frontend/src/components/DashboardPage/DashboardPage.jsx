@@ -3,6 +3,7 @@ import StockSelector from '../StockSelector/StockSelector'
 import Dashboard from '../Dashboard/Dashboard'
 import { analyzeStock } from '../../services/stockApi'
 import { getDemoResponse } from '../../constants/mockData'
+import { generateAlerts, getDemoAlerts } from '../../utils/alertGenerator'
 
 /**
  * Helper function to add missing decision fusion fields to mock/old API responses
@@ -160,6 +161,9 @@ function DashboardPage({ demoMode }) {
           return typeof signal === 'string' ? signal : signal.signal_name || signal.name
         })
         
+        // Generate alerts from analysis data
+        const alerts = generateAlerts(result)
+        
         setAnalysisData({
           stock: result.stock,
           date: new Date().toISOString().split('T')[0],
@@ -180,6 +184,8 @@ function DashboardPage({ demoMode }) {
           bearish_patterns: result.bearish_patterns,
           bullish_patterns: result.bullish_patterns,
           isDemo: demoMode,
+          // NEW: Generated alerts
+          alerts: alerts,
         })
       } else {
         setError(result.error || 'Analysis failed')

@@ -1,0 +1,303 @@
+/* ============================================================================
+   OpportunityAlerts.css — Live Alert Display System
+   ============================================================================ */
+
+.opportunity-alerts {
+  background: var(--surface-container-low);
+  border: 1px solid rgba(66, 71, 84, 0.15);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────── */
+.alerts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.alerts-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--on-surface);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alerts-header .material-symbols-outlined {
+  font-size: 22px;
+  color: var(--primary);
+  animation: pulse-notification 2s ease-in-out infinite;
+}
+
+@keyframes pulse-notification {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.alerts-subtitle {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+  margin: 0;
+}
+
+.alerts-count {
+  background: var(--primary);
+  color: var(--on-primary);
+  font-weight: 700;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* ── Alerts List ────────────────────────────────────────────────────── */
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Alert Card ─────────────────────────────────────────────────────── */
+.alert-card {
+  background: var(--surface-container);
+  border: 1px solid rgba(66, 71, 84, 0.1);
+  border-left: 4px solid var(--outline);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.alert-card:hover {
+  border-left-color: var(--primary);
+  background: var(--surface-container-highest);
+  transform: translateX(4px);
+}
+
+/* Alert Type coloring */
+.alert-card .alert-type-badge:contains('HIGH') ~ {
+  border-left-color: var(--alert-high, #F4511E);
+}
+
+/* Alert Header Row */
+.alert-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.alert-badge-ticker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alert-type-badge {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.alert-ticker {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--on-surface);
+  text-transform: uppercase;
+}
+
+.alert-time {
+  font-size: 11px;
+  color: var(--on-surface-variant);
+  white-space: nowrap;
+  opacity: 0.7;
+}
+
+/* ── Alert Message ──────────────────────────────────────────────────── */
+.alert-message {
+  font-size: 13px;
+  color: var(--on-surface);
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ── Alert Metadata ─────────────────────────────────────────────────── */
+.alert-metadata {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.metadata-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  font-weight: 600;
+}
+
+.metadata-item .material-symbols-outlined {
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+.action-badge {
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 8px;
+  background: rgba(66, 71, 84, 0.08);
+  border-radius: 4px;
+}
+
+/* ── Alert Signals ──────────────────────────────────────────────────── */
+.alert-signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.signal-tag {
+  font-size: 11px;
+  padding: 4px 10px;
+  background: rgba(173, 198, 255, 0.15);
+  color: var(--primary);
+  border-radius: 4px;
+  font-weight: 600;
+  border: 1px solid rgba(173, 198, 255, 0.3);
+}
+
+.signal-tag.signal-more {
+  background: rgba(66, 71, 84, 0.08);
+  color: var(--on-surface-variant);
+  border-color: rgba(66, 71, 84, 0.15);
+}
+
+/* ── Demo Badge ─────────────────────────────────────────────────────── */
+.alert-demo-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  background: rgba(173, 198, 255, 0.2);
+  color: var(--primary);
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Empty State ────────────────────────────────────────────────────── */
+.alerts-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--on-surface-variant);
+}
+
+.alerts-empty .material-symbols-outlined {
+  font-size: 40px;
+  opacity: 0.6;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.alerts-empty p {
+  font-size: 13px;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ── Footer Stats ────────────────────────────────────────────────────── */
+.alerts-footer {
+  border-top: 1px solid rgba(66, 71, 84, 0.1);
+  padding-top: 12px;
+}
+
+.alert-stats {
+  display: flex;
+  gap: 20px;
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  font-weight: 600;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-badge {
+  font-size: 10px;
+}
+
+.stat-badge.high {
+  color: var(--alert-high, #F4511E);
+}
+
+.stat-badge.medium {
+  color: var(--alert-medium, #FFA600);
+}
+
+.stat-badge.low {
+  color: var(--alert-low, #00B4D8);
+}
+
+/* ── Responsive Design ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .opportunity-alerts {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .alert-card {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .alert-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .alert-metadata {
+    gap: 12px;
+  }
+
+  .alert-signals {
+    gap: 6px;
+  }
+}
+
+/* ── CSS Variables (if not in main theme) ────────────────────────────── */
+:root {
+  --alert-high: #F4511E; /* Material Red */
+  --alert-medium: #FFA600; /* Material Orange */
+  --alert-low: #00B4D8; /* Material Cyan */
+}

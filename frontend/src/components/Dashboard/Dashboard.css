@@ -659,6 +659,204 @@
   background: linear-gradient(90deg, var(--secondary), var(--secondary-fixed));
 }
 
+/* ══════════════════════════════════════════════════════════════════════════ */
+/* 🔴 FUSION EXPLANATION CARD — How Signals & Patterns Work Together
+/* ══════════════════════════════════════════════════════════════════════════ */
+
+.fusion-explanation-card {
+  background: linear-gradient(135deg, rgba(45, 48, 60, 0.95), rgba(35, 38, 50, 0.98));
+  border: 2px solid rgba(255, 68, 68, 0.35);
+  border-radius: var(--radius-xl);
+  padding: 22px;
+  margin-top: 16px;
+  box-shadow: 0 8px 24px rgba(255, 68, 68, 0.12);
+}
+
+.fusion-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid rgba(255, 68, 68, 0.25);
+}
+
+.fusion-icon {
+  font-size: 22px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.fusion-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #FF6B6B;
+  margin: 0;
+  letter-spacing: 0.6px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* Signals vs Patterns Comparison */
+.fusion-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.fusion-column {
+  background: linear-gradient(135deg, rgba(66, 71, 84, 0.8), rgba(45, 48, 60, 0.9));
+  border: 1.5px solid rgba(255, 68, 68, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.fusion-label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #FF6B6B;
+  margin-bottom: 10px;
+  display: block;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.fusion-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.fusion-list li {
+  color: #E8E8E8;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.fusion-list li strong {
+  color: #FF6B6B;
+  font-weight: 700;
+  display: inline-block;
+  min-width: 70px;
+}
+
+/* Decision Scenarios Table */
+.fusion-scenarios {
+  background: var(--surface-container-high);
+  border: 1px solid rgba(255, 68, 68, 0.15);
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.scenario-header {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #FF4444;
+  margin-bottom: 10px;
+}
+
+.scenario-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scenario-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1.2fr;
+  gap: 10px;
+  padding: 11px 13px;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  font-weight: 700;
+  align-items: center;
+  border-left: 4px solid;
+  background: rgba(20, 20, 25, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.scenario-row.green {
+  background: rgba(74, 225, 118, 0.15);
+  border-left-color: #4AE176;
+}
+
+.scenario-row.yellow {
+  background: rgba(255, 193, 7, 0.15);
+  border-left-color: #FFD700;
+}
+
+.scenario-row.orange {
+  background: rgba(255, 152, 0, 0.15);
+  border-left-color: #FF9800;
+}
+
+.scenario-row.red {
+  background: rgba(255, 68, 68, 0.15);
+  border-left-color: #FF4444;
+}
+
+.scenario-signals {
+  color: #E8E8E8;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.scenario-action {
+  color: #FF6B6B;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.scenario-note {
+  color: #A8A8B8;
+  font-size: 11px;
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* Key Note */
+.fusion-note {
+  background: linear-gradient(135deg, rgba(255, 68, 68, 0.18), rgba(255, 107, 107, 0.12));
+  border: 1.5px solid rgba(255, 68, 68, 0.3);
+  border-left: 4px solid #FF6B6B;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #E8E8E8;
+  font-weight: 500;
+}
+
+.fusion-note strong {
+  color: #FF6B6B;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .fusion-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .scenario-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .scenario-action,
+  .scenario-note {
+    display: inline;
+    margin-left: 4px;
+  }
+}
+
 @media (max-width: 1024px) {
   .patterns-and-success {
     grid-template-columns: 1fr;

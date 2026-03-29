@@ -5,6 +5,8 @@ import ChartPatterns from '../ChartPatterns/ChartPatterns'
 import OpportunityRadar from '../OpportunityRadar/OpportunityRadar'
 import TradeInsightPanel from '../TradeInsightPanel/TradeInsightPanel'
 import Watchlist from '../Watchlist/Watchlist'
+import OpportunityAlerts from '../Alerts/OpportunityAlerts'
+import { getDemoAlerts } from '../../utils/alertGenerator'
 import './Dashboard.css'
 
 function Dashboard({ data }) {
@@ -270,6 +272,12 @@ function Dashboard({ data }) {
         </div>
       )}
 
+      {/* ==================== OPPORTUNITY ALERTS (Live Alert System) ==================== */}
+      <OpportunityAlerts 
+        alerts={data.alerts || getDemoAlerts()} 
+        showDemo={data.isDemo || (data.alerts && data.alerts.length === 0)}
+      />
+
       {/* ==================== ROW 2: SIGNAL DETAILS + SENTIMENT/EVENTS ==================== */}
       <div className="dashboard-row-analysis">
         {/* LEFT: Signal Details (Technical Analysis) */}
@@ -449,6 +457,69 @@ function Dashboard({ data }) {
                   <div className="rate-progress">
                     <div className="rate-progress-fill" style={{ width: `${data.chart_patterns.success_rates.overall || 0}%` }}></div>
                   </div>
+                </div>
+              </div>
+
+              {/* 🔴 FUSION EXPLANATION CARD */}
+              <div className="fusion-explanation-card">
+                <div className="fusion-header">
+                  <span className="fusion-icon">⚡</span>
+                  <h4 className="fusion-title">How Signals & Patterns Work Together</h4>
+                </div>
+
+                {/* What is Signal vs Pattern */}
+                <div className="fusion-comparison">
+                  <div className="fusion-column">
+                    <div className="fusion-label">📊 SIGNALS</div>
+                    <ul className="fusion-list">
+                      <li><strong>Analysis:</strong> Short-term indicators</li>
+                      <li><strong>Data:</strong> Last 10-20 days</li>
+                      <li><strong>Actions:</strong> BUY / HOLD / PASS</li>
+                      <li><strong>Focus:</strong> Current momentum</li>
+                    </ul>
+                  </div>
+                  <div className="fusion-column">
+                    <div className="fusion-label">📈 PATTERNS</div>
+                    <ul className="fusion-list">
+                      <li><strong>Analysis:</strong> Long-term trends</li>
+                      <li><strong>Data:</strong> 1 year history</li>
+                      <li><strong>Actions:</strong> BUY / HOLD / <strong style={{color: '#FF4444'}}>SELL</strong></li>
+                      <li><strong>Focus:</strong> Historical setup</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Decision Scenarios */}
+                <div className="fusion-scenarios">
+                  <div className="scenario-header">🎯 Decision Scenarios</div>
+                  <div className="scenario-rows">
+                    <div className="scenario-row green">
+                      <span className="scenario-signals">Both say BUY</span>
+                      <span className="scenario-action">✅ Strong BUY</span>
+                      <span className="scenario-note">Go ahead</span>
+                    </div>
+                    <div className="scenario-row yellow">
+                      <span className="scenario-signals">Both say HOLD</span>
+                      <span className="scenario-action">🔄 HOLD</span>
+                      <span className="scenario-note">No clear setup</span>
+                    </div>
+                    <div className="scenario-row orange">
+                      <span className="scenario-signals">Signals BUY, Patterns SELL</span>
+                      <span className="scenario-action">⚠️ CAUTION</span>
+                      <span className="scenario-note">Conflicting signals</span>
+                    </div>
+                    <div className="scenario-row red">
+                      <span className="scenario-signals">Signals HOLD, Patterns SELL</span>
+                      <span className="scenario-action">🔴 AVOID</span>
+                      <span className="scenario-note">Don't enter position</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Key Point */}
+                <div className="fusion-note">
+                  ℹ️ <strong>Important:</strong> Signals and Patterns are <strong>NOT forced to match</strong>. 
+                  The Fusion Engine intelligently weighs both sources using priority rules to make the best decision.
                 </div>
               </div>
             </div>
